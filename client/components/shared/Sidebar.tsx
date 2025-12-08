@@ -15,15 +15,7 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const sidebarItems = [
     { label: "Dashboard", href: "/dashboard" },
-    {
-      label: "Room Management",
-      subMenu: [
-        { label: "General", href: "/room_management/general" },
-        { label: "Booked Requests", href: "#" },
-        { label: "Booked Approved", href: "#" },
-        { label: "Rooms Currently Housing", href: "#" },
-      ],
-    },
+    { label: "Room Management", href: "/room_management" },
     { label: "User Management", href: "#" },
     {
       label: "Report Management",

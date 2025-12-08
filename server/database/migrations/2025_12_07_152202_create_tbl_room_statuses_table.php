@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbl_room_statuses', function (Blueprint $table) {
-            $table->id();
+            $table->id('room_status_id');
+            $table->string('room_status', 55);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -22,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('tbl_room_statuses');
+        Schema::enableForeignKeyConstraints();
     }
 };

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('title', 55)->nullable();
             $table->string('description', 255)->nullable();
             $table->unsignedBigInteger('room_type_id');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('room_status_id');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('room_type_id')
@@ -25,8 +26,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('status_id')
-                ->references('status_id')
+            $table->foreign('room_status_id')
+                ->references('room_status_id')
                 ->on('tbl_room_statuses')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

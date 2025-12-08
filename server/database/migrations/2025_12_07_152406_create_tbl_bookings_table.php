@@ -12,8 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbl_bookings', function (Blueprint $table) {
-            $table->id();
+            $table->id('booking_id');
+            $table->unsignedBigInteger('room_id');
+            $table->date('date_from');
+            $table->date('date_to');
+            $table->text('additional_information', 255);
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('room_id')
+                ->references('room_id')
+                ->on('tbl_rooms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -22,6 +33,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('tbl_bookings');
+        Schema::enableForeignKeyConstraints();
     }
 };

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password', 255)->nullable();
             $table->unsignedBigInteger('role_id')->nullable();
             $table->timestamp('last_login_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('role_id')
