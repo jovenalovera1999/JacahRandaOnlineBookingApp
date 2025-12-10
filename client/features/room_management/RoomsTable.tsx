@@ -29,11 +29,13 @@ export default function RoomsTable({ onAddRoom }: RoomsTableProps) {
       <Table
         filter={
           <>
-            <div className="flex items-center justify-between">
-              <Button tag="button" type="button" onClick={onAddRoom}>
-                Add Room
-              </Button>
-              <div className="w-72">
+            <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
+              <div className="md:w-32">
+                <Button tag="button" type="button" onClick={onAddRoom}>
+                  Add Room
+                </Button>
+              </div>
+              <div className="md:w-72">
                 <FloatingLabelInputField
                   label="Search"
                   type="text"

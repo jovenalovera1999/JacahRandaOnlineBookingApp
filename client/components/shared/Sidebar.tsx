@@ -205,8 +205,8 @@ export default function Sidebar({ children }: SidebarProps) {
                   <ul
                     className={`pl-4 mt-1 space-y-1 transition-all duration-300 overflow-hidden ${
                       openMenu === item.label || isSubMenuActive(item.subMenu)
-                        ? "max-h-96 opacity-100"
-                        : "max-h-0 opacity-0"
+                        ? "max-h-96"
+                        : "max-h-0"
                     }`}
                   >
                     {item.subMenu.map((subItem) => (

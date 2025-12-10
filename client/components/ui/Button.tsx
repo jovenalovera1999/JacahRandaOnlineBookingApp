@@ -1,8 +1,10 @@
 "use client";
 
+import { twMerge } from "tailwind-merge";
+
 interface ButtonProps {
   children: string;
-  tag?: "button" | "a";
+  tag: "button" | "a";
   type?: "button" | "submit";
   href?: string;
   onClick?: () => void;
@@ -16,16 +18,21 @@ export default function Button({
   type = "button",
   href,
   onClick,
-  className,
+  className = "",
   isLoading,
 }: ButtonProps) {
   const ButtonTag = tag;
+
+  const baseClassName =
+    "text-white bg-blue-600 border border-transparent hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-md font-medium rounded-md text-sm px-4 py-2.5 leading-5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed w-full";
+
+  const mergedClassName = twMerge(baseClassName, className);
 
   return (
     <ButtonTag
       {...(tag === "a" ? { href } : { type })}
       onClick={onClick}
-      className={`text-white bg-blue-600 border border-transparent hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-md font-medium rounded-md text-sm px-4 py-2.5 leading-5 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={mergedClassName}
       disabled={isLoading}
     >
       {isLoading ? "Loading..." : children}

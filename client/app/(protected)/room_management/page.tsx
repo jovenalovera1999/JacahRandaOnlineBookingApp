@@ -1,7 +1,7 @@
 "use client";
 
-import AddRoomModal from "@/components/layouts/room_management/AddRoomModal";
-import RoomsTable from "@/components/layouts/room_management/RoomsTable";
+import AddRoomModal from "@/features/room_management/AddRoomModal";
+import RoomsTable from "@/features/room_management/RoomsTable";
 import { useState } from "react";
 
 export default function RoomManagementPage() {
