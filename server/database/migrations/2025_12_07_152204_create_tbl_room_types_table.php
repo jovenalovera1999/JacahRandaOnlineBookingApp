@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_room_types', function (Blueprint $table) {
             $table->id('room_type_id');
-            $table->string('room_image', 255)->nullable();
             $table->string('room_type', 55);
-            $table->double('price');
             $table->softDeletes();
             $table->timestamps();
         });

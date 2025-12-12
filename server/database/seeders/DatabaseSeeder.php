@@ -41,23 +41,23 @@ class DatabaseSeeder extends Seeder
         RoomType::factory()->createMany([
             [
                 'room_type' => 'Standard',
-                'price' => 3000.00
+                // 'price' => 3000.00
             ],
             [
                 'room_type' => 'Barkada',
-                'price' => 2000.00
+                // 'price' => 2000.00
             ],
             [
                 'room_type' => 'Deluxe With Veronica',
-                'price' => 3500.00
+                // 'price' => 3500.00
             ],
             [
                 'room_type' => 'Pyramid',
-                'price' => 1000.00
+                // 'price' => 1000.00
             ],
             [
                 'room_type' => 'Pyramid with Terrace',
-                'price' => 1500.00
+                // 'price' => 1500.00
             ]
         ]);
     }

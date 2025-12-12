@@ -4,7 +4,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     Accept: "application/json",
   },
@@ -24,12 +24,10 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response.status === 401) {
-      console.warn("Unauthorized! Redirecting or refreshing...");
-    }
-
+  (response) => {
+    return response;
+  },
+  (error) => {
     return Promise.reject(error);
   }
 );
