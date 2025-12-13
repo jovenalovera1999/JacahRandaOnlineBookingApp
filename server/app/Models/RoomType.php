@@ -20,9 +20,7 @@ class RoomType extends Model
 
     // Columns that can be modified or attributes that are mass assignable
     protected $fillable = [
-        'room_image',
-        'room_type',
-        'price'
+        'room_type'
     ];
 
     // Relationships with other tables

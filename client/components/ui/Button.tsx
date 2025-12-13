@@ -28,10 +28,13 @@ export default function Button({
 
   const mergedClassName = twMerge(baseClassName, className);
 
+  const handleClick = () => {
+    if (onClick) onClick();
+  };
+
   return (
     <ButtonTag
-      {...(tag === "a" ? { href } : { type })}
-      onClick={onClick}
+      {...(tag === "a" ? { href } : { type, onClick: handleClick })}
       className={mergedClassName}
       disabled={isLoading}
     >

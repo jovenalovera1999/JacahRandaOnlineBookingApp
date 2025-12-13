@@ -24,3 +24,81 @@ body {
   color: var(--foreground); */
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Scollbar custom */
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    @apply size-1.5;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply rounded-full;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 rounded-full;
+  }
+}
+
+/* Toast message animation: fade in, stay, fade out */
+@keyframes toast {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+/* Utility class for toast message */
+@utility animate-toast {
+  animation: toast 3s ease-in-out forwards;
+}
+
+/* Modal fade-in */
+@keyframes modal-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal fade-out */
+@keyframes modal-fade-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+/* Utility classes for modal */
+@utility animate-modal-in {
+  animation: modal-fade-in 0.3s ease-out forwards;
+}
+
+@utility animate-modal-out {
+  animation: modal-fade-out 0.3s ease-in forwards;
+}

@@ -7,12 +7,12 @@ use App\Models\RoomType;
 
 class RoomTypeController extends Controller
 {
-    public function loadRoomTypes()
-    {
-        $roomTypes = RoomType::all();
+    // public function loadRoomTypes()
+    // {
+    //     $roomTypes = RoomType::all();
 
-        return response()->json([
-            'roomTypes' => $roomTypes
-        ], 200);
-    }
+    //     return response()->json([
+    //         'roomTypes' => $roomTypes
+    //     ], 200);
+    // }
 }

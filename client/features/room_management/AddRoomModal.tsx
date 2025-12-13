@@ -6,6 +6,7 @@ import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
 import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaField";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
+import UploadField from "@/components/ui/UploadField";
 import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
 import { RoomTypeColumns } from "@/interfaces/RoomTypeInterface";
 import RoomService from "@/services/RoomService";
@@ -13,10 +14,18 @@ import { useCallback, useEffect, useState } from "react";
 
 interface AddRoomModalProps {
   isOpen: boolean;
+  onRoomAdded: (
+    message: string,
+    status: "success" | "failed" | "warning" | "others"
+  ) => void;
   onClose: () => void;
 }
 
-export default function AddRoomModal({ isOpen, onClose }: AddRoomModalProps) {
+export default function AddRoomModal({
+  isOpen,
+  onRoomAdded,
+  onClose,
+}: AddRoomModalProps) {
   const [roomTypes, setRoomTypes] = useState<RoomTypeColumns[]>([]);
   const [roomStatuses, setRoomStatuses] = useState<RoomStatusColumns[]>([]);
 
@@ -52,7 +61,15 @@ export default function AddRoomModal({ isOpen, onClose }: AddRoomModalProps) {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 md:space-y-0 md:space-x-4 border-b border-gray-100 pb-4 mb-4">
-              <div className="md:col-span-1 space-y-4">
+              <div className="col-span-2 w-full">
+                <UploadField
+                  label="Room Image"
+                  labelFile="PNG, JPG or JPEG"
+                  name="room_image"
+                  alt="Room Image"
+                />
+              </div>
+              <div className="col-span-2 md:col-span-1 space-y-4">
                 <FloatingLabelInputField
                   label="Title"
                   type="text"
@@ -65,7 +82,7 @@ export default function AddRoomModal({ isOpen, onClose }: AddRoomModalProps) {
                   name="description"
                 />
               </div>
-              <div className="md:col-span-1 space-y-4">
+              <div className="col-span-2 md:col-span-1 space-y-4">
                 <FloatingLabelSelectField
                   label="Room Type"
                   name="room_type"
@@ -89,6 +106,7 @@ export default function AddRoomModal({ isOpen, onClose }: AddRoomModalProps) {
                 <FloatingLabelSelectField
                   label="Room Status"
                   name="room_status"
+                  required
                 >
                   {roomStatuses.map((roomStatus) => (
                     <option
