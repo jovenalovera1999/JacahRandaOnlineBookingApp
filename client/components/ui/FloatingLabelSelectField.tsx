@@ -37,8 +37,11 @@ export default function FloatingLabelSelectField({
         >
           {children}
         </select>
+        {/* Message error */}
         {errors && errors.length > 0 && (
-          <span className="text-red-600">{errors[0]}</span>
+          <p className="mt-1 text-xs">
+            <span className="font-medium text-red-600">{errors[0]}</span>
+          </p>
         )}
         <label
           htmlFor={name}

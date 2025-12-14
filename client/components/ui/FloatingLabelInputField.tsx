@@ -49,7 +49,7 @@ export default function FloatingLabelInputField({
 
       {/* Message error */}
       {errors && errors.length > 0 && (
-        <p className="mt-2 text-xs">
+        <p className="mt-1 text-xs">
           <span className="font-medium text-red-600">{errors[0]}</span>
         </p>
       )}

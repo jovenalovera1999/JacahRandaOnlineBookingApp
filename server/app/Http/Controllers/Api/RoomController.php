@@ -28,18 +28,35 @@ class RoomController extends Controller
         // Validate data
         $validatedData = $request->validate([
             'room_image' => ['nullable', 'image', 'mimes:png,jpg,jpeg'],
-            'title' => ['required', 'max:55'],
-            'description' => ['nullable', '255'],
+            'room_no' => ['required', 'numeric'],
             'room_type' => ['required'],
+            'description' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
             'room_status' => ['required']
         ]);
 
+        // Uploading image
         if ($request->has('room_image')) {
+            $file = $request->file('room_image');
+            $extension = $file->getClientOriginalExtension();
+            $fileNameToStore = uniqid() . '.' . $extension;
+            $file->storeAs('img/room', $fileNameToStore, 'public');
+            $validatedData['room_image'] = $fileNameToStore;
         }
 
+        // Insert room to tbl_rooms in database
         Room::create([
-            ''
+            'room_image' => $validatedData['room_image'],
+            'room_no' => $validatedData['room_no'],
+            'room_type_id' => $validatedData['room_type'],
+            'description' => $validatedData['description'],
+            'price' => $validatedData['price'],
+            'room_status_id' => $validatedData['room_status']
         ]);
+
+        // Return message to client
+        return response()->json([
+            'message' => 'Room Successfully Created.'
+        ], 200);
     }
 }

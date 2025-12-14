@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(RoomController::class)->prefix('/room')->group(function () {
     Route::get('/loadRoomReferences', 'loadRoomReferences');
+    Route::post('/storeRoom', 'storeRoom');
 });
 
 // Route::controller(RoomTypeController::class)->prefix('/room_type')->group(function () {

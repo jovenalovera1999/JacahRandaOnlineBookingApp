@@ -77,7 +77,9 @@ export default function UploadField({
       >
         <div
           {...getRootProps()}
-          className={`rounded-lg border-dashed border-gray-300 p-7 lg:p-10 ${
+          className={`rounded-lg border-dashed border-gray-300 ${
+            !preview && "p-6"
+          } ${
             isDragActive
               ? "border-blue-600 bg-gray-100"
               : "border-gray-300 bg-gray-50"
@@ -86,11 +88,7 @@ export default function UploadField({
           <input {...getInputProps()} name={name} id={name} />
           <div className="flex flex-col items-center m-0">
             {preview ? (
-              <img
-                src={preview}
-                alt={alt}
-                className="object-cover rounded-full w-[185px] h-[185px]"
-              />
+              <img src={preview} alt={alt} className="object-cover" />
             ) : (
               <>
                 <div className="mb-[22px] flex justify-center">
@@ -137,7 +135,7 @@ export default function UploadField({
         <Button
           tag="button"
           type="button"
-          className="w-full mt-4"
+          className="w-full"
           onClick={handleRemoveFile}
         >
           Remove

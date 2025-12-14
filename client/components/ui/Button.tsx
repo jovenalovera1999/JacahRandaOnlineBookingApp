@@ -1,6 +1,7 @@
 "use client";
 
 import { twMerge } from "tailwind-merge";
+import Spinner from "./Spinner";
 
 interface ButtonProps {
   children: string;
@@ -38,7 +39,16 @@ export default function Button({
       className={mergedClassName}
       disabled={isLoading}
     >
-      {isLoading ? "Loading..." : children}
+      {isLoading ? (
+        <>
+          <div className="flex gap-2 items-center justify-center">
+            <Spinner size="xs" />
+            <span>Saving...</span>
+          </div>
+        </>
+      ) : (
+        children
+      )}
     </ButtonTag>
   );
 }

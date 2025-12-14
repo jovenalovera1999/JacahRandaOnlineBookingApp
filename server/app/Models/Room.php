@@ -22,9 +22,9 @@ class Room extends Model
     // Columns that can be modified or attributes that are mass assignable
     protected $fillable = [
         'room_image',
-        'title',
-        'description',
+        'room_no',
         'room_type_id',
+        'description',
         'price',
         'room_status_id'
     ];
