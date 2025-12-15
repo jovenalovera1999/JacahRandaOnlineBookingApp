@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-    // Load room references such as room type and room status in add and edit room
+    // Load room references such as room type and room status in add and edit modal room from tbl_room_types and tbl_room_statuses
     public function loadRoomReferences()
     {
         $roomTypes = RoomType::all();
@@ -19,6 +19,17 @@ class RoomController extends Controller
         return response()->json([
             'roomTypes' => $roomTypes,
             'roomStatuses' => $roomStatuses
+        ], 200);
+    }
+
+    // Load rooms from tbl_rooms
+    public function loadRooms()
+    {
+        $rooms = Room::with(['room_type', 'room_status'])
+            ->get();
+
+        return response()->json([
+            'rooms' => $rooms
         ], 200);
     }
 
@@ -36,7 +47,7 @@ class RoomController extends Controller
         ]);
 
         // Uploading image
-        if ($request->has('room_image')) {
+        if ($request->hasFile('room_image')) {
             $file = $request->file('room_image');
             $extension = $file->getClientOriginalExtension();
             $fileNameToStore = uniqid() . '.' . $extension;

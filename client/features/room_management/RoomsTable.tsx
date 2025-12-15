@@ -1,5 +1,8 @@
+"use client";
+
 import Button from "@/components/ui/Button";
 import FloatingLabelInputField from "@/components/ui/FloatingLabelInputField";
+import Spinner from "@/components/ui/Spinner";
 import {
   Table,
   TableBody,
@@ -7,22 +10,15 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
+import { RoomColumns } from "@/interfaces/RoomInterface";
 
 interface RoomsTableProps {
+  rooms: RoomColumns[];
   onAddRoom: () => void;
 }
 
-export default function RoomsTable({ onAddRoom }: RoomsTableProps) {
-  const headers = ["Room Id", "Room Type", "Price", "Status"];
-  const dummyDatas = [
-    { room_id: 47155, room_type: "Deluxe", price: 500.0, status: "Available" },
-    {
-      room_id: 34701,
-      room_type: "Standard",
-      price: 200.0,
-      status: "Maintenance",
-    },
-  ];
+export default function RoomsTable({ rooms, onAddRoom }: RoomsTableProps) {
+  const headers = ["Room No", "Room Type", "Description", "Price", "Status"];
 
   return (
     <>
@@ -56,14 +52,26 @@ export default function RoomsTable({ onAddRoom }: RoomsTableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dummyDatas.map((data) => (
-            <TableRow className="hover:bg-gray-100" key={data.room_id}>
-              <TableCell>{data.room_id}</TableCell>
-              <TableCell>{data.room_type}</TableCell>
-              <TableCell>{data.price}</TableCell>
-              <TableCell>{data.status}</TableCell>
+          {rooms.length <= 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="text-center items-center justify-center"
+              >
+                <Spinner size="md" />
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            rooms.map((room) => (
+              <TableRow key={room.room_id}>
+                <TableCell>{room.room_no}</TableCell>
+                <TableCell>{room.room_type.room_type}</TableCell>
+                <TableCell>{room.description}</TableCell>
+                <TableCell>{room.price}</TableCell>
+                <TableCell>{room.room_status.room_status}</TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </>

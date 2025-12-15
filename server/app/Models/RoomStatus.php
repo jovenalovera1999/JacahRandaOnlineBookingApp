@@ -27,6 +27,6 @@ class RoomStatus extends Model
     // Relationships with other tables
     public function rooms(): HasMany
     {
-        return $this->hasMany(RoomStatus::class, 'room_status_id', 'room_status_id')->withTrashed();
+        return $this->hasMany(Room::class, 'room_status_id', 'room_status_id')->withTrashed();
     }
 }

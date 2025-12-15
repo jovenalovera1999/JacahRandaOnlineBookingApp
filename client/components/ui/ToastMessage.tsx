@@ -15,8 +15,8 @@ export default function ToastMessage({
 }: ToastMessageProps) {
   const STATUS_STYLE = {
     success: {
-      container: "bg-green-50 border-green-300 text-green-800",
-      iconBg: "bg-green-100 text-green-600",
+      container: "bg-emerald-50 border border-emerald-200 text-emerald-800",
+      iconBg: "bg-emerald-500 text-white",
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
           <path
@@ -29,9 +29,10 @@ export default function ToastMessage({
         </svg>
       ),
     },
+
     warning: {
-      container: "bg-yellow-50 border-yellow-300 text-yellow-800",
-      iconBg: "bg-yellow-100 text-yellow-600",
+      container: "bg-amber-50 border border-amber-200 text-amber-800",
+      iconBg: "bg-amber-500 text-white",
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
           <path
@@ -44,9 +45,10 @@ export default function ToastMessage({
         </svg>
       ),
     },
+
     failed: {
-      container: "bg-red-50 border-red-300 text-red-800",
-      iconBg: "bg-red-100 text-red-600",
+      container: "bg-rose-50 border border-rose-200 text-rose-800",
+      iconBg: "bg-rose-500 text-white",
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
           <path
@@ -59,9 +61,10 @@ export default function ToastMessage({
         </svg>
       ),
     },
+
     others: {
-      container: "bg-gray-100 border-gray-300 text-gray-800",
-      iconBg: "bg-gray-200 text-gray-600",
+      container: "bg-slate-50 border border-slate-200 text-slate-800",
+      iconBg: "bg-slate-500 text-white",
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
           <path
