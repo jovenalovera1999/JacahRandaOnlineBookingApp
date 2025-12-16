@@ -11,14 +11,47 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { RoomColumns } from "@/interfaces/RoomInterface";
+import RoomService from "@/services/RoomService";
+import { useCallback, useEffect, useState } from "react";
 
 interface RoomsTableProps {
-  rooms: RoomColumns[];
   onAddRoom: () => void;
+  reloadRooms: boolean;
 }
 
-export default function RoomsTable({ rooms, onAddRoom }: RoomsTableProps) {
+export default function RoomsTable({
+  onAddRoom,
+  reloadRooms,
+}: RoomsTableProps) {
+  const [rooms, setRooms] = useState<RoomColumns[]>([]);
+
+  // Load rooms from tbl_rooms with relationships from tbl_room_types and tbl_room_statuses at RoomController.php
+  const handleLoadRooms = useCallback(async () => {
+    try {
+      const { status, data } = await RoomService.loadRooms();
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during load rooms at RoomsTable.tsx: ",
+          status
+        );
+        return;
+      }
+
+      setRooms(data.rooms);
+    } catch (error) {
+      console.error(
+        "Unexpected server error during load rooms at RoomsTable.tsx: ",
+        error
+      );
+    }
+  }, []);
+
   const headers = ["Room No", "Room Type", "Description", "Price", "Status"];
+
+  useEffect(() => {
+    handleLoadRooms();
+  }, [reloadRooms]);
 
   return (
     <>
@@ -52,16 +85,7 @@ export default function RoomsTable({ rooms, onAddRoom }: RoomsTableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rooms.length <= 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                className="text-center items-center justify-center"
-              >
-                <Spinner size="md" />
-              </TableCell>
-            </TableRow>
-          ) : (
+          {rooms.length > 0 ? (
             rooms.map((room) => (
               <TableRow key={room.room_id}>
                 <TableCell>{room.room_no}</TableCell>
@@ -71,6 +95,15 @@ export default function RoomsTable({ rooms, onAddRoom }: RoomsTableProps) {
                 <TableCell>{room.room_status.room_status}</TableCell>
               </TableRow>
             ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="text-center items-center justify-center"
+              >
+                <Spinner size="md" />
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>

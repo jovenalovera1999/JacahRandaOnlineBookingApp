@@ -8,31 +8,33 @@ import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
 import UploadField from "@/components/ui/UploadField";
+import { useReload } from "@/hooks/useReload";
 import { RoomFieldsErrors } from "@/interfaces/RoomInterface";
 import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
 import { RoomTypeColumns } from "@/interfaces/RoomTypeInterface";
 import api from "@/lib/axios";
+import RoomService from "@/services/RoomService";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
 interface AddRoomModalProps {
-  roomTypes: RoomTypeColumns[];
-  roomStatuses: RoomStatusColumns[];
   isOpen: boolean;
   onRoomAdded: (
     status: "success" | "failed" | "warning" | "others",
     message: string
   ) => void;
+  onReloadRooms: () => void;
   onClose: () => void;
 }
 
 export default function AddRoomModal({
-  roomTypes,
-  roomStatuses,
   isOpen,
   onRoomAdded,
+  onReloadRooms,
   onClose,
 }: AddRoomModalProps) {
   //States
+  const [roomTypes, setRoomTypes] = useState<RoomTypeColumns[]>([]);
+  const [roomStatuses, setRoomStatuses] = useState<RoomStatusColumns[]>([]);
 
   const [isStoring, setIsStoring] = useState(false);
   const [addRoomImage, setAddRoomImage] = useState<File | null>(null);
@@ -42,6 +44,29 @@ export default function AddRoomModal({
   const [roomStatus, setRoomStatus] = useState("");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<RoomFieldsErrors>({});
+
+  // Load room references from tbl_room_types and tbl_room_statuses at RoomController.php
+  const handleLoadRoomReferences = useCallback(async () => {
+    try {
+      const { status, data } = await RoomService.loadRoomReferences();
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during load room references at AddRoomModal.tsx: ",
+          status
+        );
+        return;
+      }
+
+      setRoomTypes(data.roomTypes);
+      setRoomStatuses(data.roomStatuses);
+    } catch (error) {
+      console.error(
+        "Unexpected server error during load room references at AddRoomModal.tsx: ",
+        error
+      );
+    }
+  }, []);
 
   // Store room from RoomController.php
   const handleStoreRoom = async (e: FormEvent) => {
@@ -72,6 +97,9 @@ export default function AddRoomModal({
       setDescription("");
 
       onRoomAdded("success", data.message);
+
+      handleLoadRoomReferences();
+      onReloadRooms();
     } catch (error: any) {
       if (error.response && error.response.status !== 422) {
         console.error("Unexpected server error during add room: ", error);
@@ -84,16 +112,14 @@ export default function AddRoomModal({
     }
   };
 
+  useEffect(() => {
+    if (isOpen) handleLoadRoomReferences();
+  }, [isOpen]);
+
   return (
     <>
       <Modal title="Add Room" isOpen={isOpen} onClose={onClose}>
-        {roomTypes.length <= 0 || roomStatuses.length <= 0 ? (
-          <>
-            <div className="flex items-center justify-center">
-              <Spinner size="lg" />
-            </div>
-          </>
-        ) : (
+        {roomTypes.length > 0 && roomStatuses.length > 0 ? (
           <>
             {/* Upload field */}
             <Form onSubmit={handleStoreRoom}>
@@ -213,6 +239,12 @@ export default function AddRoomModal({
                 </div>
               </div>
             </Form>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center justify-center">
+              <Spinner size="lg" />
+            </div>
           </>
         )}
       </Modal>
