@@ -203,7 +203,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     </svg>
                   </button>
                   <ul
-                    className={`pl-4 mt-1 space-y-1 transition-all duration-300 overflow-hidden ${
+                    className={`pl-4 mt-1 space-y-1 transition-all duration-200 overflow-hidden ${
                       openMenu === item.label || isSubMenuActive(item.subMenu)
                         ? "max-h-96"
                         : "max-h-0"

@@ -4,9 +4,6 @@ import AddRoomModal from "@/features/room_management/AddRoomModal";
 import RoomsTable from "@/features/room_management/RoomsTable";
 import { useReload } from "@/hooks/useReload";
 import { useToastMessage } from "@/hooks/useToastMessage";
-import { RoomColumns } from "@/interfaces/RoomInterface";
-import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
-import { RoomTypeColumns } from "@/interfaces/RoomTypeInterface";
 import { useState } from "react";
 
 export default function RoomManagementPage() {
@@ -28,6 +25,7 @@ export default function RoomManagementPage() {
       />
       <AddRoomModal
         isOpen={isAddRoomModalOpen}
+        reloadRoomReferences={reload}
         onRoomAdded={(status, message) => showToastMessage(status, message)}
         onReloadRooms={handleReload}
         onClose={() => setIsAddRoomModalOpen(false)}

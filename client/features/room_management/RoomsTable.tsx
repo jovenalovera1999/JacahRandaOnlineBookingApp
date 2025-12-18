@@ -13,6 +13,7 @@ import {
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import RoomService from "@/services/RoomService";
 import { useCallback, useEffect, useState } from "react";
+import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 
 interface RoomsTableProps {
   onAddRoom: () => void;
@@ -24,6 +25,9 @@ export default function RoomsTable({
   reloadRooms,
 }: RoomsTableProps) {
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
+  const [roomsActionOpenDropdown, setRoomsActionOpenDropdown] = useState<
+    string | number | null
+  >(null);
 
   // Load rooms from tbl_rooms with relationships from tbl_room_types and tbl_room_statuses at RoomController.php
   const handleLoadRooms = useCallback(async () => {
@@ -47,7 +51,14 @@ export default function RoomsTable({
     }
   }, []);
 
-  const headers = ["Room No", "Room Type", "Description", "Price", "Status"];
+  const headers = [
+    "Room No",
+    "Room Type",
+    "Description",
+    "Price",
+    "Status",
+    "Action",
+  ];
 
   useEffect(() => {
     handleLoadRooms();
@@ -69,6 +80,7 @@ export default function RoomsTable({
                   label="Search"
                   type="text"
                   name="search"
+                  autoFocus
                 />
               </div>
             </div>
@@ -78,7 +90,7 @@ export default function RoomsTable({
         <TableHead>
           <TableRow>
             {headers.map((header) => (
-              <TableCell isHeader key={header}>
+              <TableCell className="text-blue-600" isHeader key={header}>
                 {header}
               </TableCell>
             ))}
@@ -87,18 +99,43 @@ export default function RoomsTable({
         <TableBody>
           {rooms.length > 0 ? (
             rooms.map((room) => (
-              <TableRow key={room.room_id}>
+              <TableRow
+                key={room.room_id}
+                className="text-gray-800 hover:bg-gray-100 transition-colors duration-200"
+              >
                 <TableCell>{room.room_no}</TableCell>
                 <TableCell>{room.room_type.room_type}</TableCell>
                 <TableCell>{room.description}</TableCell>
                 <TableCell>{room.price}</TableCell>
                 <TableCell>{room.room_status.room_status}</TableCell>
+                <TableCell className="relative overflow-visible">
+                  <ActionButtonDropdown
+                    id={room.room_id}
+                    openDropdownId={roomsActionOpenDropdown}
+                    setOpenDropdownId={setRoomsActionOpenDropdown}
+                  >
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                    >
+                      Delete
+                    </Button>
+                  </ActionButtonDropdown>
+                </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={headers.length}
                 className="text-center items-center justify-center"
               >
                 <Spinner size="md" />

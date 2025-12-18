@@ -8,7 +8,6 @@ import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
 import UploadField from "@/components/ui/UploadField";
-import { useReload } from "@/hooks/useReload";
 import { RoomFieldsErrors } from "@/interfaces/RoomInterface";
 import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
 import { RoomTypeColumns } from "@/interfaces/RoomTypeInterface";
@@ -18,6 +17,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 
 interface AddRoomModalProps {
   isOpen: boolean;
+  reloadRoomReferences: boolean;
   onRoomAdded: (
     status: "success" | "failed" | "warning" | "others",
     message: string
@@ -28,6 +28,7 @@ interface AddRoomModalProps {
 
 export default function AddRoomModal({
   isOpen,
+  reloadRoomReferences,
   onRoomAdded,
   onReloadRooms,
   onClose,
@@ -97,8 +98,6 @@ export default function AddRoomModal({
       setDescription("");
 
       onRoomAdded("success", data.message);
-
-      handleLoadRoomReferences();
       onReloadRooms();
     } catch (error: any) {
       if (error.response && error.response.status !== 422) {
@@ -114,7 +113,7 @@ export default function AddRoomModal({
 
   useEffect(() => {
     if (isOpen) handleLoadRoomReferences();
-  }, [isOpen]);
+  }, [isOpen, reloadRoomReferences]);
 
   return (
     <>

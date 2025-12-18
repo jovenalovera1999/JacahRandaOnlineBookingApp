@@ -2,9 +2,10 @@
 
 import { twMerge } from "tailwind-merge";
 import Spinner from "./Spinner";
+import { ReactNode } from "react";
 
 interface ButtonProps {
-  children: string;
+  children: string | ReactNode;
   tag: "button" | "a";
   type?: "button" | "submit";
   href?: string;
