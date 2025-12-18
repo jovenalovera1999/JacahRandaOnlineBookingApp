@@ -27,7 +27,11 @@ class RoomController extends Controller
     public function loadRooms()
     {
         $rooms = Room::with(['room_type', 'room_status'])
-            ->get();
+            ->get()
+            ->transform(function ($room) {
+                $room->room_image = $room->room_image ? url("storage/img/room/{$room->room_image}") : null;
+                return $room;
+            });
 
         return response()->json([
             'rooms' => $rooms
@@ -86,15 +90,15 @@ class RoomController extends Controller
         ]);
 
         // Checks room image if exists, removed or uploaded a new one
-        if ($request->has('room_image') && $request->room_image_removed === '1') {
-            if ($room->room_image && Storage::exists("img/room/{$room->room_image}")) {
-                Storage::disk('public')->delete("img/room/{$room->room_image}");
+        if ($request->has('room_image_removed') && $request->room_image_removed === '1') {
+            if ($room->room_image && Storage::exists('img/room/' . $room->rom_image)) {
+                Storage::disk('public')->delete("img/room/" . $room->room_image);
             }
 
             $room->room_image = null;
         } else if ($request->hasFile('room_image')) {
-            if ($room->room_image && Storage::exists("img/room/{$room->room_image}")) {
-                Storage::disk('public')->delete("img/room/{$room->room_image}");
+            if ($room->room_image && Storage::exists('img/room/' . $room->room_image)) {
+                Storage::disk('public')->delete('img/room/' . $room->room_image);
             }
 
             $file = $request->file('room_image');

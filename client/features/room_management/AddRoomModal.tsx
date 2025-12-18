@@ -11,7 +11,6 @@ import UploadField from "@/components/ui/UploadField";
 import { RoomFieldsErrors } from "@/interfaces/RoomInterface";
 import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
 import { RoomTypeColumns } from "@/interfaces/RoomTypeInterface";
-import api from "@/lib/axios";
 import RoomService from "@/services/RoomService";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
@@ -74,10 +73,10 @@ export default function AddRoomModal({
 
   // Store room from RoomController.php
   const handleStoreRoom = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsStoring(true);
-
     try {
+      e.preventDefault();
+      setIsStoring(true);
+
       const formData = new FormData();
       formData.append("room_image", addRoomImage ?? "");
       formData.append("room_no", roomNo);
@@ -86,10 +85,13 @@ export default function AddRoomModal({
       formData.append("room_status", roomStatus);
       formData.append("description", description);
 
-      const { status, data } = await api.post("/room/storeRoom", formData);
+      const { status, data } = await RoomService.storeRoom(formData);
 
       if (status !== 200) {
-        console.error("Unexpected status error during add room: ", status);
+        console.error(
+          "Unexpected status error during add room at AddRoomModal.tsx: ",
+          status
+        );
         return;
       }
 
@@ -104,7 +106,10 @@ export default function AddRoomModal({
       onReloadRooms();
     } catch (error: any) {
       if (error.response && error.response.status !== 422) {
-        console.error("Unexpected server error during add room: ", error);
+        console.error(
+          "Unexpected server error during add room at AddRoomModal.tsx: ",
+          error
+        );
         return;
       }
 
@@ -133,6 +138,7 @@ export default function AddRoomModal({
                   alt="Room Image"
                   value={addRoomImage}
                   onChange={setAddRoomImage}
+                  onRemoveFile={handleRemoveRoomImage}
                   errors={errors.room_image}
                 />
               </div>

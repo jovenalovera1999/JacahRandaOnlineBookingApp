@@ -17,11 +17,13 @@ import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 
 interface RoomsTableProps {
   onAddRoom: () => void;
+  onEditRoom: (selectedRoom: RoomColumns | null) => void;
   reloadRooms: boolean;
 }
 
 export default function RoomsTable({
   onAddRoom,
+  onEditRoom,
   reloadRooms,
 }: RoomsTableProps) {
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
@@ -118,6 +120,7 @@ export default function RoomsTable({
                       tag="button"
                       type="button"
                       className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onEditRoom(room)}
                     >
                       Edit
                     </Button>

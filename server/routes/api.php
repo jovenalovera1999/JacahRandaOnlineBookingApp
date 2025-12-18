@@ -13,6 +13,7 @@ Route::controller(RoomController::class)->prefix('/room')->group(function () {
     Route::get('/loadRoomReferences', 'loadRoomReferences');
     Route::get('/loadRooms', 'loadRooms');
     Route::post('/storeRoom', 'storeRoom');
+    Route::put('/updateRoom/{room}', 'updateRoom');
 });
 
 // Route::controller(RoomTypeController::class)->prefix('/room_type')->group(function () {

@@ -78,7 +78,55 @@ export default function EditRoomModal({
   }, []);
 
   // Updates the selected room in tbl_rooms at RoomController.php
-  const handleUpdateRoom = async (e: FormEvent) => {};
+  const handleUpdateRoom = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+      setIsUpdating(true);
+
+      const formData = new FormData();
+      formData.append("_method", "PUT");
+
+      editRoomImage
+        ? formData.append("room_image", editRoomImage)
+        : !existingRoomImage && !editRoomImage
+        ? formData.append("room_image_removed", "1")
+        : formData.append("room_image", "");
+
+      formData.append("room_no", roomNo);
+      formData.append("room_type", roomType);
+      formData.append("price", price);
+      formData.append("room_status", roomStatus);
+      formData.append("description", description);
+
+      const { status, data } = await RoomService.updateRoom(
+        selectedRoom?.room_id!,
+        formData
+      );
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during update room at EditRoomModal.tsx: ",
+          status
+        );
+        return;
+      }
+
+      onRoomUpdated("success", data.message);
+      onReloadRooms();
+    } catch (error: any) {
+      if (error.response && error.response.status !== 422) {
+        console.error(
+          "Unexpected server error during update room at EditRoomModal.tsx: ",
+          error
+        );
+        return;
+      }
+
+      setErrors(error.response.data.errors);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) handleLoadRoomReferences();
@@ -94,11 +142,11 @@ export default function EditRoomModal({
       setDescription(selectedRoom.description ?? "");
       setErrors({});
     }
-  }, []);
+  }, [selectedRoom, isOpen]);
 
   return (
     <>
-      <Modal title="Add Room" isOpen={isOpen} onClose={onClose}>
+      <Modal title="Edit Room" isOpen={isOpen} onClose={onClose}>
         {roomTypes.length > 0 && roomStatuses.length > 0 ? (
           <>
             {/* Upload field */}

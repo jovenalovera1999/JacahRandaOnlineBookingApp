@@ -1,9 +1,11 @@
 "use client";
 
 import AddRoomModal from "@/features/room_management/AddRoomModal";
+import EditRoomModal from "@/features/room_management/EditRoomModal";
 import RoomsTable from "@/features/room_management/RoomsTable";
 import { useReload } from "@/hooks/useReload";
 import { useToastMessage } from "@/hooks/useToastMessage";
+import { RoomColumns } from "@/interfaces/RoomInterface";
 import { useState } from "react";
 
 export default function RoomManagementPage() {
@@ -12,23 +14,45 @@ export default function RoomManagementPage() {
   const { reload, handleReload } = useReload();
 
   // States
+  const [selectedRoom, setSelectedRoom] = useState<RoomColumns | null>(null);
+
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
+  const [isEditRoomModalOpen, setIsEditRoomModalOpen] = useState(false);
+
+  const handleOpenEditRoomModal = (roomSelected: RoomColumns | null) => {
+    setSelectedRoom(roomSelected);
+    setIsEditRoomModalOpen(true);
+  };
+
+  const handleCloseEditRoomModal = () => {
+    setSelectedRoom(null);
+    setIsEditRoomModalOpen(false);
+  };
 
   return (
     <>
       <h1 className="text-3xl text-gray-800 font-semibold mb-4">
         Room Management
       </h1>
-      <RoomsTable
-        onAddRoom={() => setIsAddRoomModalOpen(true)}
-        reloadRooms={reload}
-      />
       <AddRoomModal
         isOpen={isAddRoomModalOpen}
         reloadRoomReferences={reload}
         onRoomAdded={(status, message) => showToastMessage(status, message)}
         onReloadRooms={handleReload}
         onClose={() => setIsAddRoomModalOpen(false)}
+      />
+      <EditRoomModal
+        selectedRoom={selectedRoom}
+        isOpen={isEditRoomModalOpen}
+        reloadRoomReferences={reload}
+        onRoomUpdated={(status, message) => showToastMessage(status, message)}
+        onReloadRooms={handleReload}
+        onClose={handleCloseEditRoomModal}
+      />
+      <RoomsTable
+        onAddRoom={() => setIsAddRoomModalOpen(true)}
+        onEditRoom={(room) => handleOpenEditRoomModal(room)}
+        reloadRooms={reload}
       />
     </>
   );
