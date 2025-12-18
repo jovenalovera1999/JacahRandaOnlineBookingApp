@@ -11,7 +11,7 @@ interface UploadFieldProps {
   alt: string;
   value?: File | null;
   onChange?: (file: File | null) => void;
-  onRemoveExistingFile?: () => void;
+  onRemoveFile?: () => void;
   existingFileUrl?: string | null;
   errors?: string[];
 }
@@ -23,7 +23,7 @@ export default function UploadField({
   alt,
   value,
   onChange,
-  onRemoveExistingFile,
+  onRemoveFile,
   existingFileUrl,
   errors,
 }: UploadFieldProps) {
@@ -45,7 +45,7 @@ export default function UploadField({
   // Remove existing file
   const handleRemoveFile = () => {
     if (onChange) onChange(null);
-    if (onRemoveExistingFile) onRemoveExistingFile();
+    if (onRemoveFile) onRemoveFile();
     setPreview(null);
   };
 

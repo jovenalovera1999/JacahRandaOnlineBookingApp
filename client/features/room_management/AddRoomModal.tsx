@@ -46,6 +46,9 @@ export default function AddRoomModal({
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<RoomFieldsErrors>({});
 
+  // Removes room image
+  const handleRemoveRoomImage = () => setAddRoomImage(null);
+
   // Load room references from tbl_room_types and tbl_room_statuses at RoomController.php
   const handleLoadRoomReferences = useCallback(async () => {
     try {
