@@ -9,6 +9,7 @@ interface FloatingLabelTextareaFieldProps {
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   required?: boolean;
   autoFocus?: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
   rows?: number;
   errors?: string[];
@@ -21,6 +22,7 @@ export default function FloatingLabelTextareaField({
   onChange,
   required,
   autoFocus,
+  readOnly,
   disabled,
   rows = 4,
   errors,
@@ -36,6 +38,7 @@ export default function FloatingLabelTextareaField({
           value={value}
           onChange={onChange}
           autoFocus={autoFocus}
+          readOnly={readOnly}
           disabled={disabled}
         ></textarea>
 

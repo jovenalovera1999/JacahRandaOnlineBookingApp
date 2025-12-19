@@ -17,6 +17,10 @@ const RoomService = {
     const response = await api.post(`/room/updateRoom/${roomId}`, data);
     return response;
   },
+  destroyRoom: async (roomId: string | number) => {
+    const response = await api.delete(`/room/destroyRoom/${roomId}`);
+    return response;
+  },
 };
 
 export default RoomService;

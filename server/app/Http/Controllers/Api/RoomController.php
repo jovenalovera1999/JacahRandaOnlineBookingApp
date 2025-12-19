@@ -91,13 +91,13 @@ class RoomController extends Controller
 
         // Checks room image if exists, removed or uploaded a new one
         if ($request->has('room_image_removed') && $request->room_image_removed === '1') {
-            if ($room->room_image && Storage::exists('img/room/' . $room->rom_image)) {
-                Storage::disk('public')->delete("img/room/" . $room->room_image);
+            if ($room->room_image && Storage::disk('public')->exists('img/room/' . $room->rom_image)) {
+                Storage::disk('public')->delete('img/room/' . $room->room_image);
             }
 
             $room->room_image = null;
         } else if ($request->hasFile('room_image')) {
-            if ($room->room_image && Storage::exists('img/room/' . $room->room_image)) {
+            if ($room->room_image && Storage::disk('public')->exists('img/room/' . $room->room_image)) {
                 Storage::disk('public')->delete('img/room/' . $room->room_image);
             }
 
@@ -121,6 +121,15 @@ class RoomController extends Controller
         // Return message to client
         return response()->json([
             'message' => 'Room Successfully Updated.'
+        ], 200);
+    }
+
+    public function destroyRoom(Room $room)
+    {
+        $room->delete();
+
+        return response()->json([
+            'message' => 'Room Successfully Deleted.'
         ], 200);
     }
 }

@@ -241,7 +241,17 @@ export default function AddRoomModal({
                     isStoring ? "col-span-1 md:col-span-2" : "col-span-1"
                   }`}
                 >
-                  <Button tag="button" type="submit" isLoading={isStoring}>
+                  <Button
+                    tag="button"
+                    type="submit"
+                    isLoading={isStoring}
+                    isLoadingChildren={
+                      <>
+                        <Spinner size="xs" />
+                        <span>Saving Room...</span>
+                      </>
+                    }
+                  >
                     Save
                   </Button>
                 </div>

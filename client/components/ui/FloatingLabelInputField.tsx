@@ -10,6 +10,7 @@ interface FloatingLabelInputFieldProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   autoFocus?: boolean;
+  readOnly?: boolean;
   disabled?: boolean;
   errors?: string[];
 }
@@ -22,6 +23,7 @@ export default function FloatingLabelInputField({
   onChange,
   required,
   autoFocus,
+  readOnly,
   disabled,
   errors,
 }: FloatingLabelInputFieldProps) {
@@ -36,6 +38,7 @@ export default function FloatingLabelInputField({
           value={value}
           onChange={onChange}
           autoFocus={autoFocus}
+          readOnly={readOnly}
           disabled={disabled}
         />
         <label

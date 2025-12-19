@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Button from "./Button";
+import Image from "next/image";
+import NoImage from "@/public/img/ui/NoImage.png";
 
 interface UploadFieldProps {
   label: string;
@@ -13,6 +15,7 @@ interface UploadFieldProps {
   onChange?: (file: File | null) => void;
   onRemoveFile?: () => void;
   existingFileUrl?: string | null;
+  readOnly?: boolean;
   errors?: string[];
 }
 
@@ -25,6 +28,7 @@ export default function UploadField({
   onChange,
   onRemoveFile,
   existingFileUrl,
+  readOnly,
   errors,
 }: UploadFieldProps) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -85,10 +89,27 @@ export default function UploadField({
               : "border-gray-300 bg-gray-50"
           }`}
         >
-          <input {...getInputProps()} name={name} id={name} />
+          {!readOnly && <input {...getInputProps()} name={name} id={name} />}
           <div className="flex flex-col items-center m-0">
             {preview ? (
-              <img src={preview} alt={alt} className="object-cover" />
+              <Image
+                src={preview}
+                alt={alt}
+                width={800}
+                height={600}
+                sizes="100vw"
+                className="w-full h-auto object-cover"
+                unoptimized
+              />
+            ) : readOnly ? (
+              <Image
+                src={NoImage}
+                alt="No Image"
+                width={800}
+                height={600}
+                sizes="100vw"
+                className="w-full h-auto object-cover"
+              />
             ) : (
               <>
                 <div className="mb-[22px] flex justify-center">
@@ -131,7 +152,7 @@ export default function UploadField({
           <span className="text-red-600 text-xs">{errors[0]}</span>
         </div>
       )}
-      {preview && (
+      {!readOnly && preview && (
         <Button
           tag="button"
           type="button"

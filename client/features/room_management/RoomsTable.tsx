@@ -18,12 +18,14 @@ import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 interface RoomsTableProps {
   onAddRoom: () => void;
   onEditRoom: (selectedRoom: RoomColumns | null) => void;
+  onDeleteRoom: (selectedRoom: RoomColumns | null) => void;
   reloadRooms: boolean;
 }
 
 export default function RoomsTable({
   onAddRoom,
   onEditRoom,
+  onDeleteRoom,
   reloadRooms,
 }: RoomsTableProps) {
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
@@ -128,6 +130,7 @@ export default function RoomsTable({
                       tag="button"
                       type="button"
                       className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onDeleteRoom(room)}
                     >
                       Delete
                     </Button>

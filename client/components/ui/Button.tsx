@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 
 interface ButtonProps {
   children: string | ReactNode;
+  isLoadingChildren?: ReactNode;
   tag: "button" | "a";
   type?: "button" | "submit";
   href?: string;
@@ -16,6 +17,7 @@ interface ButtonProps {
 
 export default function Button({
   children,
+  isLoadingChildren,
   tag = "button",
   type = "button",
   href,
@@ -43,8 +45,7 @@ export default function Button({
       {isLoading ? (
         <>
           <div className="flex gap-2 items-center justify-center">
-            <Spinner size="xs" />
-            <span>Saving...</span>
+            {isLoadingChildren}
           </div>
         </>
       ) : (

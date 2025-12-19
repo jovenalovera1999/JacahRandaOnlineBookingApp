@@ -1,6 +1,7 @@
 "use client";
 
 import AddRoomModal from "@/features/room_management/AddRoomModal";
+import DeleteRoomModal from "@/features/room_management/DeleteRoomModal";
 import EditRoomModal from "@/features/room_management/EditRoomModal";
 import RoomsTable from "@/features/room_management/RoomsTable";
 import { useReload } from "@/hooks/useReload";
@@ -18,7 +19,9 @@ export default function RoomManagementPage() {
 
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
   const [isEditRoomModalOpen, setIsEditRoomModalOpen] = useState(false);
+  const [isDeleteRoomModalOpen, setIsDeleteRoomModalOpen] = useState(false);
 
+  // Functions for edit room modal
   const handleOpenEditRoomModal = (roomSelected: RoomColumns | null) => {
     setSelectedRoom(roomSelected);
     setIsEditRoomModalOpen(true);
@@ -27,6 +30,17 @@ export default function RoomManagementPage() {
   const handleCloseEditRoomModal = () => {
     setSelectedRoom(null);
     setIsEditRoomModalOpen(false);
+  };
+
+  // Functions for delete room modal
+  const handleOpenDeleteRoomModal = (roomSelected: RoomColumns | null) => {
+    setSelectedRoom(roomSelected);
+    setIsDeleteRoomModalOpen(true);
+  };
+
+  const handleCloseDeleteRoomModal = () => {
+    setSelectedRoom(null);
+    setIsDeleteRoomModalOpen(false);
   };
 
   return (
@@ -49,9 +63,17 @@ export default function RoomManagementPage() {
         onReloadRooms={handleReload}
         onClose={handleCloseEditRoomModal}
       />
+      <DeleteRoomModal
+        selectedRoom={selectedRoom}
+        isOpen={isDeleteRoomModalOpen}
+        onRoomDeleted={(status, message) => showToastMessage(status, message)}
+        onReloadRooms={handleReload}
+        onClose={handleCloseDeleteRoomModal}
+      />
       <RoomsTable
         onAddRoom={() => setIsAddRoomModalOpen(true)}
         onEditRoom={(room) => handleOpenEditRoomModal(room)}
+        onDeleteRoom={(room) => handleOpenDeleteRoomModal(room)}
         reloadRooms={reload}
       />
     </>

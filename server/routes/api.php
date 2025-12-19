@@ -14,6 +14,7 @@ Route::controller(RoomController::class)->prefix('/room')->group(function () {
     Route::get('/loadRooms', 'loadRooms');
     Route::post('/storeRoom', 'storeRoom');
     Route::put('/updateRoom/{room}', 'updateRoom');
+    Route::delete('/destroyRoom/{room}', 'destroyRoom');
 });
 
 // Route::controller(RoomTypeController::class)->prefix('/room_type')->group(function () {

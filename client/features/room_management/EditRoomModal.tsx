@@ -263,7 +263,17 @@ export default function EditRoomModal({
                     isUpdating ? "col-span-1 md:col-span-2" : "col-span-1"
                   }`}
                 >
-                  <Button tag="button" type="submit" isLoading={isUpdating}>
+                  <Button
+                    tag="button"
+                    type="submit"
+                    isLoading={isUpdating}
+                    isLoadingChildren={
+                      <>
+                        <Spinner size="xs" />
+                        <span>Saving Room...</span>
+                      </>
+                    }
+                  >
                     Save
                   </Button>
                 </div>
