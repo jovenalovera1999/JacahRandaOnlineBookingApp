@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Room Management",
 };
 
-export default async function RoomManagementLayout() {
+export default function RoomManagementLayout() {
   return (
     <>
       <RoomManagementPage />
