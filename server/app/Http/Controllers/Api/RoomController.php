@@ -24,14 +24,34 @@ class RoomController extends Controller
     }
 
     // Load rooms from tbl_rooms
-    public function loadRooms()
+    public function loadRooms(Request $request)
     {
+        $search = $request->input('search');
+
         $rooms = Room::with(['room_type', 'room_status'])
-            ->get()
-            ->transform(function ($room) {
-                $room->room_image = $room->room_image ? url("storage/img/room/{$room->room_image}") : null;
-                return $room;
+            ->orderBy('price', 'desc');
+
+        if (!empty($search)) {
+            $rooms->where(function ($query) use ($search) {
+                $query->where('room_no', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+
+                    ->orWhereHas('room_type', function ($q) use ($search) {
+                        $q->where('room_type', 'LIKE', "%{$search}%");
+                    })
+
+                    ->orWhereHas('room_status', function ($q) use ($search) {
+                        $q->where('room_status', 'LIKE', "%{$search}%");
+                    });
             });
+        }
+
+        $rooms = $rooms->get();
+
+        $rooms->transform(function ($room) {
+            $room->room_image = $room->room_image ? url("storage/img/room/{$room->room_image}") : null;
+            return $room;
+        });
 
         return response()->json([
             'rooms' => $rooms
