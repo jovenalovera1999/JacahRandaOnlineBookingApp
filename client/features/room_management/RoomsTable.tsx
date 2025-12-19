@@ -14,6 +14,7 @@ import { RoomColumns } from "@/interfaces/RoomInterface";
 import RoomService from "@/services/RoomService";
 import { useCallback, useEffect, useState } from "react";
 import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface RoomsTableProps {
   onAddRoom: () => void;
@@ -28,15 +29,18 @@ export default function RoomsTable({
   onDeleteRoom,
   reloadRooms,
 }: RoomsTableProps) {
+  const [search, setSearch] = useState("");
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
   const [roomsActionOpenDropdown, setRoomsActionOpenDropdown] = useState<
     string | number | null
   >(null);
 
+  const debouncedSearch = useDebounce(search);
+
   // Load rooms from tbl_rooms with relationships from tbl_room_types and tbl_room_statuses at RoomController.php
-  const handleLoadRooms = useCallback(async () => {
+  const handleLoadRooms = useCallback(async (searchValue: string) => {
     try {
-      const { status, data } = await RoomService.loadRooms();
+      const { status, data } = await RoomService.loadRooms(searchValue);
 
       if (status !== 200) {
         console.error(
@@ -65,8 +69,13 @@ export default function RoomsTable({
   ];
 
   useEffect(() => {
-    handleLoadRooms();
-  }, [reloadRooms]);
+    if (!debouncedSearch) {
+      handleLoadRooms("");
+      return;
+    }
+
+    handleLoadRooms(debouncedSearch);
+  }, [debouncedSearch, reloadRooms, handleLoadRooms]);
 
   return (
     <>
@@ -84,6 +93,8 @@ export default function RoomsTable({
                   label="Search"
                   type="text"
                   name="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   autoFocus
                 />
               </div>

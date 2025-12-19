@@ -2,11 +2,13 @@ import api from "@/lib/axios";
 
 const RoomService = {
   loadRoomReferences: async () => {
-    const response = await api.get("/room/loadRoomReferences");
+    const response = await api.get(`/room/loadRoomReferences`);
     return response;
   },
-  loadRooms: async () => {
-    const response = await api.get("/room/loadRooms");
+  loadRooms: async (search: string) => {
+    const response = await api.get(
+      `${search ? `/room/loadRooms?search=${search}` : "/room/loadRooms"}`
+    );
     return response;
   },
   storeRoom: async (data: any) => {
