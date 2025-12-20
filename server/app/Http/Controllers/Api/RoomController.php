@@ -11,6 +11,26 @@ use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
+    // Load avaiable rooms for client to book
+    public function loadAvailableRooms()
+    {
+        $rooms = Room::with(['room_type', 'room_status'])
+            ->whereHas('room_status', function ($query) {
+                $query->where('room_status', 'Available');
+            })
+            ->orderBy('price', 'desc')
+            ->get();
+
+        $rooms->transform(function ($room) {
+            $room->room_image = $room->room_image ? url("storage/img/room/{$room->room_image}") : null;
+            return $room;
+        });
+
+        return response()->json([
+            'rooms' => $rooms
+        ], 200);
+    }
+
     // Load room references such as room type and room status in add and edit modal room from tbl_room_types and tbl_room_statuses
     public function loadRoomReferences()
     {

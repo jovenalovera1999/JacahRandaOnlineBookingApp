@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\Room;
 use App\Models\RoomStatus;
 use App\Models\RoomType;
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         Role::factory()->createMany([
-
             ['role' => 'Admin'],
-            ['role' => 'Employee']
+            ['role' => 'Employee'],
+            ['role' => 'Client']
         ]);
 
         RoomStatus::factory()->createMany([
@@ -36,29 +36,17 @@ class DatabaseSeeder extends Seeder
             ['room_status' => 'Unavailable'],
             ['room_status' => 'Maintenance'],
             ['room_status' => 'Booked'],
+            ['room_status' => 'In Use'],
         ]);
 
         RoomType::factory()->createMany([
-            [
-                'room_type' => 'Standard',
-                // 'price' => 3000.00
-            ],
-            [
-                'room_type' => 'Barkada',
-                // 'price' => 2000.00
-            ],
-            [
-                'room_type' => 'Deluxe With Veronica',
-                // 'price' => 3500.00
-            ],
-            [
-                'room_type' => 'Pyramid',
-                // 'price' => 1000.00
-            ],
-            [
-                'room_type' => 'Pyramid with Terrace',
-                // 'price' => 1500.00
-            ]
+            ['room_type' => 'Standard'],
+            ['room_type' => 'Barkada'],
+            ['room_type' => 'Deluxe With Veronica'],
+            ['room_type' => 'Pyramid'],
+            ['room_type' => 'Pyramid with Terrace']
         ]);
+
+        Room::factory(15)->create();
     }
 }

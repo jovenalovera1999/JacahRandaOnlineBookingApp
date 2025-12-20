@@ -1,6 +1,10 @@
 import api from "@/lib/axios";
 
 const RoomService = {
+  loadAvailableRooms: async () => {
+    const response = await api.get("/room/loadAvailableRooms");
+    return response;
+  },
   loadRoomReferences: async () => {
     const response = await api.get(`/room/loadRoomReferences`);
     return response;

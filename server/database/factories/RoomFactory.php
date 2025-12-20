@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\RoomStatus;
+use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,11 @@ class RoomFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'room_no' => fake()->numberBetween(101, 510),
+            'room_type_id' => RoomType::inRandomOrder()->first()->room_type_id,
+            'description' => fake()->text(30),
+            'price' => fake()->randomElement([3500, 3000, 1500, 1000, 2000]),
+            'room_status_id' => RoomStatus::inRandomOrder()->first()->room_status_id
         ];
     }
 }

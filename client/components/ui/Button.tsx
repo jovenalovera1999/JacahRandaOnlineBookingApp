@@ -1,7 +1,6 @@
 "use client";
 
 import { twMerge } from "tailwind-merge";
-import Spinner from "./Spinner";
 import { ReactNode } from "react";
 
 interface ButtonProps {
@@ -13,6 +12,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -24,6 +24,7 @@ export default function Button({
   onClick,
   className = "",
   isLoading,
+  disabled,
 }: ButtonProps) {
   const ButtonTag = tag;
 
@@ -40,7 +41,7 @@ export default function Button({
     <ButtonTag
       {...(tag === "a" ? { href } : { type, onClick: handleClick })}
       className={mergedClassName}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
     >
       {isLoading ? (
         <>

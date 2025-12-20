@@ -4,47 +4,57 @@ import Button from "./Button";
 
 interface RoomCardProps {
   imageFileUrl?: string | null;
+  roomNo: string;
   roomStatus: string;
   roomType: string;
   description?: string;
   price: string;
 }
 
-export default function RoomCard() {
+export default function RoomCard({
+  imageFileUrl,
+  roomNo,
+  roomStatus,
+  roomType,
+  description,
+  price,
+}: RoomCardProps) {
   return (
     <div className="w-full max-w-sm bg-white border border-gray-100 rounded-md shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       {/* Image Section */}
       <div className="relative w-full h-48">
         <Image
-          src={NoImage}
-          alt="Room image"
+          src={imageFileUrl ? imageFileUrl : NoImage}
+          alt="Room Image"
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover"
           priority
+          unoptimized
         />
-
-        {/* Status Badge */}
+        {/* Status Badge
         <span className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-          Available
-        </span>
+          {roomStatus}
+        </span> */}
       </div>
 
       {/* Content Section */}
       <div className="p-4 space-y-3">
         <div>
           <h2 className="text-lg font-semibold text-gray-800">
-            101 | Standard Room
+            {roomNo} | {roomType}
           </h2>
-          <p className="text-sm text-gray-500">
-            Comfortable room with basic amenities
-          </p>
+          {description && (
+            <p className="text-sm text-gray-500">
+              Comfortable room with basic amenities
+            </p>
+          )}
         </div>
 
         {/* Price */}
         <div className="flex items-center justify-between">
           <p className="text-xl font-bold text-gray-800">
-            ₱2,500
+            ₱{price}
             <span className="text-sm font-normal text-gray-500"> / night</span>
           </p>
 

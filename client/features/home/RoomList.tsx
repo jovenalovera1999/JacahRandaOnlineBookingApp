@@ -10,7 +10,7 @@ export default function RoomList() {
 
   const handleLoadRooms = useCallback(async () => {
     try {
-      const { status, data } = await RoomService.loadRooms("");
+      const { status, data } = await RoomService.loadAvailableRooms();
 
       if (status !== 200) {
         console.error(
@@ -60,7 +60,15 @@ export default function RoomList() {
         "
           >
             {rooms.map((room) => (
-              <RoomCard key={room.room_id} />
+              <RoomCard
+                key={room.room_id}
+                imageFileUrl={room.room_image}
+                roomNo={room.room_no}
+                roomStatus={room.room_status.room_status}
+                roomType={room.room_type.room_type}
+                description={room.description ?? ""}
+                price={room.price}
+              />
             ))}
           </div>
         </div>

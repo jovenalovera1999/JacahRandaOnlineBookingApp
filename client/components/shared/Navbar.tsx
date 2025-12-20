@@ -15,19 +15,17 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { label: "About", href: "#" },
-    { label: "Services", href: "#" },
-    { label: "Contact", href: "#" },
-    {
-      label: "Rooms",
-      dropdown: [
-        { label: "Deluxe", href: "#" },
-        { label: "My downloads", href: "#" },
-        { label: "Billing", href: "#" },
-        { label: "Rewards", href: "#" },
-      ],
-    },
+    // {
+    //   label: "Rooms",
+    //   dropdown: [
+    //     { label: "Deluxe", href: "#" },
+    //     { label: "My downloads", href: "#" },
+    //     { label: "Billing", href: "#" },
+    //     { label: "Rewards", href: "#" },
+    //   ],
+    // },
     { label: "Book a Room", href: "#" },
+    { label: "My Bookings", href: "#" },
   ];
 
   // Navbar control in small or mobile screen
@@ -60,8 +58,8 @@ export default function Navbar() {
     const matchedItem = navItems.find((item) => {
       if (item.href && item.href !== "#") return item.href === pathname;
 
-      if (item.dropdown)
-        return item.dropdown.some((sub) => sub.href === pathname);
+      // if (item.dropdown)
+      //   return item.dropdown.some((sub) => sub.href === pathname);
 
       return false;
     });
@@ -125,8 +123,8 @@ export default function Navbar() {
             id="navbar-multi-level-dropdown"
           >
             <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-base bg-neutral-secondary-soft md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-neutral-primary">
-              {navItems.map((item) =>
-                !item.dropdown ? (
+              {navItems.map(
+                (item) => (
                   <li key={item.label} onClick={() => toggleActive(item.label)}>
                     <a
                       href={item.href}
@@ -139,59 +137,64 @@ export default function Navbar() {
                       {item.label}
                     </a>
                   </li>
-                ) : (
-                  <li key={item.label}>
-                    <button
-                      type="button"
-                      onClick={() => toggleDropdown(item.label)}
-                      className={`flex items-center justify-between w-full py-2 px-3 rounded font-medium ${
-                        openDropdown === item.label ? "focus:text-blue-600" : ""
-                      } text-gray-500 hover:text-blue-600 md:w-auto md:border-0 md:p-0 cursor-pointer`}
-                    >
-                      {item.label}
-                      <svg
-                        className={`w-4 h-4 ms-1.5 transition-transform duration-300 ${
-                          openDropdown === item.label
-                            ? "-rotate-180"
-                            : "rotate-0"
-                        }`}
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m19 9-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-
-                    {/* Dropdown menu items */}
-                    {openDropdown === item.label && (
-                      <div className="absolute mt-2 w-40 bg-white rounded-md shadow-md p-2">
-                        {item.dropdown.map((subItem) => (
-                          <a
-                            href={subItem.href}
-                            className="block px-2 py-1 text-gray-500 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-300"
-                            key={subItem.label}
-                          >
-                            {subItem.label}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </li>
                 )
+                // !item.dropdown ? (
+                // ) : (
+                //   <li key={item.label}>
+                //     <button
+                //       type="button"
+                //       onClick={() => toggleDropdown(item.label)}
+                //       className={`flex items-center justify-between w-full py-2 px-3 rounded font-medium ${
+                //         openDropdown === item.label ? "focus:text-blue-600" : ""
+                //       } text-gray-500 hover:text-blue-600 md:w-auto md:border-0 md:p-0 cursor-pointer`}
+                //     >
+                //       {item.label}
+                //       <svg
+                //         className={`w-4 h-4 ms-1.5 transition-transform duration-300 ${
+                //           openDropdown === item.label
+                //             ? "-rotate-180"
+                //             : "rotate-0"
+                //         }`}
+                //         aria-hidden="true"
+                //         xmlns="http://www.w3.org/2000/svg"
+                //         width="24"
+                //         height="24"
+                //         fill="none"
+                //         viewBox="0 0 24 24"
+                //       >
+                //         <path
+                //           stroke="currentColor"
+                //           strokeLinecap="round"
+                //           strokeLinejoin="round"
+                //           strokeWidth="2"
+                //           d="m19 9-7 7-7-7"
+                //         />
+                //       </svg>
+                //     </button>
+
+                //     {/* Dropdown menu items */}
+                //     {openDropdown === item.label && (
+                //       <div className="absolute mt-2 w-40 bg-white rounded-md shadow-md p-2">
+                //         {item.dropdown.map((subItem) => (
+                //           <a
+                //             href={subItem.href}
+                //             className="block px-2 py-1 text-gray-500 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-colors duration-300"
+                //             key={subItem.label}
+                //           >
+                //             {subItem.label}
+                //           </a>
+                //         ))}
+                //       </div>
+                //     )}
+                //   </li>
+                // )
               )}
               <button
                 type="button"
                 className="block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/redirect`;
+                }}
               >
                 Login
               </button>
