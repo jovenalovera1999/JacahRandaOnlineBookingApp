@@ -4,6 +4,7 @@ import Image from "next/image";
 import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { redirectToGoogleLogin } from "@/lib/auth";
 
 export default function Navbar() {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -192,9 +193,7 @@ export default function Navbar() {
               <button
                 type="button"
                 className="block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
-                onClick={() => {
-                  window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/redirect`;
-                }}
+                onClick={redirectToGoogleLogin}
               >
                 Login
               </button>

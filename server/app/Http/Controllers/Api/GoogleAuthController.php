@@ -12,14 +12,21 @@ use function Symfony\Component\Clock\now;
 
 class GoogleAuthController extends Controller
 {
-    public function redirect()
+    public function redirect(Request $request)
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        $redirectTo = $request->query('redirect_to', config('app.frontend_url'));
+
+        return Socialite::driver('google')
+            ->stateless()
+            ->with(['state' => $redirectTo])
+            ->redirect();
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')
+            ->stateless()
+            ->user();
 
         $user = User::updateOrCreate(
             ['google_id' => $googleUser->id],
@@ -33,9 +40,12 @@ class GoogleAuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json([
-            'token' => $token,
-            'user' => $user
-        ], 200);
+        // Get the redirect URL from Google 'state', fallback to homepage
+        $redirectTo = $request->query('state', '/');
+
+        // Redirect BACK to Next.js with token
+        return redirect()->away(
+            config('app.frontend_url') . $redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . "token={$token}"
+        )->withCookie('access_token', $token, 60, '/', null, false, true);
     }
 }
