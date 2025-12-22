@@ -44,8 +44,8 @@ class GoogleAuthController extends Controller
         $redirectTo = $request->query('state', '/');
 
         // Redirect BACK to Next.js with token
-        return redirect()->away(
-            config('app.frontend_url') . $redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . "token={$token}"
-        )->withCookie('access_token', $token, 60, '/', null, false, true);
+        return redirect()
+            ->away(config('app.frontend_url') . $redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . "token={$token}")
+            ->withCookie('access_token', $token, 60, '/', 'localhost', false, true, false, 'None');
     }
 }

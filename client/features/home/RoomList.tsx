@@ -2,7 +2,7 @@
 
 import RoomCard from "@/components/ui/RoomCard";
 import { RoomColumns } from "@/interfaces/RoomInterface";
-import RoomService from "@/services/RoomService";
+import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
 export default function RoomList() {
@@ -10,7 +10,10 @@ export default function RoomList() {
 
   const handleLoadRooms = useCallback(async () => {
     try {
-      const { status, data } = await RoomService.loadAvailableRooms();
+      const { status, data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/loadAvailableRooms`,
+        { withCredentials: false }
+      );
 
       if (status !== 200) {
         console.error(

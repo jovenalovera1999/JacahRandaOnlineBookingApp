@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email', 255)->nullable()->unique();
             $table->string('username', 55)->nullable()->unique();
             $table->string('password', 255)->nullable();
-            $table->unsignedBigInteger('role_id')->nullable();
+            $table->unsignedBigInteger('role_id');
             $table->timestamp('last_login_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

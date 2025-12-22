@@ -1,4 +1,4 @@
-import Navbar from "@/components/shared/Navbar";
+import Navbar from "@/components/shared/navbar/Navbar";
 import RoomList from "@/features/home/RoomList";
 
 export default function Home() {

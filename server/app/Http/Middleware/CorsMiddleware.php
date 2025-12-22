@@ -15,31 +15,23 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $allowedOrigin = 'http://localhost:3000';
+
+        // Handle preflight request first
+        if ($request->getMethod() === 'OPTIONS') {
+            return response('', 204)
+                ->header('Access-Control-Allow-Origin', $allowedOrigin)
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        }
+
         $response = $next($request);
 
-        $origin = $request->get('Origin');
-
-        $allowedOrigins = [
-            'http://localhost:3000',
-        ];
-
-        if ($origin && in_array($origin, $allowedOrigins)) {
-            $response->headers->set('Access-Control-Allow-Origin', $origin);
-            $response->headers->set('Access-Control-Allow-Credentials', 'true');
-            $response->headers->set(
-                'Access-Control-Allow-Headers',
-                'Origin, Content-Type, Accept, Authorization, X-Requested-With'
-            );
-            $response->headers->set(
-                'Access-Control-Allow-Methods',
-                'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-            );
-        }
-
-        if ($request->getMethod() === 'OPTIONS') {
-            return response()->json('OK', 200, $response->headers->all());
-        }
-
-        return $response;
+        return $response
+            ->header('Access-Control-Allow-Origin', $allowedOrigin)
+            ->header('Access-Control-Allow-Credentials', 'true')
+            ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     }
 }
