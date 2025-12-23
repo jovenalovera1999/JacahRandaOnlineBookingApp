@@ -31,6 +31,7 @@ class GoogleAuthController extends Controller
         $user = User::updateOrCreate(
             ['google_id' => $googleUser->id],
             [
+                'name' => $googleUser->name,
                 'email' => $googleUser->email,
                 'username' => explode('@', $googleUser->email)[0],
                 'role_id' => 3,
@@ -46,6 +47,6 @@ class GoogleAuthController extends Controller
         // Redirect BACK to Next.js with token
         return redirect()
             ->away(config('app.frontend_url') . $redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . "token={$token}")
-            ->withCookie('access_token', $token, 60, '/', 'localhost', false, true, false, 'None');
+            ->withCookie('access_token', $token, 60, '/', 'localhost', true, true, false, 'Lax');
     }
 }

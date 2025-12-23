@@ -24,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
     // Columns that can be modified or attributes that are mass assignable.
     protected $fillable = [
         'google_id',
+        'name',
         'email',
         'username',
         'password',

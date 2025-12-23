@@ -22,15 +22,15 @@ Route::middleware([CorsMiddleware::class])
                 Route::post('/refresh', 'refresh');
                 Route::post('/logout', 'logout');
             });
-    });
 
-Route::controller(RoomController::class)
-    ->prefix('/room')
-    ->group(function () {
-        Route::get('/loadAvailableRooms', 'loadAvailableRooms');
-        Route::get('/loadRoomReferences', 'loadRoomReferences');
-        Route::get('/loadRooms', 'loadRooms');
-        Route::post('/storeRoom', 'storeRoom');
-        Route::put('/updateRoom/{room}', 'updateRoom');
-        Route::delete('/destroyRoom/{room}', 'destroyRoom');
+        Route::controller(RoomController::class)
+            ->prefix('/room')
+            ->group(function () {
+                Route::get('/loadAvailableRooms', 'loadAvailableRooms');
+                Route::get('/loadRoomReferences', 'loadRoomReferences');
+                Route::get('/loadRooms', 'loadRooms');
+                Route::post('/storeRoom', 'storeRoom');
+                Route::put('/updateRoom/{room}', 'updateRoom');
+                Route::delete('/destroyRoom/{room}', 'destroyRoom');
+            });
     });

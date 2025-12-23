@@ -3,6 +3,7 @@ import { RoleColumns } from "./RoleInterface";
 export interface UserColumns {
   user_id: number;
   google_id?: string;
+  name: string;
   email?: string;
   username?: string;
   password?: string;

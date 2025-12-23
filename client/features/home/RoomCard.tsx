@@ -1,11 +1,12 @@
 import Image from "next/image";
 import NoImage from "@/public/img/ui/NoImage.png";
-import Button from "./Button";
+import Button from "../../components/ui/Button";
+import { useAuth } from "@/context/AuthContext";
+import { redirectToGoogleLogin } from "@/lib/auth";
 
 interface RoomCardProps {
   imageFileUrl?: string | null;
   roomNo: string;
-  roomStatus: string;
   roomType: string;
   description?: string;
   price: string;
@@ -14,11 +15,12 @@ interface RoomCardProps {
 export default function RoomCard({
   imageFileUrl,
   roomNo,
-  roomStatus,
   roomType,
   description,
   price,
 }: RoomCardProps) {
+  const { user, loading, handleLogout } = useAuth();
+
   return (
     <div className="w-full max-w-sm bg-white border border-gray-100 rounded-md shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       {/* Image Section */}
@@ -62,6 +64,7 @@ export default function RoomCard({
             tag="button"
             type="button"
             className="w-auto px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 transition"
+            onClick={redirectToGoogleLogin}
           >
             Book
           </Button>

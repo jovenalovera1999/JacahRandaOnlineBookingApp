@@ -24,9 +24,10 @@ class AuthController extends Controller
         $user = JWTAuth::setToken($this->tokenFromCookie())
             ->authenticate();
 
-        return response()->json([
-            'user' => $user->load(['role'])
-        ]);
+        return response()
+            ->json([
+                'user' => $user->load(['role'])
+            ]);
     }
 
     public function refresh()
@@ -35,15 +36,27 @@ class AuthController extends Controller
 
         return response()
             ->json(['message' => 'Token Refreshed.'], 200)
-            ->withCookie('access_token', $newToken, 60, '/', 'localhost', false, true, false, 'None');
+            ->withCookie(
+                'access_token',
+                $newToken,
+                60,
+                '/',
+                'localhost',
+                true,
+                true,
+                false,
+                'Lax'
+            );
     }
 
     public function logout()
     {
-        JWTAuth::invalidate($this->tokenFromCookie());
+        JWTAuth::setToken($this->tokenFromCookie())
+            ->invalidate();
 
         return response()
             ->json(['message' => 'Successfully Logged Out.'], 200)
-            ->withCookie(cookie()->forget('access_token'));
+            ->withCookie(cookie()
+                ->forget('access_token'));
     }
 }

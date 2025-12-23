@@ -25,8 +25,7 @@ export default function Navbar() {
     //     { label: "Rewards", href: "#" },
     //   ],
     // },
-    { label: "Book a Room", href: "#" },
-    { label: "My Bookings", href: "#" },
+    { label: "Book a Room", href: "/" },
   ];
 
   // Navbar control in small or mobile screen
@@ -190,7 +189,6 @@ export default function Navbar() {
                 //   </li>
                 // )
               )}
-
               <AuthButton />
             </ul>
           </div>

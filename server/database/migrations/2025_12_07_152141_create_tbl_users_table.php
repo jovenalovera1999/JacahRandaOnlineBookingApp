@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tbl_users', function (Blueprint $table) {
             $table->id('user_id');
             $table->string('google_id', 255)->nullable()->unique();
+            $table->string('name', 55);
             $table->string('email', 255)->nullable()->unique();
             $table->string('username', 55)->nullable()->unique();
             $table->string('password', 255)->nullable();
