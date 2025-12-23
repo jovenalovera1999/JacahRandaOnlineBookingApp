@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Middleware\CorsMiddleware;
@@ -32,5 +33,11 @@ Route::middleware([CorsMiddleware::class])
                 Route::post('/storeRoom', 'storeRoom');
                 Route::put('/updateRoom/{room}', 'updateRoom');
                 Route::delete('/destroyRoom/{room}', 'destroyRoom');
+            });
+
+        Route::controller(BookingController::class)
+            ->prefix('/booking')
+            ->group(function () {
+                Route::post('/storeBooking', 'storeBooking');
             });
     });

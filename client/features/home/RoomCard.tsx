@@ -3,23 +3,39 @@ import NoImage from "@/public/img/ui/NoImage.png";
 import Button from "../../components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
+import { RoomColumns } from "@/interfaces/RoomInterface";
+import { useEffect, useState } from "react";
 
 interface RoomCardProps {
-  imageFileUrl?: string | null;
-  roomNo: string;
-  roomType: string;
-  description?: string;
-  price: string;
+  onBookRoom: (selectedRoom: RoomColumns | null) => void;
+  room: RoomColumns | null;
 }
 
-export default function RoomCard({
-  imageFileUrl,
-  roomNo,
-  roomType,
-  description,
-  price,
-}: RoomCardProps) {
+export default function RoomCard({ onBookRoom, room }: RoomCardProps) {
   const { user, loading, handleLogout } = useAuth();
+
+  const [imageFileUrl, setImageFileUrl] = useState<string | null>("");
+  const [roomNo, setRoomNo] = useState("");
+  const [roomType, setRoomType] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+
+  const handlePriceDecimalFormat = (price: string) => {
+    return new Intl.NumberFormat("en-PH", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(parseFloat(price));
+  };
+
+  useEffect(() => {
+    if (room) {
+      setImageFileUrl(room.room_image);
+      setRoomNo(room.room_no);
+      setRoomType(room.room_type.room_type);
+      setDescription(room.description ?? "");
+      setPrice(room.price);
+    }
+  }, [room]);
 
   return (
     <div className="w-full max-w-sm bg-white border border-gray-100 rounded-md shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -56,7 +72,7 @@ export default function RoomCard({
         {/* Price */}
         <div className="flex items-center justify-between">
           <p className="text-xl font-bold text-gray-800">
-            ₱{price}
+            ₱{handlePriceDecimalFormat(price)}
             <span className="text-sm font-normal text-gray-500"> / night</span>
           </p>
 
@@ -64,7 +80,7 @@ export default function RoomCard({
             tag="button"
             type="button"
             className="w-auto px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 transition"
-            onClick={redirectToGoogleLogin}
+            onClick={user ? () => onBookRoom(room) : redirectToGoogleLogin}
           >
             Book
           </Button>

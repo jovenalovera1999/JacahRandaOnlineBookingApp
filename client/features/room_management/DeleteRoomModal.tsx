@@ -1,6 +1,5 @@
 import Button from "@/components/ui/Button";
 import FloatingLabelInputField from "@/components/ui/FloatingLabelInputField";
-import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
 import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaField";
 import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
@@ -8,7 +7,7 @@ import Spinner from "@/components/ui/Spinner";
 import UploadField from "@/components/ui/UploadField";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import RoomService from "@/services/RoomService";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 interface DeleteRoomModalProps {
   selectedRoom: RoomColumns | null;
@@ -29,6 +28,14 @@ export default function DeleteRoomModal({
   onClose,
 }: DeleteRoomModalProps) {
   const [isDestroying, setIsDestroying] = useState(false);
+  const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
+    null
+  );
+  const [roomNo, setRoomNo] = useState("");
+  const [roomType, setRoomType] = useState("");
+  const [price, setPrice] = useState("");
+  const [roomStatus, setRoomStatus] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleDestroyRoom = async (e: FormEvent) => {
     try {
@@ -61,6 +68,28 @@ export default function DeleteRoomModal({
     }
   };
 
+  useEffect(() => {
+    if (selectedRoom && isOpen) {
+      setExistingRoomImage(selectedRoom.room_image ?? null);
+      setRoomNo(selectedRoom.room_no);
+      setRoomType(selectedRoom.room_type.room_type);
+      setPrice(selectedRoom.price);
+      setRoomStatus(selectedRoom.room_status.room_status);
+      setDescription(selectedRoom.description ?? "");
+    }
+  }, [selectedRoom, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setExistingRoomImage(null);
+      setRoomNo("");
+      setRoomType("");
+      setPrice("");
+      setRoomStatus("");
+      setDescription("");
+    }
+  }, [isOpen]);
+
   return (
     <>
       <Modal title="Delete Room" isOpen={isOpen} onClose={onClose}>
@@ -72,7 +101,7 @@ export default function DeleteRoomModal({
               labelFile="PNG, JPG or JPEG"
               name="room_image"
               alt="Room Image"
-              existingFileUrl={selectedRoom?.room_image ?? null}
+              existingFileUrl={existingRoomImage}
               readOnly
             />
           </div>
@@ -84,7 +113,7 @@ export default function DeleteRoomModal({
                   label="Room No."
                   type="text"
                   name="room_no"
-                  value={selectedRoom?.room_no}
+                  value={roomNo}
                   readOnly
                 />
               </div>
@@ -93,7 +122,7 @@ export default function DeleteRoomModal({
                   label="Room Type"
                   type="text"
                   name="room_type"
-                  value={selectedRoom?.room_type.room_type}
+                  value={roomType}
                   readOnly
                 />
               </div>
@@ -104,7 +133,7 @@ export default function DeleteRoomModal({
                   label="Price"
                   type="text"
                   name="price"
-                  value={selectedRoom?.price}
+                  value={price}
                   readOnly
                 />
               </div>
@@ -113,7 +142,7 @@ export default function DeleteRoomModal({
                   label="Room Status"
                   type="text"
                   name="room_status"
-                  value={selectedRoom?.room_status.room_status}
+                  value={roomStatus}
                   readOnly
                 />
               </div>
@@ -123,7 +152,7 @@ export default function DeleteRoomModal({
               <FloatingLabelTextareaField
                 label="Description"
                 name="description"
-                value={selectedRoom?.description ?? ""}
+                value={description}
                 readOnly
               />
             </div>

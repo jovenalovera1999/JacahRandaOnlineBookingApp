@@ -144,6 +144,19 @@ export default function EditRoomModal({
     }
   }, [selectedRoom, isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setEditRoomImage(null);
+      setExistingRoomImage(null);
+      setRoomNo("");
+      setRoomType("");
+      setPrice("");
+      setRoomStatus("");
+      setDescription("");
+      setErrors({});
+    }
+  }, [isOpen]);
+
   return (
     <>
       <Modal title="Edit Room" isOpen={isOpen} onClose={onClose}>

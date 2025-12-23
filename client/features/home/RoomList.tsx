@@ -6,7 +6,11 @@ import { RoomColumns } from "@/interfaces/RoomInterface";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
-export default function RoomList() {
+interface RoomListProps {
+  onBookRoom: (selectedRoom: RoomColumns | null) => void;
+}
+
+export default function RoomList({ onBookRoom }: RoomListProps) {
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
 
   const handleLoadRooms = useCallback(async () => {
@@ -67,11 +71,8 @@ export default function RoomList() {
               {rooms.map((room) => (
                 <RoomCard
                   key={room.room_id}
-                  imageFileUrl={room.room_image}
-                  roomNo={room.room_no}
-                  roomType={room.room_type.room_type}
-                  description={room.description ?? ""}
-                  price={room.price}
+                  onBookRoom={(selectedRoom) => onBookRoom(selectedRoom)}
+                  room={room}
                 />
               ))}
             </div>

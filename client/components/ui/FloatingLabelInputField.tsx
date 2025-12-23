@@ -4,7 +4,7 @@ import { ChangeEvent } from "react";
 
 interface FloatingLabelInputFieldProps {
   label: string;
-  type: "text" | "date" | "password";
+  type: "text" | "password";
   name: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;

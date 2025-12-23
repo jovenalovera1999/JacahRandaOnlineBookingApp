@@ -1,38 +1,123 @@
 import Button from "@/components/ui/Button";
+import FloatingLabelDateRangePicker from "@/components/ui/FloatingLabelDateRangePicker";
 import FloatingLabelInputField from "@/components/ui/FloatingLabelInputField";
 import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaField";
 import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
 import UploadField from "@/components/ui/UploadField";
+import { BookingFieldsErrors } from "@/interfaces/BookingInterface";
 import { RoomColumns } from "@/interfaces/RoomInterface";
-import { useEffect, useState } from "react";
+import BookingService from "@/services/BookingService";
+import { FormEvent, useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
 
 interface BookRoomModalProps {
   selectedRoom: RoomColumns | null;
   isOpen: boolean;
+  onBookingAdded: (
+    status: "success" | "failed" | "warning" | "others",
+    message: string
+  ) => void;
+  onReloadAvailableRooms: () => void;
   onClose: () => void;
 }
 
 export default function BookRoomModal({
   selectedRoom,
   isOpen,
+  onBookingAdded,
+  onReloadAvailableRooms,
   onClose,
 }: BookRoomModalProps) {
   const [isBooking, setIsBooking] = useState(false);
+  const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
+    null
+  );
+  const [roomNo, setRoomNo] = useState("");
+  const [roomType, setRoomType] = useState("");
+  const [price, setPrice] = useState("");
+  const [roomStatus, setRoomStatus] = useState("");
+  const [description, setDescription] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [additionalInformation, setAdditionalInformation] = useState("");
+  const [errors, setErrors] = useState<BookingFieldsErrors>({});
+
+  const handleStoreBooking = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+      setIsBooking(true);
+
+      const payload = {
+        room_id: selectedRoom?.room_id,
+        check_in_date: dateRange?.from?.toISOString().split("T")[0],
+        check_out_date: dateRange?.to?.toISOString().split("T")[0],
+        additional_information: additionalInformation,
+      };
+
+      const { status, data } = await BookingService.storeBooking(payload);
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during store booking at BookRoomModal.tsx: ",
+          status
+        );
+        return;
+      }
+
+      onBookingAdded("success", data.message);
+      onReloadAvailableRooms();
+      onClose();
+    } catch (error: any) {
+      if (error.response && error.response.status !== 422) {
+        console.error(
+          "Unexpected server error during store booking at BookRoomModal.tsx: ",
+          error
+        );
+        return;
+      }
+
+      setErrors(error.response.data.errors);
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedRoom && isOpen) {
+      setExistingRoomImage(selectedRoom.room_image ?? null);
+      setRoomNo(selectedRoom.room_no);
+      setRoomType(selectedRoom.room_type.room_type);
+      setPrice(selectedRoom.price);
+      setRoomStatus(selectedRoom.room_status.room_status);
+      setDescription(selectedRoom.description ?? "");
+    }
+  }, [selectedRoom, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setExistingRoomImage(null);
+      setRoomNo("");
+      setRoomType("");
+      setPrice("");
+      setRoomStatus("");
+      setDescription("");
+      setDateRange(undefined);
+    }
+  }, [isOpen]);
 
   return (
     <>
       <Modal title="Book a Room" isOpen={isOpen} onClose={onClose}>
         {/* Image */}
-        <Form>
+        <Form onSubmit={handleStoreBooking}>
           <div className="mb-5 w-full">
             <UploadField
               label="Room Image"
               labelFile="PNG, JPG or JPEG"
               name="room_image"
               alt="Room Image"
-              existingFileUrl={selectedRoom?.room_image ?? null}
+              existingFileUrl={existingRoomImage}
               readOnly
             />
           </div>
@@ -44,7 +129,7 @@ export default function BookRoomModal({
                   label="Room No."
                   type="text"
                   name="room_no"
-                  value={selectedRoom?.room_no}
+                  value={roomNo}
                   readOnly
                 />
               </div>
@@ -53,7 +138,7 @@ export default function BookRoomModal({
                   label="Room Type"
                   type="text"
                   name="room_type"
-                  value={selectedRoom?.room_type.room_type}
+                  value={roomType}
                   readOnly
                 />
               </div>
@@ -64,7 +149,7 @@ export default function BookRoomModal({
                   label="Price"
                   type="text"
                   name="price"
-                  value={selectedRoom?.price}
+                  value={price}
                   readOnly
                 />
               </div>
@@ -73,7 +158,7 @@ export default function BookRoomModal({
                   label="Room Status"
                   type="text"
                   name="room_status"
-                  value={selectedRoom?.room_status.room_status}
+                  value={roomStatus}
                   readOnly
                 />
               </div>
@@ -83,8 +168,26 @@ export default function BookRoomModal({
               <FloatingLabelTextareaField
                 label="Description"
                 name="description"
-                value={selectedRoom?.description ?? ""}
+                value={description}
                 readOnly
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4">
+            <div className="col-span-2 w-full">
+              <FloatingLabelDateRangePicker
+                label="Stay Duration"
+                value={dateRange}
+                onChange={setDateRange}
+                required
+              />
+            </div>
+            <div className="col-span-2 w-full">
+              <FloatingLabelTextareaField
+                label="Additional Information"
+                name="additional_information"
+                value={additionalInformation}
+                onChange={(e) => setAdditionalInformation(e.target.value)}
               />
             </div>
           </div>
@@ -110,7 +213,6 @@ export default function BookRoomModal({
               <Button
                 tag="button"
                 type="submit"
-                className="bg-red-600 border-none text-white hover:bg-red-800"
                 isLoading={isBooking}
                 isLoadingChildren={
                   <>
@@ -119,7 +221,7 @@ export default function BookRoomModal({
                   </>
                 }
               >
-                Delete
+                Book
               </Button>
             </div>
           </div>

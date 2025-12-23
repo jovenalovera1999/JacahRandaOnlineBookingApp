@@ -21,8 +21,8 @@ class Booking extends Model
     // Columns that can be modified or attributes that are mass assignable
     protected $fillable = [
         'room_id',
-        'date_from',
-        'date_to',
+        'check_in_date',
+        'check_out_date',
         'additional_information'
     ];
 
