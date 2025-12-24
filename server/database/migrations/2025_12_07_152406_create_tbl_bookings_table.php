@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('check_in_date');
             $table->date('check_out_date');
             $table->text('additional_information', 255);
+            $table->unsignedBigInteger('booking_status_id');
             $table->softDeletes();
             $table->timestamps();
 
@@ -30,6 +31,12 @@ return new class extends Migration
             $table->foreign('room_id')
                 ->references('room_id')
                 ->on('tbl_rooms')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('booking_status_id')
+                ->references('booking_status_id')
+                ->on('tbl_booking_statuses')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

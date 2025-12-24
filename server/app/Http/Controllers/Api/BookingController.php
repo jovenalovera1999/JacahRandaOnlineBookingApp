@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingStatus;
 use App\Models\Room;
 use App\Models\RoomStatus;
 use Illuminate\Http\Request;
@@ -40,16 +41,20 @@ class BookingController extends Controller
 
         $user = $this->authenticatedUser();
 
+        $bookingStatus = BookingStatus::where('booking_status', 'Pending')
+            ->firstOrFail();
+
         Booking::create([
             'user_id' => $user->user_id,
             'room_id' => $validatedData['room_id'],
             'check_in_date' => $validatedData['check_in_date'],
             'check_out_date' => $validatedData['check_out_date'],
             'additional_information' => $validatedData['additional_information'],
+            'booking_status_id' => $bookingStatus->booking_status_id,
         ]);
 
-        $roomStatus = RoomStatus::where('room_status', 'Occupied')
-            ->first();
+        $roomStatus = RoomStatus::where('room_status', 'Booked')
+            ->firstOrFail();
 
         Room::where('room_id', $validatedData['room_id'])
             ->update([
@@ -58,7 +63,7 @@ class BookingController extends Controller
 
         return response()
             ->json([
-                'message' => 'Booking Success.'
+                'message' => 'Booking Success.',
             ], 200);
     }
 }

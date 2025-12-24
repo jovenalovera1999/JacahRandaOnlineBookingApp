@@ -3,10 +3,15 @@
 import Navbar from "@/components/shared/navbar/Navbar";
 import BookRoomModal from "@/features/home/BookRoomModal";
 import RoomList from "@/features/home/RoomList";
+import { useReload } from "@/hooks/useReload";
+import { useToastMessage } from "@/hooks/useToastMessage";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import { useState } from "react";
 
 export default function Home() {
+  const { showToastMessage } = useToastMessage();
+  const { reload, handleReload } = useReload();
+
   const [selectedRoom, setSelectedRoom] = useState<RoomColumns | null>(null);
   const [isBookRoomModalOpen, setIsBookRoomModalOpen] = useState(false);
 
@@ -27,9 +32,16 @@ export default function Home() {
         <BookRoomModal
           selectedRoom={selectedRoom}
           isOpen={isBookRoomModalOpen}
+          onBookingAdded={(status, message) =>
+            showToastMessage(status, message)
+          }
+          onReloadAvailableRooms={handleReload}
           onClose={closeBookRoomModal}
         />
-        <RoomList onBookRoom={openBookRoomModal} />
+        <RoomList
+          onBookRoom={openBookRoomModal}
+          reloadAvailableRooms={reload}
+        />
       </div>
     </>
   );

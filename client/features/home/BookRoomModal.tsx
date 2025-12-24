@@ -9,6 +9,7 @@ import UploadField from "@/components/ui/UploadField";
 import { BookingFieldsErrors } from "@/interfaces/BookingInterface";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import BookingService from "@/services/BookingService";
+import { format } from "date-fns";
 import { FormEvent, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
@@ -50,8 +51,12 @@ export default function BookRoomModal({
 
       const payload = {
         room_id: selectedRoom?.room_id,
-        check_in_date: dateRange?.from?.toISOString().split("T")[0],
-        check_out_date: dateRange?.to?.toISOString().split("T")[0],
+        check_in_date: dateRange?.from
+          ? format(dateRange.from, "yyyy-MM-dd")
+          : null,
+        check_out_date: dateRange?.to
+          ? format(dateRange.to, "yyyy-MM-dd")
+          : null,
         additional_information: additionalInformation,
       };
 
@@ -103,6 +108,7 @@ export default function BookRoomModal({
       setRoomStatus("");
       setDescription("");
       setDateRange(undefined);
+      setAdditionalInformation("");
     }
   }, [isOpen]);
 
@@ -180,6 +186,7 @@ export default function BookRoomModal({
                 value={dateRange}
                 onChange={setDateRange}
                 required
+                errors={errors.check_in_date || errors.check_out_date}
               />
             </div>
             <div className="col-span-2 w-full">
@@ -188,6 +195,7 @@ export default function BookRoomModal({
                 name="additional_information"
                 value={additionalInformation}
                 onChange={(e) => setAdditionalInformation(e.target.value)}
+                errors={errors.additional_information}
               />
             </div>
           </div>

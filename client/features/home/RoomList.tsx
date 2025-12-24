@@ -8,9 +8,13 @@ import { useCallback, useEffect, useState } from "react";
 
 interface RoomListProps {
   onBookRoom: (selectedRoom: RoomColumns | null) => void;
+  reloadAvailableRooms: boolean;
 }
 
-export default function RoomList({ onBookRoom }: RoomListProps) {
+export default function RoomList({
+  onBookRoom,
+  reloadAvailableRooms,
+}: RoomListProps) {
   const [rooms, setRooms] = useState<RoomColumns[]>([]);
 
   const handleLoadRooms = useCallback(async () => {
@@ -39,7 +43,7 @@ export default function RoomList({ onBookRoom }: RoomListProps) {
 
   useEffect(() => {
     handleLoadRooms();
-  }, []);
+  }, [reloadAvailableRooms, handleLoadRooms]);
 
   if (rooms.length > 0) {
     return (

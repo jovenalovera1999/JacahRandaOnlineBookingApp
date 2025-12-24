@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BookingStatus;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\RoomStatus;
@@ -28,7 +29,7 @@ class DatabaseSeeder extends Seeder
         Role::factory()->createMany([
             ['role' => 'Admin'],
             ['role' => 'Employee'],
-            ['role' => 'Client']
+            ['role' => 'Client'],
         ]);
 
         RoomStatus::factory()->createMany([
@@ -44,9 +45,16 @@ class DatabaseSeeder extends Seeder
             ['room_type' => 'Barkada'],
             ['room_type' => 'Deluxe With Veronica'],
             ['room_type' => 'Pyramid'],
-            ['room_type' => 'Pyramid with Terrace']
+            ['room_type' => 'Pyramid with Terrace'],
         ]);
 
         Room::factory(15)->create();
+
+        BookingStatus::factory()->createMany([
+            ['booking_status' => 'Approved'],
+            ['booking_status' => 'Pending'],
+            ['booking_status' => 'Cancelled'],
+            ['booking_status' => 'Completed'],
+        ]);
     }
 }
