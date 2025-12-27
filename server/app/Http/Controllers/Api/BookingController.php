@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingStatus;
+use App\Models\Notification;
 use App\Models\Room;
 use App\Models\RoomStatus;
 use Illuminate\Http\Request;
@@ -66,6 +67,9 @@ class BookingController extends Controller
             ], 200);
     }
 
+    // Count the unread notifications and load cancelled bookings with reason for client
+    public function countUnreadNotificationsAndLoadCancelledBookings() {}
+
     // Stores booking in client side
     public function storeBooking(Request $request)
     {
@@ -104,6 +108,44 @@ class BookingController extends Controller
             ], 200);
     }
 
+    // Canel booking by soft delete and updates room back to available status in admin or employee side
+    public function cancelBookingInAdminOrEmployeeSide(Request $request, Room $room, Booking $booking)
+    {
+        // Data validation
+        $validatedData = $request->validate([
+            'reason' => ['required', 'max:255'],
+        ]);
+
+        // Soft deletes the booking
+        $booking->delete();
+
+        $bookingStatus = BookingStatus::where('booking_status', 'Cancelled')
+            ->firstOrFail();
+
+        // Update booking status to cancelled
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id,
+        ]);
+
+        $roomStatus = RoomStatus::where('room_status', 'Available')
+            ->firstOrFail();
+
+        // Update the room to available
+        $room->update([
+            'room_status_id' => $roomStatus->room_status_id,
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'reason' => $validatedData['reason'],
+        ]);
+
+        return response()
+            ->json([
+                'message' => 'Booking Successfully Cancelled.'
+            ], 200);
+    }
+
     public function approveBooking(Room $room, Booking $booking)
     {
         $roomStatus = RoomStatus::where('room_status', 'Occupied')
@@ -126,13 +168,15 @@ class BookingController extends Controller
     }
 
     // Canel booking by soft delete and updates room back to available status in client side
-    public function cancelBooking(Room $room, Booking $booking)
+    public function cancelBookingInClientSide(Room $room, Booking $booking)
     {
+        // Soft deletes the booking
         $booking->delete();
 
         $bookingStatus = BookingStatus::where('booking_status', 'Cancelled')
             ->firstOrFail();
 
+        // Update booking status to cancelled
         $booking->update([
             'booking_status_id' => $bookingStatus->booking_status_id,
         ]);
@@ -140,6 +184,7 @@ class BookingController extends Controller
         $roomStatus = RoomStatus::where('room_status', 'Available')
             ->firstOrFail();
 
+        // Update the room to available
         $room->update([
             'room_status_id' => $roomStatus->room_status_id,
         ]);

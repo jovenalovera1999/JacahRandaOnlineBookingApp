@@ -32,7 +32,7 @@ export default function CancelBookingConfirmationModal({
       e.preventDefault();
       setIsCancelling(true);
 
-      const { status, data } = await BookingService.cancelBooking(
+      const { status, data } = await BookingService.cancelBookingInClientSide(
         selectedBooking?.room.room_id!,
         selectedBooking?.booking_id!
       );

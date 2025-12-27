@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -43,5 +44,10 @@ class Booking extends Model
     public function booking_status(): BelongsTo
     {
         return $this->belongsTo(BookingStatus::class, 'booking_status_id', 'booking_status_id')->withTrashed();
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'booking_id', 'booking_id')->withTrashed();
     }
 }

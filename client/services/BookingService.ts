@@ -17,6 +17,17 @@ const BookingService = {
     const response = await api.post(`${apiPrefix}/storeBooking`, data);
     return response;
   },
+  cancelBookingInAdminOrEmployeeSide: async (
+    roomId: string | number,
+    bookingId: string | number,
+    data: any
+  ) => {
+    const response = await api.post(
+      `${apiPrefix}/cancelBookingInAdminOrEmployeeSide/${roomId}/${bookingId}`,
+      data
+    );
+    return response;
+  },
   approveBooking: async (
     roomId: string | number,
     bookingId: string | number
@@ -26,12 +37,12 @@ const BookingService = {
     );
     return response;
   },
-  cancelBooking: async (
+  cancelBookingInClientSide: async (
     roomId: string | number,
     bookingId: string | number
   ) => {
     const response = await api.delete(
-      `${apiPrefix}/cancelBooking/${roomId}/${bookingId}`
+      `${apiPrefix}/cancelBookingInClientSide/${roomId}/${bookingId}`
     );
     return response;
   },

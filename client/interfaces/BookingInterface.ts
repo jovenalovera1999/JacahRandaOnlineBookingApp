@@ -17,3 +17,7 @@ export interface BookingFieldsErrors {
   check_out_date?: string[];
   additional_information?: string[];
 }
+
+export interface CancelBookingFieldsErrors {
+  reason?: string[];
+}

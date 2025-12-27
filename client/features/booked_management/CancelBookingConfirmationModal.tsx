@@ -1,10 +1,14 @@
 import Button from "@/components/ui/Button";
+import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaField";
 import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
-import { BookingColumns } from "@/interfaces/BookingInterface";
+import {
+  BookingColumns,
+  CancelBookingFieldsErrors,
+} from "@/interfaces/BookingInterface";
 import BookingService from "@/services/BookingService";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 interface CancelBookingConfirmationModalProps {
   selectedBooking: BookingColumns | null;
@@ -25,6 +29,8 @@ export default function CancelBookingConfirmationModal({
   onClose,
 }: CancelBookingConfirmationModalProps) {
   const [isCancelling, setIsCancelling] = useState(false);
+  const [reason, setReason] = useState("");
+  const [errors, setErrors] = useState<CancelBookingFieldsErrors>({});
 
   // Cancel booking by soft delete
   const handleCancelBooking = async (e: FormEvent) => {
@@ -32,10 +38,16 @@ export default function CancelBookingConfirmationModal({
       e.preventDefault();
       setIsCancelling(true);
 
-      const { status, data } = await BookingService.cancelBooking(
-        selectedBooking?.room.room_id!,
-        selectedBooking?.booking_id!
-      );
+      const payload = {
+        reason: reason,
+      };
+
+      const { status, data } =
+        await BookingService.cancelBookingInAdminOrEmployeeSide(
+          selectedBooking?.room.room_id!,
+          selectedBooking?.booking_id!,
+          payload
+        );
 
       if (status !== 200) {
         console.error(
@@ -48,23 +60,44 @@ export default function CancelBookingConfirmationModal({
       onBookingCancelled("success", data.message);
       onReloadBookings();
       onClose();
-    } catch (error) {
-      console.error(
-        "Unexpected server error during cancel booking at CancelBookingConfirmationModal.tsx: ",
-        error
-      );
+    } catch (error: any) {
+      if (error.response && error.response.status !== 422) {
+        console.error(
+          "Unexpected server error during cancel booking at CancelBookingConfirmationModal.tsx: ",
+          error
+        );
+        return;
+      }
+
+      setErrors(error.response.data.errors);
     } finally {
       setIsCancelling(false);
     }
   };
 
+  useEffect(() => {
+    if (!isOpen) {
+      setReason("");
+    }
+  }, [isOpen]);
+
   return (
     <>
       <Modal title="Confirmation" isOpen={isOpen} onClose={onClose}>
         <Form onSubmit={handleCancelBooking}>
-          <span className="text-gray-800 text-sm font-medium">
-            Are you sure do you want to cancel this booking?
-          </span>
+          <div className="mb-4">
+            <span className="text-gray-800 text-sm font-medium">
+              Are you sure do you want to cancel this booking?
+            </span>
+          </div>
+          <FloatingLabelTextareaField
+            label="If yes, please enter the reason:"
+            name="reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            required
+            errors={errors.reason}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {!isCancelling && (
               <div className="col-span-1">

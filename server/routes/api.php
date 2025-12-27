@@ -49,6 +49,7 @@ Route::controller(BookingController::class)
     ->prefix('/booking')
     ->group(function () {
         Route::get('/loadPendingBookings', 'loadPendingBookings');
+        Route::post('/cancelBookingInAdminOrEmployeeSide/{room}/{booking}', 'cancelBookingInAdminOrEmployeeSide');
         Route::put('/approveBooking/{room}/{booking}', 'approveBooking');
-        Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
+        Route::delete('/cancelBookingInClientSide/{room}/{booking}', 'cancelBookingInClientSide');
     });
