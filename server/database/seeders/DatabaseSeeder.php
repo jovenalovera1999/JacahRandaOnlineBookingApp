@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             ['room_status' => 'Unavailable'],
             ['room_status' => 'Maintenance'],
             ['room_status' => 'Booked'],
-            ['room_status' => 'In Use'],
+            ['room_status' => 'Occupied'],
         ]);
 
         RoomType::factory()->createMany([

@@ -15,34 +15,31 @@ import { BookingColumns } from "@/interfaces/BookingInterface";
 import BookingService from "@/services/BookingService";
 import { useCallback, useEffect, useState } from "react";
 
-interface MyBookingsTableProps {
+interface BookedTableProps {
+  onApproveBooking: (selectedBooking: BookingColumns | null) => void;
   onCancelBooking: (selectedBooking: BookingColumns | null) => void;
   reloadBookings: boolean;
 }
 
-export default function MyBookingsTable({
+export default function BookedTable({
+  onApproveBooking,
   onCancelBooking,
   reloadBookings,
-}: MyBookingsTableProps) {
+}: BookedTableProps) {
+  // States
   const [bookings, setBookings] = useState<BookingColumns[]>([]);
+  const [bookingsActionOpenDropdown, setBookingsActionOpenDropdown] = useState<
+    string | number | null
+  >(null);
 
-  const headers = [
-    "Booked Room",
-    "Room No.",
-    "Check-In Date",
-    "Check-Out Date",
-    "Status",
-    "Action",
-  ];
-
+  // Loads pending bookings
   const handleLoadPendingBookings = useCallback(async () => {
     try {
-      const { status, data } =
-        await BookingService.loadPendingBookingsOfCurrentClientUserLoggedIn();
+      const { status, data } = await BookingService.loadPendingBookings();
 
       if (status !== 200) {
         console.error(
-          "Unexpected status error during load pending bookings at MyBookingsTable,tsx: ",
+          "Unexpected status error occured during load pending bookings at BookedTable.tsx: ",
           status
         );
         return;
@@ -51,11 +48,21 @@ export default function MyBookingsTable({
       setBookings(data.bookings);
     } catch (error) {
       console.error(
-        "Unexpected server error during load pending bookings at MyBookingsTable.tsx: ",
+        "Unexpected server error occured during load pending bookings at BookedTable.tsx: ",
         error
       );
     }
   }, []);
+
+  // Table headers
+  const headers = [
+    "Booked Room",
+    "Room No.",
+    "Check-In Date",
+    "Check-Out Date",
+    "Customer's Name",
+    "Actions",
+  ];
 
   useEffect(() => {
     handleLoadPendingBookings();
@@ -67,12 +74,7 @@ export default function MyBookingsTable({
         filter={
           <>
             <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
-              <div className="md:w-32">
-                <Button tag="a" href="/">
-                  Add Booking
-                </Button>
-              </div>
-              {/* <div className="md:w-72">
+              <div className="md:w-72">
                 <FloatingLabelInputField
                   label="Search"
                   type="text"
@@ -81,7 +83,7 @@ export default function MyBookingsTable({
                   // onChange={(e) => setSearch(e.target.value)}
                   autoFocus
                 />
-              </div> */}
+              </div>
             </div>
           </>
         }
@@ -106,16 +108,30 @@ export default function MyBookingsTable({
                 <TableCell>{booking.room.room_no}</TableCell>
                 <TableCell>{booking.check_in_date}</TableCell>
                 <TableCell>{booking.check_out_date}</TableCell>
-                <TableCell>{booking.booking_status.booking_status}</TableCell>
-                <TableCell>
-                  <Button
-                    tag="button"
-                    type="button"
-                    className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                    onClick={() => onCancelBooking(booking)}
+                <TableCell>{booking.user.name}</TableCell>
+                <TableCell className="relative overflow-visible">
+                  <ActionButtonDropdown
+                    id={booking.booking_id}
+                    openDropdownId={bookingsActionOpenDropdown}
+                    setOpenDropdownId={setBookingsActionOpenDropdown}
                   >
-                    Cancel
-                  </Button>
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onApproveBooking(booking)}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onCancelBooking(booking)}
+                    >
+                      Cancel
+                    </Button>
+                  </ActionButtonDropdown>
                 </TableCell>
               </TableRow>
             ))
@@ -123,9 +139,9 @@ export default function MyBookingsTable({
             <TableRow>
               <TableCell
                 colSpan={headers.length}
-                className="text-center text-gray-800 items-center justify-center"
+                className="text-center items-center justify-center"
               >
-                You haven't booked yet
+                No Bookings Yet
               </TableCell>
             </TableRow>
           ) : (

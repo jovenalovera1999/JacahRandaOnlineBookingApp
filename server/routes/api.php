@@ -38,6 +38,17 @@ Route::middleware([CorsMiddleware::class])
         Route::controller(BookingController::class)
             ->prefix('/booking')
             ->group(function () {
+                Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
+                Route::get('/loadPendingBookings', 'loadPendingBookings');
                 Route::post('/storeBooking', 'storeBooking');
+                Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
             });
+    });
+
+Route::controller(BookingController::class)
+    ->prefix('/booking')
+    ->group(function () {
+        Route::get('/loadPendingBookings', 'loadPendingBookings');
+        Route::put('/approveBooking/{room}/{booking}', 'approveBooking');
+        Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
     });

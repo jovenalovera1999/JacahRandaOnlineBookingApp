@@ -1,7 +1,9 @@
 "use client";
 
+import { useToastMessage } from "@/hooks/useToastMessage";
 import { UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   FormEvent,
@@ -21,8 +23,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // States
   const [user, setUser] = useState<UserColumns | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Hookes
+  const router = useRouter();
+  const { showToastMessage } = useToastMessage();
 
   const handleLoadAuthenticatedUser = useCallback(async () => {
     try {
@@ -65,7 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      setUser(data.user);
+      setUser(null);
+      showToastMessage("success", data.message);
+      router.push("/");
     } catch (error) {
       console.error(
         "Unexpected server error during logout at AuthContext.tsx: ",

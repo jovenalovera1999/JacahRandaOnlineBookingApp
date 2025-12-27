@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import Button from "./Button";
 
 interface ActionButtonDropdownProps {
@@ -18,47 +19,73 @@ export default function ActionButtonDropdown({
 }: ActionButtonDropdownProps) {
   const isOpen = openDropdownId === id;
 
-  const [direction, setDirection] = useState<"down" | "up">("down");
-  const [render, setRender] = useState(false);
-
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const handleToggleDropdown = () => {
+  const [direction, setDirection] = useState<"down" | "up">("down");
+  const [coords, setCoords] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
+
+  const estimatedDropdownHeight = 160;
+
+  const computePosition = useCallback(() => {
     if (!wrapperRef.current) return;
 
     const rect = wrapperRef.current.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    const estimatedDropdownHeight = 160; // px
 
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
 
-    spaceBelow < estimatedDropdownHeight && spaceAbove > spaceBelow
-      ? setDirection("up")
-      : setDirection("down");
+    const newDirection =
+      spaceBelow < estimatedDropdownHeight && spaceAbove > spaceBelow
+        ? "up"
+        : "down";
 
-    setOpenDropdownId(isOpen ? null : id);
+    setDirection(newDirection);
+
+    setCoords({
+      top: newDirection === "down" ? rect.bottom + 8 : rect.top - 105,
+      left: rect.right - 140,
+    });
+  }, []);
+
+  const handleToggleDropdown = () => {
+    if (isOpen) {
+      setOpenDropdownId(null);
+      return;
+    }
+
+    computePosition();
+    setOpenDropdownId(id);
   };
 
   const handleClickOutside = (e: MouseEvent) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node))
+    if (
+      wrapperRef.current &&
+      !wrapperRef.current.contains(e.target as Node) &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target as Node)
+    ) {
       setOpenDropdownId(null);
+    }
   };
 
   useEffect(() => {
-    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+    if (!isOpen) return;
 
-  useEffect(() => {
-    if (isOpen) {
-      setRender(true);
-    } else {
-      const timeout = setTimeout(() => setRender(false), 150);
-      return () => clearTimeout(timeout);
-    }
-  }, [isOpen]);
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", computePosition, true);
+    window.addEventListener("resize", computePosition);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", computePosition, true);
+      window.removeEventListener("resize", computePosition);
+    };
+  }, [isOpen, computePosition]);
 
   return (
     <>
@@ -84,19 +111,27 @@ export default function ActionButtonDropdown({
             />
           </svg>
         </Button>
-        {/* Dropdown content */}
-        {render && (
+      </div>
+
+      {isOpen &&
+        typeof window !== "undefined" &&
+        createPortal(
           <div
             ref={dropdownRef}
-            className={`absolute right-0 z-50 w-auto rounded-md bg-white shadow-md transition-opacity duration-200 ease-out ${
-              direction === "down" ? "top-full mt-2" : "bottom-full mb-2"
-            } ${isOpen ? "opacity-100" : "opacity-0"}`}
-            onClick={() => setOpenDropdownId(null)}
+            style={{
+              position: "fixed",
+              top: coords.top,
+              left: coords.left,
+              zIndex: 40,
+            }}
+            className="rounded-md bg-white shadow-md"
           >
-            <ul className="p-2 text-xs font-medium space-y-2">{children}</ul>
-          </div>
+            <ul className="flex flex-col p-2 text-xs font-medium gap-2 w-auto">
+              {children}
+            </ul>
+          </div>,
+          document.body
         )}
-      </div>
     </>
   );
 }

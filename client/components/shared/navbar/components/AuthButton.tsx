@@ -27,7 +27,7 @@ export default function AuthButton() {
     <>
       <li>
         <a
-          href="#"
+          href="/my_bookings"
           className={`block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 focus:text-blue-600 text-gray-500 hover:text-blue-600 cursor-pointer`}
         >
           My Bookings
