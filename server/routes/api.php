@@ -40,6 +40,8 @@ Route::middleware([CorsMiddleware::class])
             ->group(function () {
                 Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
                 Route::get('/loadPendingBookings', 'loadPendingBookings');
+                Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
+                Route::get('/loadCancelledBookings', 'loadCancelledBookings');
                 Route::post('/storeBooking', 'storeBooking');
                 Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
             });
