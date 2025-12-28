@@ -1,9 +1,11 @@
 "use client";
 
+import NotificationsTable from "@/features/notifications/NotificationsTable";
+
 export default function NotificationsPage() {
   return (
     <>
-      <h1>Notifications Page</h1>
+      <NotificationsTable />
     </>
   );
 }

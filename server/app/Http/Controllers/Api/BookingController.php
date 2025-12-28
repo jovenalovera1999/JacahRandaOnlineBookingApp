@@ -89,7 +89,7 @@ class BookingController extends Controller
     {
         $user = $this->authenticatedUser();
 
-        $cancelledBookings = Notification::with(['booking.room', 'booking.booking_status', 'room.room_type', 'room.room_status'])
+        $cancelledBookings = Notification::with(['booking.room', 'booking.booking_status', 'booking.room.room_type', 'booking.room.room_status'])
             ->whereHas('booking', function ($query) use ($user) {
                 $query->where('user_id', $user->user_id);
             })

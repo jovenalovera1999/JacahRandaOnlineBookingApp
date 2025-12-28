@@ -6,11 +6,13 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
+import useFullDateFormat from "@/hooks/useFullDateFormat";
 import { NotificationColumns } from "@/interfaces/NotificationInterace";
 import BookingService from "@/services/BookingService";
 import { useCallback, useEffect, useState } from "react";
 
 export default function NotificationsTable() {
+  // States
   const [cancelledBookings, setCancelledBookings] = useState<
     NotificationColumns[]
   >([]);
@@ -36,12 +38,7 @@ export default function NotificationsTable() {
     }
   }, []);
 
-  const headers = [
-    "Room Details",
-    "Booking Details",
-    "Booking Status",
-    "Reason",
-  ];
+  const headers = ["Room Details", "Booking Details", "Reason"];
 
   useEffect(() => {
     handleLoadCancelledBookings();
@@ -66,31 +63,93 @@ export default function NotificationsTable() {
                 key={booking.notification_id}
                 className="text-gray-800 hover:bg-gray-100 transition-colors duration-200"
               >
-                <TableCell></TableCell>
-                {/* <TableCell className="relative overflow-visible">
-                  <ActionButtonDropdown
-                    id={room.room_id}
-                    openDropdownId={roomsActionOpenDropdown}
-                    setOpenDropdownId={setRoomsActionOpenDropdown}
-                  >
-                    <Button
-                      tag="button"
-                      type="button"
-                      className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                      onClick={() => onEditRoom(room)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      tag="button"
-                      type="button"
-                      className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                      onClick={() => onDeleteRoom(room)}
-                    >
-                      Delete
-                    </Button>
-                  </ActionButtonDropdown>
-                </TableCell> */}
+                <TableCell className="align-top">
+                  <div className="space-y-4">
+                    {/* ROOM DETAILS */}
+                    <div>
+                      <div className="text-sm space-y-1">
+                        <p>
+                          <span className="font-medium text-gray-600">
+                            Room No:
+                          </span>{" "}
+                          {booking.booking.room.room_no}
+                        </p>
+
+                        <p>
+                          <span className="font-medium text-gray-600">
+                            Room Type:
+                          </span>{" "}
+                          {booking.booking.room.room_type.room_type}
+                        </p>
+
+                        {booking.booking.room.description && (
+                          <p>
+                            <span className="font-medium text-gray-600">
+                              Description:
+                            </span>{" "}
+                            {booking.booking.room.description}
+                          </p>
+                        )}
+
+                        <p>
+                          <span className="font-medium text-gray-600">
+                            Price:
+                          </span>{" "}
+                          ₱{Number(booking.booking.room.price).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {/* BOOKING DETAILS */}
+                  <div>
+                    <div className="text-sm space-y-1">
+                      <p>
+                        <span className="font-medium text-gray-600">
+                          Check-in:
+                        </span>{" "}
+                        {useFullDateFormat(booking.booking.check_in_date)}
+                      </p>
+
+                      <p>
+                        <span className="font-medium text-gray-600">
+                          Check-out:
+                        </span>{" "}
+                        {useFullDateFormat(booking.booking.check_out_date)}
+                      </p>
+
+                      {booking.booking.additional_information && (
+                        <p>
+                          <span className="font-medium text-gray-600">
+                            Additional Info:
+                          </span>{" "}
+                          {booking.booking.additional_information}
+                        </p>
+                      )}
+
+                      <p>
+                        <span className="font-medium text-gray-600">
+                          Status:
+                        </span>{" "}
+                        <span
+                          className={` px-2 py-1 rounded-full text-xs font-semibold ${
+                            booking.booking.booking_status.booking_status ===
+                            "Approved"
+                              ? "bg-green-100 text-green-700"
+                              : booking.booking.booking_status
+                                  .booking_status === "Cancelled"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {booking.booking.booking_status.booking_status}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>{booking.reason}</TableCell>
               </TableRow>
             ))
           ) : (

@@ -40,7 +40,7 @@ export default function AuthButton() {
     },
     {
       label: "Notifications",
-      href: "#",
+      href: "/notifications",
     },
   ];
 
