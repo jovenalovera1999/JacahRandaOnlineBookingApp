@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tbl_notifications', function (Blueprint $table) {
             $table->id('notification_id');
             $table->unsignedBigInteger('booking_id');
-            $table->text('reason', 255);
+            $table->text('description', 255);
             $table->timestamp('is_seen')->nullable();
             $table->softDeletes();
             $table->timestamps();

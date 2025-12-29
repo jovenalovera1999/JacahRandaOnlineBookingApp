@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\GoogleAuthController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -39,11 +40,18 @@ Route::middleware([CorsMiddleware::class])
             ->prefix('/booking')
             ->group(function () {
                 Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
-                Route::get('/loadPendingBookings', 'loadPendingBookings');
                 Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
                 Route::get('/loadCancelledBookings', 'loadCancelledBookings');
                 Route::post('/storeBooking', 'storeBooking');
                 Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
+            });
+
+        Route::controller(NotificationController::class)
+            ->prefix('/notification')
+            ->group(function () {
+                Route::get('/countUnreadNotifications', 'countUnreadNotifications');
+                Route::get('/loadNotifications', 'loadNotifications');
+                Route::put('/updateNotificationToSeen/{notification}', 'updateNotificationToSeen');
             });
     });
 

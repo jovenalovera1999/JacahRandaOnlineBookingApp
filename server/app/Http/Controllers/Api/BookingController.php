@@ -67,41 +67,6 @@ class BookingController extends Controller
             ], 200);
     }
 
-    // Count the unread notifications and load cancelled bookings with reason for client
-    public function countUnreadNotificationsAndLoadCancelledBookings()
-    {
-        $user = $this->authenticatedUser();
-
-        $totalUnseenNotification = Notification::with(['booking.user'])
-            ->whereHas('booking.user', function ($query) use ($user) {
-                $query->where('user_id', $user->user_id);
-            })
-            ->where('is_seen', null)
-            ->count();
-
-        return response()
-            ->json([
-                'totalUnseenNotification' => $totalUnseenNotification,
-            ], 200);
-    }
-
-    public function loadCancelledBookings()
-    {
-        $user = $this->authenticatedUser();
-
-        $cancelledBookings = Notification::with(['booking.room', 'booking.booking_status', 'booking.room.room_type', 'booking.room.room_status'])
-            ->whereHas('booking', function ($query) use ($user) {
-                $query->where('user_id', $user->user_id);
-            })
-            ->where('is_seen', null)
-            ->get();
-
-        return response()
-            ->json([
-                'cancelledBookings' => $cancelledBookings
-            ], 200);
-    }
-
     // Stores booking in client side
     public function storeBooking(Request $request)
     {
@@ -145,7 +110,7 @@ class BookingController extends Controller
     {
         // Data validation
         $validatedData = $request->validate([
-            'reason' => ['required', 'max:255'],
+            'description' => ['required', 'max:255'],
         ]);
 
         // Soft deletes the booking
@@ -169,7 +134,7 @@ class BookingController extends Controller
 
         Notification::create([
             'booking_id' => $booking->booking_id,
-            'reason' => $validatedData['reason'],
+            'description' => "The room you booked has been called: {$validatedData['description']}",
         ]);
 
         return response()

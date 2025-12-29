@@ -1,20 +1,28 @@
+"use client";
+
 import Form from "@/components/ui/Form";
 import { useAuth } from "@/context/AuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
-import BookingService from "@/services/BookingService";
+import NotificationService from "@/services/NotificationService";
 import { useCallback, useEffect, useState } from "react";
 
-export default function AuthButton() {
+interface AuthButtonProps {
+  reloadCountNotifications: boolean;
+}
+
+export default function AuthButton({
+  reloadCountNotifications,
+}: AuthButtonProps) {
   // Hooks
   const { user, loading, handleLogout } = useAuth();
 
   // States
-  const [totalUnseenNotification, setTotalUnseenNotification] = useState(0);
+  const [totalUnreadNotifications, setTotalUnreadNotifications] = useState(0);
 
-  const handleGetTotalCountOfNotification = useCallback(async () => {
+  const handleGetTotalUnreadNotifications = useCallback(async () => {
     try {
       const { status, data } =
-        await BookingService.countUnreadNotificationsAndLoadCancelledBookings();
+        await NotificationService.countUnreadNotifications();
 
       if (status !== 200) {
         console.error(
@@ -24,7 +32,7 @@ export default function AuthButton() {
         return;
       }
 
-      setTotalUnseenNotification(data.totalUnseenNotification);
+      setTotalUnreadNotifications(data.totalUnreadNotifications);
     } catch (error) {
       console.error(
         "Unexpected server error during get total count of notification at AuthButton.tsx: ",
@@ -45,8 +53,8 @@ export default function AuthButton() {
   ];
 
   useEffect(() => {
-    handleGetTotalCountOfNotification();
-  }, []);
+    handleGetTotalUnreadNotifications();
+  }, [reloadCountNotifications, handleGetTotalUnreadNotifications]);
 
   if (loading) return null;
 
@@ -76,7 +84,7 @@ export default function AuthButton() {
           >
             <span>{menu.label}</span>
 
-            {menu.label === "Notifications" && totalUnseenNotification > 0 && (
+            {menu.label === "Notifications" && totalUnreadNotifications > 0 && (
               <span
                 className="
                 absolute -top-1 -right-3 
@@ -87,7 +95,7 @@ export default function AuthButton() {
                 min-w-[18px] h-[18px] px-1
               "
               >
-                {totalUnseenNotification}
+                {totalUnreadNotifications}
               </span>
             )}
           </a>

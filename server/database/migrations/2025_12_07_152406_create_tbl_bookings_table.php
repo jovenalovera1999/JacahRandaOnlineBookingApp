@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('room_id');
             $table->date('check_in_date');
             $table->date('check_out_date');
-            $table->text('additional_information', 255);
+            $table->text('additional_information', 255)->nullable();
             $table->unsignedBigInteger('booking_status_id');
             $table->softDeletes();
             $table->timestamps();

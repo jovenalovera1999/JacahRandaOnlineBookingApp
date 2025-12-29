@@ -5,15 +5,21 @@ import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import AuthButton from "./components/AuthButton";
+import { useReload } from "@/hooks/useReload";
 
 export default function Navbar() {
+  // Hooks
+  const { reload } = useReload();
+
+  // Built-in hooks
+  const pathname = usePathname();
+
+  // States
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isItemSelected, setIsItemSelected] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const navbarRef = useRef<HTMLDivElement>(null);
-
-  const pathname = usePathname();
 
   const navItems = [
     // {
@@ -189,7 +195,7 @@ export default function Navbar() {
                 //   </li>
                 // )
               )}
-              <AuthButton />
+              <AuthButton reloadCountNotifications={reload} />
             </ul>
           </div>
         </div>

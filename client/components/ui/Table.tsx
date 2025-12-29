@@ -70,7 +70,7 @@ export function TableCell({
     <CellTag
       className={`${
         isHeader ? "px-6 py-3 text-xs font-semibold" : "px-6 py-4 text-sm"
-      } ${className}`}
+      } align-middle ${className}`}
       colSpan={colSpan}
     >
       {children}

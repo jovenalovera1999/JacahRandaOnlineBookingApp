@@ -29,7 +29,7 @@ export default function CancelBookingConfirmationModal({
   onClose,
 }: CancelBookingConfirmationModalProps) {
   const [isCancelling, setIsCancelling] = useState(false);
-  const [reason, setReason] = useState("");
+  const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<CancelBookingFieldsErrors>({});
 
   // Cancel booking by soft delete
@@ -39,7 +39,7 @@ export default function CancelBookingConfirmationModal({
       setIsCancelling(true);
 
       const payload = {
-        reason: reason,
+        description: description,
       };
 
       const { status, data } =
@@ -77,7 +77,7 @@ export default function CancelBookingConfirmationModal({
 
   useEffect(() => {
     if (!isOpen) {
-      setReason("");
+      setDescription("");
     }
   }, [isOpen]);
 
@@ -91,10 +91,10 @@ export default function CancelBookingConfirmationModal({
             </span>
           </div>
           <FloatingLabelTextareaField
-            label="If yes, please enter the reason:"
-            name="reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
+            label="If yes, please enter the message:"
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             required
             errors={errors.reason}
           />

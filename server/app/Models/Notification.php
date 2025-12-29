@@ -21,7 +21,7 @@ class Notification extends Model
     // Columns or attributes that can be modified
     protected $fillable = [
         'booking_id',
-        'reason',
+        'description',
         'is_seen',
     ];
 

@@ -13,12 +13,12 @@ const BookingService = {
     const response = await api.get(`${apiPrefix}/loadPendingBookings`);
     return response;
   },
-  countUnreadNotificationsAndLoadCancelledBookings: async () => {
-    const response = await api.get(
-      `${apiPrefix}/countUnreadNotificationsAndLoadCancelledBookings`
-    );
-    return response;
-  },
+  // countUnreadNotificationsAndLoadCancelledBookings: async () => {
+  //   const response = await api.get(
+  //     `${apiPrefix}/countUnreadNotificationsAndLoadCancelledBookings`
+  //   );
+  //   return response;
+  // },
   loadCancelledBookings: async () => {
     const response = await api.get(`${apiPrefix}/loadCancelledBookings`);
     return response;
