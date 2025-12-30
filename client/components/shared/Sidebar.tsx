@@ -17,7 +17,7 @@ export default function Sidebar({ children }: SidebarProps) {
     { label: "Dashboard", href: "/dashboard" },
     { label: "Room Management", href: "/room_management" },
     { label: "Booked Management", href: "booked_management" },
-    { label: "User Management", href: "#" },
+    { label: "User Management", href: "/user_management" },
     {
       label: "Report Management",
       subMenu: [

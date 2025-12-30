@@ -5,6 +5,7 @@ import Spinner from "@/components/ui/Spinner";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import RoomService from "@/services/RoomService";
 
 interface RoomListProps {
   onBookRoom: (selectedRoom: RoomColumns | null) => void;
@@ -19,10 +20,7 @@ export default function RoomList({
 
   const handleLoadRooms = useCallback(async () => {
     try {
-      const { status, data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/room/loadAvailableRooms`,
-        { withCredentials: false }
-      );
+      const { status, data } = await RoomService.loadAvailableRooms()
 
       if (status !== 200) {
         console.error(
@@ -32,7 +30,7 @@ export default function RoomList({
         return;
       }
 
-      setRooms(data.rooms);
+      setRooms(data.rooms ?? []);
     } catch (error) {
       console.error(
         "Unexpected server error during load rooms at RoomList.tsx: ",

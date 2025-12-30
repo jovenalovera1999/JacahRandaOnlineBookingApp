@@ -1,3 +1,5 @@
+'use client'
+
 import Button from "@/components/ui/Button";
 import FloatingLabelDateRangePicker from "@/components/ui/FloatingLabelDateRangePicker";
 import FloatingLabelInputField from "@/components/ui/FloatingLabelInputField";

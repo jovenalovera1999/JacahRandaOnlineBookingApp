@@ -53,8 +53,10 @@ export default function AuthButton({
   ];
 
   useEffect(() => {
-    handleGetTotalUnreadNotifications();
-  }, [reloadCountNotifications, handleGetTotalUnreadNotifications]);
+    if(user) {
+      handleGetTotalUnreadNotifications();
+    }
+  }, [reloadCountNotifications, handleGetTotalUnreadNotifications, user]);
 
   if (loading) return null;
 

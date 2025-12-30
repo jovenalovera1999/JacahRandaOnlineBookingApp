@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
-import useFullDateFormat from "@/hooks/useFullDateFormat";
+import useFullDateFormat from "@/hooks/useDateTimeFormat";
 import { NotificationColumns } from "@/interfaces/NotificationInterace";
 import NotificationService from "@/services/NotificationService";
 import { useCallback, useEffect, useState } from "react";

@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(data.user);
     } catch (error) {
+      setUser(null)
       console.error(
         "Unexpected server error during load authenticated user at AuthContext.tsx: ",
         error

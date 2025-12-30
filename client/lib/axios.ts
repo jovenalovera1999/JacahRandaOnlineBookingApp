@@ -45,6 +45,10 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    if(error.response && error.response.status === 401) {
+      return Promise.resolve({data: {user: null}})
+    }
+
     return Promise.reject(error);
   }
 );

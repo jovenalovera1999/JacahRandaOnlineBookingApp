@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RoomController;
-use App\Http\Middleware\CorsMiddleware;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(GoogleAuthController::class)
@@ -15,44 +15,40 @@ Route::controller(GoogleAuthController::class)
         Route::get('/callback', 'callback');
     });
 
-Route::middleware([CorsMiddleware::class])
+Route::controller(AuthController::class)
+    ->prefix('/auth')
     ->group(function () {
-        Route::controller(AuthController::class)
-            ->prefix('/auth')
-            ->group(function () {
-                Route::get('/me', 'me');
-                Route::post('/refresh', 'refresh');
-                Route::post('/logout', 'logout');
-            });
+        Route::get('/me', 'me');
+        Route::post('/refresh', 'refresh');
+        Route::post('/logout', 'logout');
+    });
 
-        Route::controller(RoomController::class)
-            ->prefix('/room')
-            ->group(function () {
-                Route::get('/loadAvailableRooms', 'loadAvailableRooms');
-                Route::get('/loadRoomReferences', 'loadRoomReferences');
-                Route::get('/loadRooms', 'loadRooms');
-                Route::post('/storeRoom', 'storeRoom');
-                Route::put('/updateRoom/{room}', 'updateRoom');
-                Route::delete('/destroyRoom/{room}', 'destroyRoom');
-            });
+Route::controller(UserController::class)
+    ->prefix('/user')
+    ->group(function() {
+        Route::get('/loadUserReferences', 'loadUserReferences');
+        Route::get('/loadUsers', 'loadUsers');
+        Route::post('/storeUser', 'storeUser');
+        Route::put('/updateUser/{user}', 'updateUser');
+        Route::delete('/destroyUser/{user}', 'destroyUser');
+    });
 
-        Route::controller(BookingController::class)
-            ->prefix('/booking')
-            ->group(function () {
-                Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
-                Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
-                Route::get('/loadCancelledBookings', 'loadCancelledBookings');
-                Route::post('/storeBooking', 'storeBooking');
-                Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
-            });
+Route::controller(BookingController::class)
+    ->prefix('/booking')
+    ->group(function () {
+        Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
+        Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
+        Route::get('/loadCancelledBookings', 'loadCancelledBookings');
+        Route::post('/storeBooking', 'storeBooking');
+        Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
+    });
 
-        Route::controller(NotificationController::class)
-            ->prefix('/notification')
-            ->group(function () {
-                Route::get('/countUnreadNotifications', 'countUnreadNotifications');
-                Route::get('/loadNotifications', 'loadNotifications');
-                Route::put('/updateNotificationToSeen/{notification}', 'updateNotificationToSeen');
-            });
+Route::controller(NotificationController::class)
+    ->prefix('/notification')
+    ->group(function () {
+        Route::get('/countUnreadNotifications', 'countUnreadNotifications');
+        Route::get('/loadNotifications', 'loadNotifications');
+        Route::put('/updateNotificationToSeen/{notification}', 'updateNotificationToSeen');
     });
 
 Route::controller(BookingController::class)
@@ -62,4 +58,15 @@ Route::controller(BookingController::class)
         Route::post('/cancelBookingInAdminOrEmployeeSide/{room}/{booking}', 'cancelBookingInAdminOrEmployeeSide');
         Route::put('/approveBooking/{room}/{booking}', 'approveBooking');
         Route::delete('/cancelBookingInClientSide/{room}/{booking}', 'cancelBookingInClientSide');
+    });
+
+Route::controller(RoomController::class)
+    ->prefix('/room')
+    ->group(function () {
+        Route::get('/loadAvailableRooms', 'loadAvailableRooms');
+        Route::get('/loadRoomReferences', 'loadRoomReferences');
+        Route::get('/loadRooms', 'loadRooms');
+        Route::post('/storeRoom', 'storeRoom');
+        Route::put('/updateRoom/{room}', 'updateRoom');
+        Route::delete('/destroyRoom/{room}', 'destroyRoom');
     });

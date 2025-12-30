@@ -157,7 +157,7 @@ export default function AddRoomModal({
                       autoFocus
                     />
                   </div>
-                  <div className="">
+                  <div>
                     <FloatingLabelSelectField
                       label="Room Type"
                       name="room_type"
