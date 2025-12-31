@@ -6,12 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
-use function Symfony\Component\Clock\now;
+use Illuminate\Support\Facades\Auth;
 
 class GoogleAuthController extends Controller
 {
+    // Redirect to Google login
     public function redirect(Request $request)
     {
         $redirectTo = $request->query('redirect_to', config('app.frontend_url'));
@@ -22,6 +21,7 @@ class GoogleAuthController extends Controller
             ->redirect();
     }
 
+    // Google callback
     public function callback(Request $request)
     {
         $googleUser = Socialite::driver('google')
@@ -35,18 +35,40 @@ class GoogleAuthController extends Controller
                 'email' => $googleUser->email,
                 'username' => explode('@', $googleUser->email)[0],
                 'role_id' => 3,
-                'last_login_at' => now()
+                'last_login_at' => now(),
             ]
         );
 
-        $token = JWTAuth::fromUser($user);
+        // Log in user to create Sanctum session
+        Auth::login($user, true);
 
-        // Get the redirect URL from Google 'state', fallback to homepage
+        // Regenerate session for security
+        $request->session()->regenerate();
+
         $redirectTo = $request->query('state', '/');
 
-        // Redirect BACK to Next.js with token
-        return redirect()
-            ->away(config('app.frontend_url') . $redirectTo . (str_contains($redirectTo, '?') ? '&' : '?') . "token={$token}")
-            ->withCookie('access_token', $token, 60, '/', 'localhost', true, true, false, 'Lax');
+        return redirect()->away(config('app.frontend_url') . $redirectTo);
+    }
+
+    // Get authenticated user
+    public function me(Request $request)
+    {
+        // logged-in user from Sanctum
+        $user = $request->user();
+
+        $user->load('role');
+        return response()->json(['user' => $user], 200);
+
+    }
+
+    // Logout
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['message' => 'Successfully Logged Out.'], 200);
     }
 }

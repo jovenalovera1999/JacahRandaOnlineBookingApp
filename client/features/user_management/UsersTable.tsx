@@ -15,6 +15,7 @@ import {
   useFullDateFormat,
   useFullDateTimeFormat,
 } from "@/hooks/useDateTimeFormat";
+import { useDebounce } from "@/hooks/useDebounce";
 import { UserColumns } from "@/interfaces/UserInterface";
 import UserService from "@/services/UserService";
 import { useCallback, useEffect, useState } from "react";
@@ -33,14 +34,17 @@ export default function UsersTable({
   onDeleteUser,
 }: UsersTableProps) {
   // States
+  const [search, setSearch] = useState("");
   const [users, setUsers] = useState<UserColumns[]>([]);
   const [usersActionOpenDropdown, setUsersActionOpenDropdown] = useState<
     string | number | null
   >(null);
 
-  const handleLoadUsers = useCallback(async () => {
+  const debouncedSearch = useDebounce(search);
+
+  const handleLoadUsers = useCallback(async (searchValue: string) => {
     try {
-      const { status, data } = await UserService.loadUsers();
+      const { status, data } = await UserService.loadUsers(searchValue);
 
       if (status !== 200) {
         console.error(
@@ -72,8 +76,13 @@ export default function UsersTable({
   ];
 
   useEffect(() => {
-    handleLoadUsers();
-  }, [reloadUsers, handleLoadUsers]);
+    if (!debouncedSearch) {
+      handleLoadUsers("");
+      return;
+    }
+
+    handleLoadUsers(debouncedSearch);
+  }, [debouncedSearch, reloadUsers, handleLoadUsers]);
 
   return (
     <>
@@ -91,6 +100,8 @@ export default function UsersTable({
                   label="Search"
                   type="text"
                   name="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   autoFocus
                 />
               </div>

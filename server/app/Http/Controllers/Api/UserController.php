@@ -21,10 +21,27 @@ class UserController extends Controller
             ], 200);
     }
 
-    public function loadUsers() {
+    public function loadUsers(Request $request) {
+        $search = $request->input('search');
+
         $users = User::with(['role'])
-            ->orderBy('name', 'asc')
-            ->get();
+            ->orderBy('name', 'asc');
+
+        if(!empty($search)) {
+            $users->where(function($query) use($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('contact_number', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('role', function($q) use ($search) {
+                        $q->where('role', 'like', "%{$search}%");
+                    });
+
+            });
+
+        }
+
+        $users = $users->get();
 
         return response()
             ->json([

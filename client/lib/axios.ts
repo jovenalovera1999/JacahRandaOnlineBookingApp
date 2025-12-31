@@ -5,27 +5,11 @@ import axios from "axios";
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
+  withXSRFToken: true,
   headers: {
     Accept: "application/json",
   },
 });
-
-// Refresh token
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     try {
-//       if (error.response.status === 401) {
-//         await api.post("/auth/refresh");
-//         return api(error.config);
-//       }
-//     } catch {
-//       window.location.href = "/";
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
 
 // Request data
 api.interceptors.request.use(
@@ -45,10 +29,6 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if(error.response && error.response.status === 401) {
-      return Promise.resolve({data: {user: null}})
-    }
-
     return Promise.reject(error);
   }
 );

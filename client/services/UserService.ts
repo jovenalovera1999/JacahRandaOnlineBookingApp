@@ -7,8 +7,12 @@ const UserService = {
     const response = await api.get(`${apiPrefix}/loadUserReferences`);
     return response;
   },
-  loadUsers: async () => {
-    const response = await api.get(`${apiPrefix}/loadUsers`);
+  loadUsers: async (search: string) => {
+    const response = await api.get(
+      search
+        ? `${apiPrefix}/loadUsers?search=${search}`
+        : `${apiPrefix}/loadUsers`
+    );
     return response;
   },
   storeUser: async (data: any) => {

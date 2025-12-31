@@ -1,12 +1,7 @@
-"use client";
-
-import { useToastMessage } from "@/hooks/useToastMessage";
 import { UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
-import { useRouter } from "next/navigation";
 import {
   createContext,
-  FormEvent,
   ReactNode,
   useCallback,
   useContext,
@@ -16,30 +11,27 @@ import {
 
 interface AuthContextType {
   user: UserColumns | null;
-  loading: boolean;
-  handleLogout: (e: FormEvent) => void;
+  isLoading: boolean;
+  handleLogin: (username: string, password: string) => void;
+  handleLogout: () => void;
+  handleRefreshToken: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  // States
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserColumns | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Hookes
-  const router = useRouter();
-  const { showToastMessage } = useToastMessage();
-
-  const handleLoadAuthenticatedUser = useCallback(async () => {
+  const handleLoadUser = useCallback(async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
 
       const { status, data } = await api.get("/auth/me");
 
       if (status !== 200) {
         console.error(
-          "Unexpected status error during load authenticated user at AuthContext.tsx: ",
+          "Unexpected status error during load user at AuthContext.tsx: ",
           status
         );
         return;
@@ -47,59 +39,110 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(data.user);
     } catch (error) {
-      setUser(null)
       console.error(
-        "Unexpected server error during load authenticated user at AuthContext.tsx: ",
+        "Unexpected server error during load user at AuthContext.tsx: ",
         error
       );
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }, []);
 
-  const handleLogout = async (e: FormEvent) => {
+  const handleLogin = async (username: string, password: string) => {
     try {
-      e.preventDefault();
+      setIsLoading(true);
 
-      setLoading(true);
+      const { status, data } = await api.post("/auth/login", {
+        username,
+        password,
+      });
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during login user at AuthContext.tsx: ",
+          status
+        );
+        return;
+      }
+
+      setUser(data.user);
+    } catch (error) {
+      console.error(
+        "Unexpected server error during login user at AuthContext.tsx: ",
+        error
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
 
       const { status, data } = await api.post("/auth/logout");
 
       if (status !== 200) {
         console.error(
-          "Unexpected status error during logout at AuthContext.tsx: ",
+          "Unexpected status error during logout user at AuthContext.tsx: ",
           status
         );
         return;
       }
 
       setUser(null);
-      showToastMessage("success", data.message);
-      router.push("/");
     } catch (error) {
       console.error(
-        "Unexpected server error during logout at AuthContext.tsx: ",
+        "Unexpected server error during logout user at AuthContext.tsx: ",
         error
       );
     } finally {
-      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefreshToken = async () => {
+    try {
+      setIsLoading(true);
+
+      const { status } = await api.post("/auth/refresh");
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during refresh user token at AuthContext.tsx: ",
+          status
+        );
+        return;
+      }
+
+      await handleLoadUser();
+    } catch (error) {
+      console.error(
+        "Unexpected server error during refresh user token at AuthContext.tsx: ",
+        error
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    handleLoadAuthenticatedUser();
+    handleLoadUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, handleLogout }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, handleLogin, handleLogout, handleRefreshToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
 
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+
   return context;
 };

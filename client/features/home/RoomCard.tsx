@@ -1,7 +1,7 @@
 import Image from "next/image";
 import NoImage from "@/public/img/ui/NoImage.png";
 import Button from "../../components/ui/Button";
-import { useAuth } from "@/context/AuthContext";
+import { useGoogleAuth } from "@/context/GoogleAuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ interface RoomCardProps {
 }
 
 export default function RoomCard({ onBookRoom, room }: RoomCardProps) {
-  const { user, loading, handleLogout } = useAuth();
+  const { user } = useGoogleAuth();
 
   const [imageFileUrl, setImageFileUrl] = useState<string | null>("");
   const [roomNo, setRoomNo] = useState("");

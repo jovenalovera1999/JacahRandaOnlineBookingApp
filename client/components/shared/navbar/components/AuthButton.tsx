@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/ui/Form";
-import { useAuth } from "@/context/AuthContext";
+import { useGoogleAuth } from "@/context/GoogleAuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
 import NotificationService from "@/services/NotificationService";
 import { useCallback, useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export default function AuthButton({
   reloadCountNotifications,
 }: AuthButtonProps) {
   // Hooks
-  const { user, loading, handleLogout } = useAuth();
+  const { user, loading, handleLogout } = useGoogleAuth();
 
   // States
   const [totalUnreadNotifications, setTotalUnreadNotifications] = useState(0);
@@ -53,7 +53,7 @@ export default function AuthButton({
   ];
 
   useEffect(() => {
-    if(user) {
+    if (user) {
       handleGetTotalUnreadNotifications();
     }
   }, [reloadCountNotifications, handleGetTotalUnreadNotifications, user]);
@@ -106,15 +106,13 @@ export default function AuthButton({
       <li>
         <div className="flex items-center gap-3">
           <span className="text-gray-800 font-medium">Hi, {user.name}!</span>
-          <Form onSubmit={handleLogout}>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
-            >
-              {loading ? "Logging Out..." : "Logout"}
-            </button>
-          </Form>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-red-500 hover:text-red-700 font-medium cursor-pointer"
+          >
+            {loading ? "Logging Out..." : "Logout"}
+          </button>
         </div>
       </li>
     </>

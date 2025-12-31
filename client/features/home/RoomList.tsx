@@ -3,7 +3,6 @@
 import RoomCard from "@/features/home/RoomCard";
 import Spinner from "@/components/ui/Spinner";
 import { RoomColumns } from "@/interfaces/RoomInterface";
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import RoomService from "@/services/RoomService";
 
@@ -20,7 +19,7 @@ export default function RoomList({
 
   const handleLoadRooms = useCallback(async () => {
     try {
-      const { status, data } = await RoomService.loadAvailableRooms()
+      const { status, data } = await RoomService.loadAvailableRooms();
 
       if (status !== 200) {
         console.error(

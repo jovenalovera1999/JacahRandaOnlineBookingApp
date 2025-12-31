@@ -5,34 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class NotificationController extends Controller
 {
-    // Get the token of client or customer from cookie
-    protected function tokenFromCookie()
-    {
-        $token = request()->cookie('access_token');
-
-        if (!$token) {
-            throw new UnauthorizedHttpException('', 'Token not provided');
-        }
-
-        return $token;
-    }
-
-    // Authenticated client or customer
-    protected function authenticatedUser()
-    {
-        return JWTAuth::setToken($this->tokenFromCookie())
-            ->authenticate();
-    }
-
     // Count the unread notifications and load cancelled bookings with reason for client
-    public function countUnreadNotifications()
+    public function countUnreadNotifications(Request $request)
     {
-        $user = $this->authenticatedUser();
+        $user = $request->user();
 
         $totalUnreadNotifications = Notification::with(['booking.user'])
             ->whereHas('booking.user', function ($query) use ($user) {
@@ -47,9 +26,9 @@ class NotificationController extends Controller
             ], 200);
     }
 
-    public function loadNotifications()
+    public function loadNotifications(Request $request)
     {
-        $user = $this->authenticatedUser();
+        $user = $request->user();
 
         $notifications = Notification::with([
             'booking.room',

@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
     // Traits
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     // Name of table
     protected $table = 'tbl_users';
@@ -32,11 +33,13 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'role_id',
         'last_login_at',
+        'remember_token',
     ];
 
     // The attributes that should be hidden for serialization.
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     // Get the attributes that should be cast.
