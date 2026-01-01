@@ -4,7 +4,7 @@ import getCsrfCookie from "@/hooks/useGetCsrfCookie";
 import { useToastMessage } from "@/hooks/useToastMessage";
 import { UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   FormEvent,
@@ -26,10 +26,11 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   // States
   const [user, setUser] = useState<UserColumns | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Hooks
   const router = useRouter();
+  const pathname = usePathname();
   const { showToastMessage } = useToastMessage();
 
   const handleLoadAuthenticatedUser = useCallback(async () => {
@@ -59,10 +60,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const handleLogout = async (e: FormEvent) => {
+  const handleLogout = async () => {
     try {
-      e.preventDefault();
-
       setLoading(true);
 
       await getCsrfCookie();
@@ -78,6 +77,7 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
 
       setUser(null);
       showToastMessage("success", data.message);
+
       router.push("/");
     } catch (error) {
       console.error(
@@ -90,8 +90,9 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (pathname === "/login") return;
     handleLoadAuthenticatedUser();
-  }, []);
+  }, [pathname, handleLoadAuthenticatedUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, handleLogout }}>

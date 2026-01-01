@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
+import { useAuth } from "@/context/AuthContext";
 
 interface SidebarProps {
   children: ReactNode;
@@ -11,7 +12,13 @@ interface SidebarProps {
 
 export default function Sidebar({ children }: SidebarProps) {
   const pathname = usePathname();
+  const { user, isLoading, handleLogout } = useAuth();
+
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isUserSubMenuOpen, setIsUserSubMenuOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const sidebarItems = [
     { label: "Dashboard", href: "/dashboard" },
@@ -28,6 +35,10 @@ export default function Sidebar({ children }: SidebarProps) {
     },
   ];
 
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
+  const toggleUserSubMenu = () => setIsUserSubMenuOpen((prev) => !prev);
+
   const toggleSubMenu = (label: string) =>
     setOpenMenu(openMenu === label ? null : label);
 
@@ -35,6 +46,20 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const isSubMenuActive = (subMenu: { href: string }[]) =>
     subMenu.some((sub) => pathname === sub.href);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target as Node)
+    ) {
+      setIsUserSubMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -48,7 +73,8 @@ export default function Sidebar({ children }: SidebarProps) {
                 data-drawer-toggle="top-bar-sidebar"
                 aria-controls="top-bar-sidebar"
                 type="button"
-                className="sm:hidden text-heading bg-transparent box-border border border-transparent hover:bg-neutral-secondary-medium focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm p-2 focus:outline-none"
+                className="sm:hidden text-heading bg-transparent box-border border border-transparent hover:bg-gray-100 focus:ring-0 font-medium leading-5 rounded-md text-sm p-2 focus:outline-none"
+                onClick={toggleSidebar}
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg
@@ -80,55 +106,51 @@ export default function Sidebar({ children }: SidebarProps) {
                 </span>
               </a>
             </div>
-            <div className="flex items-center">
-              <div className="flex items-center ms-3">
-                <div>
-                  <button
-                    type="button"
-                    className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
-                    aria-expanded="false"
-                    data-dropdown-toggle="dropdown-user"
-                  >
-                    <span className="sr-only">Open user menu</span>
-                    {/* <Image
-                      className="w-8 h-8 rounded-full"
-                      src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                      alt="user photo"
-                      width={50}
-                      height={50}
-                    /> */}
-                    User profile
-                  </button>
-                </div>
-                <div
-                  className="z-50 hidden bg-neutral-primary-medium border rounded-md shadow-md w-44"
-                  id="dropdown-user"
+            <div className="relative ms-3" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={toggleUserSubMenu}
+                className="flex items-center text-sm bg-transparent rounded-md focus:ring-0 cursor-pointer"
+                aria-expanded={isUserSubMenuOpen}
+              >
+                <span className="sr-only">Open user menu</span>
+                {user?.name ?? "No Name"}
+                <svg
+                  className={`w-4 h-4 ms-1 transition-transform duration-300 ${
+                    isUserSubMenuOpen ? "-rotate-180" : "rotate-0"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <div
-                    className="px-4 py-3 border-b border-default-medium"
-                    role="none"
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {isUserSubMenuOpen && (
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-md z-50">
+                  <ul
+                    className="p-2 text-sm text-gray-800 font-medium"
+                    role="menu"
                   >
-                    <p className="text-sm font-medium text-heading" role="none">
-                      Juan Dela Cruz
-                    </p>
-                    <p className="text-sm text-body truncate" role="none">
-                      juan.delacruz@sample.com
-                    </p>
-                  </div>
-                  {/* User submenu item */}
-                  <ul className="p-2 text-sm text-body font-medium" role="none">
                     <li>
-                      <a
-                        href="#"
-                        className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left p-2 rounded hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer"
                         role="menuitem"
                       >
-                        Sign out
-                      </a>
+                        {isLoading ? "Logging Out..." : "Logout"}
+                      </button>
                     </li>
                   </ul>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -137,10 +159,12 @@ export default function Sidebar({ children }: SidebarProps) {
       {/* Sidebar */}
       <aside
         id="top-bar-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+        className={`fixed top-0 left-0 z-40 w-64 h-full transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } sm:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-gray-100 shadow-md">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-white border-e border-gray-100 shadow-md">
           <a
             href="https://flowbite.com/"
             className="flex items-center ps-2.5 mb-5"

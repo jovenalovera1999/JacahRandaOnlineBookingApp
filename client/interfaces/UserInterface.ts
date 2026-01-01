@@ -11,6 +11,7 @@ export interface UserColumns {
   password?: string;
   role: RoleColumns;
   last_login_at?: string;
+  remember_token?: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,4 +25,9 @@ export interface UserFieldsErrors {
   password?: string[];
   password_confirmation?: string[];
   role?: string[];
+}
+
+export interface LoginFieldsErrors {
+  username?: string[];
+  password?: string[];
 }

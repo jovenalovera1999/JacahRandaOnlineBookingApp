@@ -1,5 +1,11 @@
-import { UserColumns } from "@/interfaces/UserInterface";
+"use client";
+
+import getCsrfCookie from "@/hooks/useGetCsrfCookie";
+import { useToastMessage } from "@/hooks/useToastMessage";
+import { LoginFieldsErrors, UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
+import { usePathname, useRouter } from "next/navigation";
+import { stringify } from "querystring";
 import {
   createContext,
   ReactNode,
@@ -14,19 +20,25 @@ interface AuthContextType {
   isLoading: boolean;
   handleLogin: (username: string, password: string) => void;
   handleLogout: () => void;
-  handleRefreshToken: () => void;
+  errors: LoginFieldsErrors;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { showToastMessage } = useToastMessage();
+
   const [user, setUser] = useState<UserColumns | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<LoginFieldsErrors>({});
 
   const handleLoadUser = useCallback(async () => {
     try {
       setIsLoading(true);
 
+      await getCsrfCookie();
       const { status, data } = await api.get("/auth/me");
 
       if (status !== 200) {
@@ -38,6 +50,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(data.user);
+
+      const storeUser = JSON.stringify(data.user);
+      sessionStorage.setItem("user", storeUser);
     } catch (error) {
       console.error(
         "Unexpected server error during load user at AuthContext.tsx: ",
@@ -52,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
 
+      await getCsrfCookie();
       const { status, data } = await api.post("/auth/login", {
         username,
         password,
@@ -66,11 +82,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(data.user);
-    } catch (error) {
-      console.error(
-        "Unexpected server error during login user at AuthContext.tsx: ",
-        error
-      );
+
+      const storeUser = JSON.stringify(data.user);
+      sessionStorage.setItem("user", storeUser);
+
+      router.push("/room_management");
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        showToastMessage("failed", error.response.data.message);
+        setErrors({});
+
+        return;
+      } else if (error.response && error.response.status != 422) {
+        console.error(
+          "Unexpected server error during login user at AuthContext.tsx: ",
+          error
+        );
+        return;
+      }
+
+      setErrors(error.response.data.errors);
     } finally {
       setIsLoading(false);
     }
@@ -80,6 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
 
+      await getCsrfCookie();
       const { status, data } = await api.post("/auth/logout");
 
       if (status !== 200) {
@@ -91,6 +123,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(null);
+      sessionStorage.removeItem("user");
+
+      showToastMessage("success", data.message);
+      router.push("/login");
     } catch (error) {
       console.error(
         "Unexpected server error during logout user at AuthContext.tsx: ",
@@ -101,38 +137,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleRefreshToken = async () => {
-    try {
-      setIsLoading(true);
-
-      const { status } = await api.post("/auth/refresh");
-
-      if (status !== 200) {
-        console.error(
-          "Unexpected status error during refresh user token at AuthContext.tsx: ",
-          status
-        );
-        return;
-      }
-
-      await handleLoadUser();
-    } catch (error) {
-      console.error(
-        "Unexpected server error during refresh user token at AuthContext.tsx: ",
-        error
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     handleLoadUser();
-  }, []);
+  }, [handleLoadUser]);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, handleLogin, handleLogout, handleRefreshToken }}
+      value={{ user, isLoading, handleLogin, handleLogout, errors }}
     >
       {children}
     </AuthContext.Provider>

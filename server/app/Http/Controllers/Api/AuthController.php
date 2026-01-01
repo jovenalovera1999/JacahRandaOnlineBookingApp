@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -14,43 +14,26 @@ class AuthController extends Controller
             'password' => ['required', 'min:6', 'max:15'],
         ]);
 
-        $credentials = [
-            'username' => $validatedData['username'],
-            'password' => $validatedData['password'],
-        ];
-
-        if(!$token = JWTAuth::attempt($credentials)) {
+        if(!Auth::attempt(['username' => $validatedData['username'], 'password' => $validatedData['password']])) {
             return response()
                 ->json([
                     'message' => 'The provided credentials are incorrect.',
                 ], 401);
         }
 
-        $user = JWTAuth::user()->load('role');
+        $request->session()->regenerate();
 
-        // Set the token in an httpOnly cookie
-        $cookie = cookie(
-            'jwt_token', // cookie name
-            $token,      // token value
-            60,          // minutes (1 hour)
-            '/',         // path
-            null,        // domain (null = current)
-            false,       // secure (set true in production with HTTPS)
-            true         // httpOnly
-        );
+        $user = $request->user();
 
         return response()
             ->json([
                 'user' => $user,
-                'token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth()->guard('api')->factory()->getTTL() * 60,
-            ], 200)
-            ->cookie($cookie);
+            ], 200);
     }
 
-    public function me() {
-        $user = JWTAuth::parseToken()->authenticate()->load('role');
+    public function me(Request $request) {
+        $user = $request->user();
+        $user->load('role');
 
         return response()
             ->json([
@@ -58,36 +41,16 @@ class AuthController extends Controller
             ], 200);
     }
 
-    public function logout() {
-        JWTAuth::invalidate(JWTAuth::getToken());
+    public function logout(Request $request) {
+        Auth::guard('web')
+            ->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()
             ->json([
                 'message' => 'Successfully Logged Out.'
             ], 200);
-    }
-
-    public function refresh() {
-        $previousToken = JWTAuth::getToken();
-        $newToken = JWTAuth::refresh($previousToken);
-
-        // Set the token in an httpOnly cookie
-        $cookie = cookie(
-            'jwt_token', // cookie name
-            $newToken,      // token value
-            60,          // minutes (1 hour)
-            '/',         // path
-            null,        // domain (null = current)
-            false,       // secure (set true in production with HTTPS)
-            true         // httpOnly
-        );
-
-        return response()
-            ->json([
-                'token' => $newToken,
-                'token_type' => 'bearer',
-                'expires_in' => auth()->guard('api')->factory()->getTTL() * 60,
-            ], 200)
-            ->cookie($cookie);
     }
 }

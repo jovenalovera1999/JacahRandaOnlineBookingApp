@@ -25,6 +25,10 @@ class UserController extends Controller
         $search = $request->input('search');
 
         $users = User::with(['role'])
+            ->whereHas('role', function ($user) {
+                $user->where('role', 'Admin')
+                    ->orWhere('role', 'Employee');
+            })
             ->orderBy('name', 'asc');
 
         if(!empty($search)) {
