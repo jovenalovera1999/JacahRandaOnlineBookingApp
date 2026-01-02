@@ -24,6 +24,10 @@ class GoogleAuthController extends Controller
     // Google callback
     public function callback(Request $request)
     {
+        if($request->has('error')) {
+            return redirect()->away(config('app.frontend_url') . '/');
+        }
+
         $googleUser = Socialite::driver('google')
             ->stateless()
             ->user();
@@ -55,10 +59,9 @@ class GoogleAuthController extends Controller
     {
         // logged-in user from Sanctum
         $user = $request->user();
-
         $user->load('role');
-        return response()->json(['user' => $user], 200);
 
+        return response()->json(['user' => $user], 200);
     }
 
     // Logout

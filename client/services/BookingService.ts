@@ -9,22 +9,24 @@ const BookingService = {
     );
     return response;
   },
-  loadPendingBookings: async () => {
-    const response = await api.get(`${apiPrefix}/loadPendingBookings`);
+  loadBookings: async (filter: string) => {
+    const response = await api.get(filter ? `${apiPrefix}/loadBookings?filter=${filter}` : `${apiPrefix}/loadBookings`);
     return response;
   },
-  // countUnreadNotificationsAndLoadCancelledBookings: async () => {
-  //   const response = await api.get(
-  //     `${apiPrefix}/countUnreadNotificationsAndLoadCancelledBookings`
-  //   );
-  //   return response;
-  // },
   loadCancelledBookings: async () => {
     const response = await api.get(`${apiPrefix}/loadCancelledBookings`);
     return response;
   },
   storeBooking: async (data: any) => {
     const response = await api.post(`${apiPrefix}/storeBooking`, data);
+    return response;
+  },
+  approveBooking: async (
+    bookingId: string | number
+  ) => {
+    const response = await api.post(
+      `${apiPrefix}/approveBooking/${bookingId}`
+    );
     return response;
   },
   cancelBookingInAdminOrEmployeeSide: async (
@@ -35,15 +37,6 @@ const BookingService = {
     const response = await api.post(
       `${apiPrefix}/cancelBookingInAdminOrEmployeeSide/${roomId}/${bookingId}`,
       data
-    );
-    return response;
-  },
-  approveBooking: async (
-    roomId: string | number,
-    bookingId: string | number
-  ) => {
-    const response = await api.put(
-      `${apiPrefix}/approveBooking/${roomId}/${bookingId}`
     );
     return response;
   },

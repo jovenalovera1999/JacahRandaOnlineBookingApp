@@ -9,7 +9,7 @@ import { useReload } from "@/hooks/useReload";
 
 export default function Navbar() {
   // Hooks
-  const { reload } = useReload();
+  const { reload, handleReload } = useReload();
 
   // Built-in hooks
   const pathname = usePathname();
@@ -195,7 +195,9 @@ export default function Navbar() {
                 //   </li>
                 // )
               )}
-              <AuthButton reloadCountNotifications={reload} />
+              <AuthButton
+                reloadCountNotifications={reload}
+              />
             </ul>
           </div>
         </div>

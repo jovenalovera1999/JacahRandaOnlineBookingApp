@@ -1,6 +1,5 @@
 "use client";
 
-import Form from "@/components/ui/Form";
 import { useGoogleAuth } from "@/context/GoogleAuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
 import NotificationService from "@/services/NotificationService";
@@ -47,18 +46,18 @@ export default function AuthButton({
       href: "/my_bookings",
     },
     {
+      label: 'Order a Food',
+      href: '#',
+    },
+    {
       label: "Notifications",
       href: "/notifications",
     },
   ];
 
   useEffect(() => {
-    if (user) {
-      handleGetTotalUnreadNotifications();
-    }
-  }, [reloadCountNotifications, handleGetTotalUnreadNotifications, user]);
-
-  if (loading) return null;
+    handleGetTotalUnreadNotifications();
+  }, [reloadCountNotifications, handleGetTotalUnreadNotifications]);
 
   if (!user) {
     return (
@@ -84,7 +83,7 @@ export default function AuthButton({
             href={menu.href}
             className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
           >
-            <span>{menu.label}</span>
+            <span>{menu.label === 'Order a Food' && user.bookings?.booking_status.booking_status === 'Approved' ? menu.label : menu.label}</span>
 
             {menu.label === "Notifications" && totalUnreadNotifications > 0 && (
               <span

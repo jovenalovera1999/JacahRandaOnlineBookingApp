@@ -27,7 +27,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const { showToastMessage } = useToastMessage();
 
   const [user, setUser] = useState<UserColumns | null>(null);
@@ -53,7 +52,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const storeUser = JSON.stringify(data.user);
       sessionStorage.setItem("user", storeUser);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        setUser(null);
+        return;
+      }
+
       console.error(
         "Unexpected server error during load user at AuthContext.tsx: ",
         error

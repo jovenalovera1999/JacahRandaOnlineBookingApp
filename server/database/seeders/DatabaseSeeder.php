@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Room;
 use App\Models\RoomStatus;
 use App\Models\RoomType;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -32,11 +33,20 @@ class DatabaseSeeder extends Seeder
             ['role' => 'Client'],
         ]);
 
+        User::factory()->create([
+            'name' => 'John Doe',
+            'address' => 'Roxas City',
+            'contact_number' => '09123456789',
+            'email' => 'john.doe@sample.com',
+            'username' => 'johndoe123',
+            'password' => 'johndoe123',
+            'role_id' => 1,
+        ]);
+
         RoomStatus::factory()->createMany([
             ['room_status' => 'Available'],
             ['room_status' => 'Unavailable'],
             ['room_status' => 'Maintenance'],
-            ['room_status' => 'Booked'],
             ['room_status' => 'Occupied'],
         ]);
 

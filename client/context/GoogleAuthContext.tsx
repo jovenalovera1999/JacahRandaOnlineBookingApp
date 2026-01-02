@@ -4,7 +4,7 @@ import getCsrfCookie from "@/hooks/useGetCsrfCookie";
 import { useToastMessage } from "@/hooks/useToastMessage";
 import { UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   FormEvent,
@@ -30,7 +30,6 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
 
   // Hooks
   const router = useRouter();
-  const pathname = usePathname();
   const { showToastMessage } = useToastMessage();
 
   const handleLoadAuthenticatedUser = useCallback(async () => {
@@ -49,8 +48,12 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       }
 
       setUser(data.user);
-    } catch (error) {
-      setUser(null);
+    } catch (error: any) {
+      if (error.response && error.response.status === 401) {
+        setUser(null);
+        return;
+      }
+
       console.error(
         "Unexpected server error during load authenticated user at GoogleAuthContext.tsx: ",
         error
@@ -90,9 +93,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (pathname === "/login") return;
     handleLoadAuthenticatedUser();
-  }, [pathname, handleLoadAuthenticatedUser]);
+  }, [handleLoadAuthenticatedUser]);
 
   return (
     <AuthContext.Provider value={{ user, loading, handleLogout }}>

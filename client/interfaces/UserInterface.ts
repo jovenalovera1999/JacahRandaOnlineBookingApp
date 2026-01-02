@@ -1,3 +1,4 @@
+import { BookingColumns } from "./BookingInterface";
 import { RoleColumns } from "./RoleInterface";
 
 export interface UserColumns {
@@ -12,6 +13,7 @@ export interface UserColumns {
   role: RoleColumns;
   last_login_at?: string;
   remember_token?: string;
+  bookings?: BookingColumns;
   created_at: string;
   updated_at: string;
 }

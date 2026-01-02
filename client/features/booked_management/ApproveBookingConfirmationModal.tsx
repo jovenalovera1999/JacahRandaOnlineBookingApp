@@ -33,7 +33,6 @@ export default function ApproveBookingConfirmationModal({
       setIsApproving(true);
 
       const { status, data } = await BookingService.approveBooking(
-        selectedBooking?.room.room_id!,
         selectedBooking?.booking_id!
       );
 

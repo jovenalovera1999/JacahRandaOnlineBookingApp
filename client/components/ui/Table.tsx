@@ -32,17 +32,17 @@ interface TableCellProps {
 
 export function Table({ className, filter, children }: TableProps) {
   return (
-    <div className="relative overflow-x-auto bg-white shadow-md rounded-md">
+    <>
       {filter && <div className="p-4">{filter}</div>}
       <table className={`w-full text-sm text-left ${className}`}>
         {children}
       </table>
-    </div>
+    </>
   );
 }
 
 export function TableHead({ className, children }: TableHeadProps) {
-  return <thead className={`bg-blue-100 ${className}`}>{children}</thead>;
+  return <thead className={`bg-blue-100 top-0 sticky z-30 ${className}`}>{children}</thead>;
 }
 
 export function TableBody({ className, children }: TableBodyProps) {

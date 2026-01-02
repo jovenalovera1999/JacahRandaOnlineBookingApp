@@ -9,8 +9,6 @@ use App\Models\Notification;
 use App\Models\Room;
 use App\Models\RoomStatus;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BookingController extends Controller
 {
@@ -26,25 +24,32 @@ class BookingController extends Controller
             })
             ->get();
 
-        return response()
-            ->json([
-                'bookings' => $bookings
-            ], 200);
+        return response()->json([
+            'bookings' => $bookings
+        ], 200);
     }
 
     // Load pending bookings in admin or employee side
-    public function loadPendingBookings()
+    public function loadBookings(Request $request)
     {
-        $bookings = Booking::with(['user', 'room.room_type', 'booking_status'])
-            ->whereHas('booking_status', function ($query) {
-                $query->where('booking_status', 'Pending');
-            })
-            ->get();
+        $filter = $request->input('filter');
 
-        return response()
-            ->json([
-                'bookings' => $bookings
-            ], 200);
+        $bookings = Booking::with(['user', 'room.room_type', 'booking_status'])
+            ->orderBy('tbl_bookings.booking_id', 'desc');
+
+        if(!empty($filter)) {
+            $bookings->where(function($booking) use ($filter) {
+                $booking->whereHas('booking_status', function($b) use ($filter) {
+                    $b->where('booking_status', $filter);
+                });
+            });
+        }
+
+        $bookings = $bookings->get();
+
+        return response()->json([
+            'bookings' => $bookings
+        ], 200);
     }
 
     // Stores booking in client side
@@ -59,6 +64,23 @@ class BookingController extends Controller
 
         $user = $request->user();
 
+        // Check if there is an APPROVED booking that overlaps
+        $conflictExists = Booking::with('booking_status')
+            ->where('room_id', $validatedData['room_id'])
+            ->whereHas('booking_status', function ($query) {
+                $query->where('booking_status', 'Pending')
+                    ->orWhere('booking_status', 'Approved');
+            })
+            ->where('check_in_date', '<=', $validatedData['check_out_date'])
+            ->where('check_out_date', '>=', $validatedData['check_in_date'])
+            ->exists();
+
+        if($conflictExists) {
+            return response()->json([
+                'message' => 'This room is not available for the selected dates.'
+            ], 422);
+        }
+
         $bookingStatus = BookingStatus::where('booking_status', 'Pending')
             ->firstOrFail();
 
@@ -71,18 +93,29 @@ class BookingController extends Controller
             'booking_status_id' => $bookingStatus->booking_status_id,
         ]);
 
-        $roomStatus = RoomStatus::where('room_status', 'Booked')
-            ->firstOrFail();
-
-        Room::where('room_id', $validatedData['room_id'])
-            ->update([
-                'room_status_id' => $roomStatus->room_status_id,
-            ]);
-
         return response()
             ->json([
                 'message' => 'Booking Success.',
             ], 200);
+    }
+
+    public function approveBooking(Booking $booking)
+    {
+        $bookingStatus = BookingStatus::where('booking_status', 'Approved')
+            ->firstOrFail();
+
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id,
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'description' => 'The room you booked has been approved.',
+        ], 200);
+
+        return response()->json([
+            'message' => 'Booking Successfully Approved.'
+        ], 200);
     }
 
     // Canel booking by soft delete and updates room back to available status in admin or employee side
@@ -93,23 +126,12 @@ class BookingController extends Controller
             'description' => ['required', 'max:255'],
         ]);
 
-        // Soft deletes the booking
-        $booking->delete();
-
         $bookingStatus = BookingStatus::where('booking_status', 'Cancelled')
             ->firstOrFail();
 
         // Update booking status to cancelled
         $booking->update([
             'booking_status_id' => $bookingStatus->booking_status_id,
-        ]);
-
-        $roomStatus = RoomStatus::where('room_status', 'Available')
-            ->firstOrFail();
-
-        // Update the room to available
-        $room->update([
-            'room_status_id' => $roomStatus->room_status_id,
         ]);
 
         Notification::create([
@@ -121,27 +143,6 @@ class BookingController extends Controller
             ->json([
                 'message' => 'Booking Successfully Cancelled.'
             ], 200);
-    }
-
-    public function approveBooking(Room $room, Booking $booking)
-    {
-        $roomStatus = RoomStatus::where('room_status', 'Occupied')
-            ->firstOrFail();
-
-        $room->update([
-            'room_status_id' => $roomStatus->room_status_id,
-        ]);
-
-        $bookingStatus = BookingStatus::where('booking_status', 'Approved')
-            ->firstOrFail();
-
-        $booking->update([
-            'booking_status_id' => $bookingStatus->booking_status_id,
-        ]);
-
-        return response()->json([
-            'message' => 'Booking Successfully Approved.'
-        ], 200);
     }
 
     // Canel booking by soft delete and updates room back to available status in client side
