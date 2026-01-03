@@ -49,21 +49,20 @@ class RoomController extends Controller
         $search = $request->input('search');
 
         $rooms = Room::with(['room_type', 'room_status'])
+            ->orderBy('room_no', 'asc')
             ->orderBy('price', 'desc');
 
         if (!empty($search)) {
-            $rooms->where(function ($query) use ($search) {
-                $query->where('room_no', 'LIKE', "%{$search}%")
-                    ->orWhere('description', 'LIKE', "%{$search}%")
+            $rooms->where('room_no', 'LIKE', "%{$search}%")
+                ->orWhere('description', 'LIKE', "%{$search}%")
 
-                    ->orWhereHas('room_type', function ($q) use ($search) {
-                        $q->where('room_type', 'LIKE', "%{$search}%");
-                    })
+                ->orWhereHas('room_type', function ($room) use ($search) {
+                    $room->where('room_type', 'LIKE', "%{$search}%");
+                })
 
-                    ->orWhereHas('room_status', function ($q) use ($search) {
-                        $q->where('room_status', 'LIKE', "%{$search}%");
-                    });
-            });
+                ->orWhereHas('room_status', function ($room) use ($search) {
+                    $room->where('room_status', 'LIKE', "%{$search}%");
+                });
         }
 
         $rooms = $rooms->get();

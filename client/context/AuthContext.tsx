@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storeUser = JSON.stringify(data.user);
       sessionStorage.setItem("user", storeUser);
 
-      router.push("/room_management");
+      router.push("/dashboard");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         showToastMessage("failed", error.response.data.message);

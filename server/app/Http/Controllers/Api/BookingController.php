@@ -12,16 +12,14 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    // Load pending bookings in client or customer side
-    public function loadPendingBookingsOfCurrentClientUserLoggedIn(Request $request)
+    // Load bookings in my bookings
+    public function loadBookingsOfCurrentLoggedInUserClient(Request $request)
     {
         $user = $request->user();
 
         $bookings = Booking::with(['user', 'room.room_type', 'booking_status'])
             ->where('user_id', $user->user_id)
-            ->whereHas('booking_status', function ($query) {
-                $query->where('booking_status', 'Pending');
-            })
+            ->orderBy('booking_id', 'desc')
             ->get();
 
         return response()->json([
@@ -29,19 +27,17 @@ class BookingController extends Controller
         ], 200);
     }
 
-    // Load pending bookings in admin or employee side
+    // Load bookings in booked management
     public function loadBookings(Request $request)
     {
         $filter = $request->input('filter');
 
         $bookings = Booking::with(['user', 'room.room_type', 'booking_status'])
-            ->orderBy('tbl_bookings.booking_id', 'desc');
+            ->orderBy('booking_id', 'desc');
 
         if(!empty($filter)) {
-            $bookings->where(function($booking) use ($filter) {
-                $booking->whereHas('booking_status', function($b) use ($filter) {
-                    $b->where('booking_status', $filter);
-                });
+            $bookings->whereHas('booking_status', function($booking) use ($filter) {
+                $booking->where('booking_status', $filter);
             });
         }
 

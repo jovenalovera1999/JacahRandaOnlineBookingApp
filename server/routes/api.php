@@ -3,11 +3,12 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingStatusController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\RoomStatusController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\RoomStatusController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -52,9 +53,13 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::delete('/destroyUser/{user}', 'destroyUser');
         });
 
+        Route::controller(DashboardController::class)->prefix('/dashboard')->group(function() {
+            Route::get('/countPendingApprovedCancelledCompleted', 'countPendingApprovedCancelledCompleted');
+        });
+
         Route::controller(BookingController::class)->prefix('/booking')->group(function () {
             Route::get('/loadBookings', 'loadBookings');
-            Route::get('/loadPendingBookingsOfCurrentClientUserLoggedIn', 'loadPendingBookingsOfCurrentClientUserLoggedIn');
+            Route::get('/loadBookingsOfCurrentLoggedInUserClient', 'loadBookingsOfCurrentLoggedInUserClient');
             Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
             Route::get('/loadCancelledBookings', 'loadCancelledBookings');
             Route::post('/storeBooking', 'storeBooking');

@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
+import { useGoogleAuth } from "@/context/GoogleAuthContext";
 import {
   useFullDateFormat,
   useFullDateTimeFormat,
@@ -24,6 +25,8 @@ export default function NotificationsTable({
   onReloadNotifications,
   reloadNotifications,
 }: NotificationsTableProps) {
+  const { user } = useGoogleAuth();
+
   // States
   const [notifications, setNotifications] = useState<NotificationColumns[]>([]);
 

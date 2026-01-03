@@ -1,8 +1,6 @@
 "use client";
 
-import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 import Button from "@/components/ui/Button";
-import FloatingLabelInputField from "@/components/ui/FloatingLabelInputField";
 import Spinner from "@/components/ui/Spinner";
 import {
   Table,
@@ -11,6 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
+import { useFullDateFormat } from "@/hooks/useDateTimeFormat";
 import { BookingColumns } from "@/interfaces/BookingInterface";
 import BookingService from "@/services/BookingService";
 import { useCallback, useEffect, useState } from "react";
@@ -38,7 +37,7 @@ export default function MyBookingsTable({
   const handleLoadPendingBookings = useCallback(async () => {
     try {
       const { status, data } =
-        await BookingService.loadPendingBookingsOfCurrentClientUserLoggedIn();
+        await BookingService.loadBookingsOfCurrentLoggedInUserClient();
 
       if (status !== 200) {
         console.error(
@@ -104,18 +103,36 @@ export default function MyBookingsTable({
               >
                 <TableCell>{booking.room.room_type.room_type}</TableCell>
                 <TableCell>{booking.room.room_no}</TableCell>
-                <TableCell>{booking.check_in_date}</TableCell>
-                <TableCell>{booking.check_out_date}</TableCell>
-                <TableCell>{booking.booking_status.booking_status}</TableCell>
                 <TableCell>
-                  <Button
-                    tag="button"
-                    type="button"
-                    className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                    onClick={() => onCancelBooking(booking)}
+                  {useFullDateFormat(booking.check_in_date)}
+                </TableCell>
+                <TableCell>
+                  {useFullDateFormat(booking.check_out_date)}
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      booking.booking_status.booking_status === "Approved"
+                        ? "bg-green-100 text-green-700"
+                        : booking.booking_status.booking_status === "Cancelled"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
                   >
-                    Cancel
-                  </Button>
+                    {booking.booking_status.booking_status}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  {booking.booking_status.booking_status === "Pending" && (
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onCancelBooking(booking)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))

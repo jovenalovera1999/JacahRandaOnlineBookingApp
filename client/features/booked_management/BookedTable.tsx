@@ -11,7 +11,10 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
-import { useFullDateFormat, useFullDateTimeFormat } from "@/hooks/useDateTimeFormat";
+import {
+  useFullDateFormat,
+  useFullDateTimeFormat,
+} from "@/hooks/useDateTimeFormat";
 import { useDebounce } from "@/hooks/useDebounce";
 import { BookingColumns } from "@/interfaces/BookingInterface";
 import { BookingStatusColumns } from "@/interfaces/BookingStatusInterface";
@@ -32,29 +35,37 @@ export default function BookedTable({
   reloadBookings,
 }: BookedTableProps) {
   // States
-  const [filter, setFilter] = useState('')
-  const [bookingStatuses, setBookingStatuses] = useState<BookingStatusColumns[]>([]);
+  const [filter, setFilter] = useState("");
+  const [bookingStatuses, setBookingStatuses] = useState<
+    BookingStatusColumns[]
+  >([]);
   const [bookings, setBookings] = useState<BookingColumns[]>([]);
   const [bookingsActionOpenDropdown, setBookingsActionOpenDropdown] = useState<
     string | number | null
   >(null);
 
-  const debouncedFilter = useDebounce(filter)
+  const debouncedFilter = useDebounce(filter);
 
   const handleLoadBookingStatuses = useCallback(async () => {
     try {
-      const {status, data} = await BookingStatusService.loadBookingStatuses();
+      const { status, data } = await BookingStatusService.loadBookingStatuses();
 
-      if(status !== 200) {
-        console.error('Unexpected status error during load booking statuses at BookedTable.tsx: ', status);
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during load booking statuses at BookedTable.tsx: ",
+          status
+        );
         return;
       }
 
       setBookingStatuses(data.bookingStatuses);
-    } catch(error) {
-      console.error('Unexpected server error during load booking statuses at BookedTable.tsx: ', error);
+    } catch (error) {
+      console.error(
+        "Unexpected server error during load booking statuses at BookedTable.tsx: ",
+        error
+      );
     }
-  }, [])
+  }, []);
 
   // Loads all status bookings in descending order
   const handleLoadBookings = useCallback(async (filterValue: string) => {
@@ -85,19 +96,24 @@ export default function BookedTable({
     "Check-In Date",
     "Check-Out Date",
     "Customer's Name",
-    'Booked Status',
-    'Date Booked',
+    "Booked Status",
+    "Date Booked",
     "Actions",
   ];
 
   useEffect(() => {
-    if(!debouncedFilter) {
-      handleLoadBookings('');
+    if (!debouncedFilter) {
+      handleLoadBookings("");
     }
 
     handleLoadBookingStatuses();
     handleLoadBookings(debouncedFilter);
-  }, [debouncedFilter, reloadBookings, handleLoadBookingStatuses, handleLoadBookings]);
+  }, [
+    debouncedFilter,
+    reloadBookings,
+    handleLoadBookingStatuses,
+    handleLoadBookings,
+  ]);
 
   return (
     <>
@@ -108,11 +124,20 @@ export default function BookedTable({
               <>
                 <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
                   <div className="md:w-72">
-                    <FloatingLabelSelectField label="Filter" name="search" value={filter} onChange={(e) => setFilter(e.target.value)} autoFocus>
+                    <FloatingLabelSelectField
+                      label="Filter"
+                      name="search"
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      autoFocus
+                    >
                       <option value="">All Booked Status</option>
                       {bookingStatuses.length > 0 ? (
                         bookingStatuses.map((bookingStatus) => (
-                          <option value={bookingStatus.booking_status} key={bookingStatus.booking_status_id}>
+                          <option
+                            value={bookingStatus.booking_status}
+                            key={bookingStatus.booking_status_id}
+                          >
                             {bookingStatus.booking_status}
                           </option>
                         ))
@@ -143,17 +168,32 @@ export default function BookedTable({
                   >
                     <TableCell>{booking.room.room_type.room_type}</TableCell>
                     <TableCell>{booking.room.room_no}</TableCell>
-                    <TableCell>{useFullDateFormat(booking.check_in_date)}</TableCell>
-                    <TableCell>{useFullDateFormat(booking.check_out_date)}</TableCell>
+                    <TableCell>
+                      {useFullDateFormat(booking.check_in_date)}
+                    </TableCell>
+                    <TableCell>
+                      {useFullDateFormat(booking.check_out_date)}
+                    </TableCell>
                     <TableCell>{booking.user.name}</TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${booking.booking_status.booking_status === 'Approved' ? 'bg-green-100 text-green-700' : booking.booking_status.booking_status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          booking.booking_status.booking_status === "Approved"
+                            ? "bg-green-100 text-green-700"
+                            : booking.booking_status.booking_status ===
+                              "Cancelled"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
                         {booking.booking_status.booking_status}
                       </span>
-                      </TableCell>
-                    <TableCell>{useFullDateTimeFormat(booking.created_at)}</TableCell>
+                    </TableCell>
+                    <TableCell>
+                      {useFullDateTimeFormat(booking.created_at)}
+                    </TableCell>
                     <TableCell className="relative overflow-visible">
-                      {booking.booking_status.booking_status === 'Pending' && (
+                      {booking.booking_status.booking_status === "Pending" && (
                         <ActionButtonDropdown
                           id={booking.booking_id}
                           openDropdownId={bookingsActionOpenDropdown}
