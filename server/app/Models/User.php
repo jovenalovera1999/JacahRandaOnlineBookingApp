@@ -57,6 +57,6 @@ class User extends Authenticatable
     }
 
     public function bookings(): HasMany {
-        return $this->hasMany(Booking::class, 'user_id', 'user_id')->withTrashed();
+        return $this->hasMany(Booking::class, 'user_id', 'user_id');
     }
 }

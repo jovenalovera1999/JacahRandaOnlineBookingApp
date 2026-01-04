@@ -39,6 +39,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       await getCsrfCookie();
       const { status, data } = await api.get("/auth/google/me");
 
+      console.log(data.user);
+
       if (status !== 200) {
         console.error(
           "Unexpected status error during load authenticated user at GoogleAuthContext.tsx: ",

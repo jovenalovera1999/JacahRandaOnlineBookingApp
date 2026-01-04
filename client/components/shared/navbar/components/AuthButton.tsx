@@ -46,14 +46,13 @@ export default function AuthButton({
       href: "/my_bookings",
     },
     {
-      label: 'Order a Food',
-      href: '#',
-    },
-    {
       label: "Notifications",
       href: "/notifications",
     },
   ];
+
+  const hasOccupiedRoom =
+    user?.bookings?.[0]?.room.room_status.room_status === "Occupied";
 
   useEffect(() => {
     handleGetTotalUnreadNotifications();
@@ -77,13 +76,24 @@ export default function AuthButton({
 
   return (
     <>
+      {hasOccupiedRoom && (
+        <li>
+          <a
+            href="#"
+            className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
+          >
+            <span>Order a Food</span>
+          </a>
+        </li>
+      )}
+
       {userNavbarMenus.map((menu) => (
         <li key={menu.label}>
           <a
             href={menu.href}
             className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
           >
-            <span>{menu.label === 'Order a Food' && user.bookings?.booking_status.booking_status === 'Approved' ? menu.label : menu.label}</span>
+            <span>{menu.label}</span>
 
             {menu.label === "Notifications" && totalUnreadNotifications > 0 && (
               <span

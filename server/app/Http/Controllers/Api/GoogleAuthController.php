@@ -59,7 +59,18 @@ class GoogleAuthController extends Controller
     {
         // logged-in user from Sanctum
         $user = $request->user();
+
+        // Fetch the role and approved bookings if there's any
         $user->load('role');
+
+        $user->load(['bookings' => function($query) {
+            $query->whereHas('room.room_status', function($q) {
+                $q->where('room_status', 'Occupied');
+            })
+            ->with(['room.room_status'])
+            ->latest('check_in_date')
+            ->limit(1);
+        }]);
 
         return response()->json(['user' => $user], 200);
     }
