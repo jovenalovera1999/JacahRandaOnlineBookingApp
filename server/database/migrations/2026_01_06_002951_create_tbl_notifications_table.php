@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('tbl_notifications', function (Blueprint $table) {
             $table->id('notification_id');
-            $table->unsignedBigInteger('booking_id');
+            $table->unsignedBigInteger('booking_id')->nullable();
+            $table->unsignedBigInteger('order_id')->nullable();
             $table->text('description', 255);
             $table->timestamp('is_seen')->nullable();
             $table->softDeletes();
@@ -22,6 +23,12 @@ return new class extends Migration
             $table->foreign('booking_id')
                 ->references('booking_id')
                 ->on('tbl_bookings')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('order_id')
+                ->references('order_id')
+                ->on('tbl_orders')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

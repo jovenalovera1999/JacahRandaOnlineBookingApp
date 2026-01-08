@@ -1,9 +1,11 @@
 "use client";
 
+import Spinner from "@/components/ui/Spinner";
 import DashboardService from "@/services/DashboardService";
 import { useCallback, useEffect, useState } from "react";
 
 export default function BookingSummaryCard() {
+  const [isLoading, setIsLoading] = useState(false);
   const [totalPending, setTotalPending] = useState(0);
   const [totalApproved, setTotalApproved] = useState(0);
   const [totalCancelled, setTotalCancelled] = useState(0);
@@ -11,6 +13,8 @@ export default function BookingSummaryCard() {
 
   const handleCountPendingAvailableCancelledOccupied = useCallback(async () => {
     try {
+      setIsLoading(true);
+
       const { status, data } =
         await DashboardService.countPendingApprovedCancelledCompleted();
 
@@ -82,7 +86,24 @@ export default function BookingSummaryCard() {
             >
               <div className="text-sm font-medium">{card.title}</div>
               <div className="flex justify-end text-3xl font-semibold mt-2">
-                {card.value}
+                {!isLoading ? (
+                  <Spinner
+                    size="sm"
+                    className={`${
+                      card.title === "Approved"
+                        ? "fill-green-700"
+                        : card.title === "Cancelled"
+                        ? "fill-red-700"
+                        : card.title === "Completed"
+                        ? "fill-yellow-700"
+                        : "fill-gray-700"
+                    }`}
+                  />
+                ) : card.value > 0 ? (
+                  card.value
+                ) : (
+                  0
+                )}
               </div>
             </div>
           );

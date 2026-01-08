@@ -21,6 +21,8 @@ class Notification extends Model
     // Columns or attributes that can be modified
     protected $fillable = [
         'booking_id',
+        'order_id',
+        'order_id',
         'description',
         'is_seen',
     ];
@@ -29,5 +31,9 @@ class Notification extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class, 'booking_id', 'booking_id')->withTrashed();
+    }
+
+    public function order(): BelongsTo {
+        return $this->belongsTo(Order::class, 'order_id', 'order_id')->withTrashed();
     }
 }

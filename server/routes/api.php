@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingStatusController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RoomController;
@@ -32,7 +33,7 @@ Route::middleware(['throttle:api'])->group(function () {
         });
 
         Route::middleware('auth:sanctum')->group(function() {
-            Route::controller(GoogleAuthController::class)->prefix('/auth/google')->group(function (){
+            Route::controller(GoogleAuthController::class)->prefix('/auth/google')->group(function () {
                 Route::get('/me', 'me');
                 Route::post('/logout', 'logout');
             });
@@ -89,6 +90,10 @@ Route::middleware(['throttle:api'])->group(function () {
 
         Route::controller(BookingStatusController::class)->prefix('/booking_status')->group(function() {
             Route::get('/loadBookingStatuses', 'loadBookingStatuses');
+        });
+
+        Route::controller(FoodController::class)->prefix('/food')->group(function() {
+            Route::get('/loadFoodReferences', 'loadFoodReferences');
         });
     });
 

@@ -24,15 +24,16 @@ export default function Sidebar({ children }: SidebarProps) {
     { label: "Dashboard", href: "/dashboard" },
     { label: "Room Management", href: "/room_management" },
     { label: "Booked Management", href: "booked_management" },
+    { label: "Food Management", href: "/food_management" },
     { label: "User Management", href: "/user_management" },
-    {
-      label: "Report Management",
-      subMenu: [
-        { label: "General", href: "#" },
-        { label: "Requested", href: "#" },
-        { label: "Printed", href: "#" },
-      ],
-    },
+    // {
+    //   label: "Report Management",
+    //   subMenu: [
+    //     { label: "General", href: "#" },
+    //     { label: "Requested", href: "#" },
+    //     { label: "Printed", href: "#" },
+    //   ],
+    // },
   ];
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
@@ -175,8 +176,9 @@ export default function Sidebar({ children }: SidebarProps) {
             </span>
           </a>
           <ul className="space-y-2">
-            {sidebarItems.map((item) =>
-              !item.subMenu ? (
+            {sidebarItems.map(
+              (item) => (
+                // !item.subMenu ? (
                 // Without submenu
                 <li key={item.label}>
                   <a
@@ -191,66 +193,67 @@ export default function Sidebar({ children }: SidebarProps) {
                     {item.label}
                   </a>
                 </li>
-              ) : (
-                // With submenu
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    onClick={() => toggleSubMenu(item.label)}
-                    className={`inline-flex items-center w-full p-2 rounded-md hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 ${
-                      isSubMenuActive(item.subMenu)
-                        ? "bg-blue-100 text-blue-600"
-                        : "text-gray-800"
-                    }`}
-                    role="menuitem"
-                  >
-                    {item.label}
-                    <svg
-                      className={`w-4 h-4 ms-1.5 transition-transform duration-300 ${
-                        openMenu === item.label || isSubMenuActive(item.subMenu)
-                          ? "-rotate-180"
-                          : "rotate-0"
-                      }`}
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 9-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  <ul
-                    className={`pl-4 mt-1 space-y-1 transition-all duration-200 overflow-hidden ${
-                      openMenu === item.label || isSubMenuActive(item.subMenu)
-                        ? "max-h-96"
-                        : "max-h-0"
-                    }`}
-                  >
-                    {item.subMenu.map((subItem) => (
-                      <li key={subItem.label}>
-                        <a
-                          href={subItem.href}
-                          className={`block px-3 py-1.5 rounded-md text-sm transition hover:bg-blue-100 hover:text-blue-600 ${
-                            isActive(subItem.href)
-                              ? "bg-blue-100 text-blue-600"
-                              : "text-gray-800"
-                          }`}
-                        >
-                          {subItem.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
               )
+              // ) : (
+              //   // With submenu
+              //   <li key={item.label}>
+              //     <button
+              //       type="button"
+              //       onClick={() => toggleSubMenu(item.label)}
+              //       className={`inline-flex items-center w-full p-2 rounded-md hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 ${
+              //         isSubMenuActive(item.subMenu)
+              //           ? "bg-blue-100 text-blue-600"
+              //           : "text-gray-800"
+              //       }`}
+              //       role="menuitem"
+              //     >
+              //       {item.label}
+              //       <svg
+              //         className={`w-4 h-4 ms-1.5 transition-transform duration-300 ${
+              //           openMenu === item.label || isSubMenuActive(item.subMenu)
+              //             ? "-rotate-180"
+              //             : "rotate-0"
+              //         }`}
+              //         aria-hidden="true"
+              //         xmlns="http://www.w3.org/2000/svg"
+              //         width="24"
+              //         height="24"
+              //         fill="none"
+              //         viewBox="0 0 24 24"
+              //       >
+              //         <path
+              //           stroke="currentColor"
+              //           strokeLinecap="round"
+              //           strokeLinejoin="round"
+              //           strokeWidth="2"
+              //           d="m19 9-7 7-7-7"
+              //         />
+              //       </svg>
+              //     </button>
+              //     <ul
+              //       className={`pl-4 mt-1 space-y-1 transition-all duration-200 overflow-hidden ${
+              //         openMenu === item.label || isSubMenuActive(item.subMenu)
+              //           ? "max-h-96"
+              //           : "max-h-0"
+              //       }`}
+              //     >
+              //       {item.subMenu.map((subItem) => (
+              //         <li key={subItem.label}>
+              //           <a
+              //             href={subItem.href}
+              //             className={`block px-3 py-1.5 rounded-md text-sm transition hover:bg-blue-100 hover:text-blue-600 ${
+              //               isActive(subItem.href)
+              //                 ? "bg-blue-100 text-blue-600"
+              //                 : "text-gray-800"
+              //             }`}
+              //           >
+              //             {subItem.label}
+              //           </a>
+              //         </li>
+              //       ))}
+              //     </ul>
+              //   </li>
+              // )
             )}
           </ul>
         </div>

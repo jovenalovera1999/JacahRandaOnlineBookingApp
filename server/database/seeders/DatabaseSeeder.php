@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\BookingStatus;
+use App\Models\FoodCategory;
+use App\Models\FoodStatus;
+use App\Models\OrderStatus;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\RoomStatus;
@@ -65,6 +68,27 @@ class DatabaseSeeder extends Seeder
             ['booking_status' => 'Pending'],
             ['booking_status' => 'Cancelled'],
             ['booking_status' => 'Completed'],
+        ]);
+
+        FoodCategory::factory()->createMany([
+            ['food_category' => 'Rice Meals'],
+            ['food_category' => 'Snacks'],
+            ['food_category' => 'Desserts'],
+            ['food_category' => 'Coffees'],
+            ['food_category' => 'Frappes'],
+            ['food_category' => 'Softdrinks'],
+            ['food_category' => 'Alcoholic Drinks']
+        ]);
+
+        FoodStatus::factory()->createMany([
+            ['food_status' => 'Available'],
+            ['food_status' => 'Unavailable']
+        ]);
+
+        OrderStatus::factory()->createMany([
+            ['order_status' => 'Preparing'],
+            ['order_status' => 'Serving'],
+            ['order_status' => 'Served']
         ]);
     }
 }
