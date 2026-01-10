@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Book a Room",
+  title: "About",
 };
 
 export default function RootLayout({

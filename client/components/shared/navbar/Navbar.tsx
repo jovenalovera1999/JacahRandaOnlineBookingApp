@@ -31,7 +31,10 @@ export default function Navbar() {
     //     { label: "Rewards", href: "#" },
     //   ],
     // },
-    { label: "Book a Room", href: "/" },
+    { label: "About", href: "/" },
+    { label: "Foods", href: "#" },
+    { label: "Activities", href: "#" },
+    { label: "Book a Room", href: "/book_room" },
   ];
 
   // Navbar control in small or mobile screen
@@ -195,9 +198,7 @@ export default function Navbar() {
                 //   </li>
                 // )
               )}
-              <AuthButton
-                reloadCountNotifications={reload}
-              />
+              <AuthButton reloadCountNotifications={reload} />
             </ul>
           </div>
         </div>

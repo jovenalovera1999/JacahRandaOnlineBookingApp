@@ -1,10 +1,9 @@
 "use client";
-
-import RoomCard from "@/features/home/RoomCard";
 import Spinner from "@/components/ui/Spinner";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import { useCallback, useEffect, useState } from "react";
 import RoomService from "@/services/RoomService";
+import RoomCard from "./RoomCard";
 
 interface RoomListProps {
   onBookRoom: (selectedRoom: RoomColumns | null) => void;

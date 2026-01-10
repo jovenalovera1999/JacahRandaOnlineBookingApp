@@ -1,14 +1,13 @@
 "use client";
 
-import Navbar from "@/components/shared/navbar/Navbar";
-import BookRoomModal from "@/features/home/BookRoomModal";
-import RoomList from "@/features/home/RoomList";
+import BookRoomModal from "@/features/book_room/BookRoomModal";
+import RoomList from "@/features/book_room/RoomList";
 import { useReload } from "@/hooks/useReload";
 import { useToastMessage } from "@/hooks/useToastMessage";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import { useState } from "react";
 
-export default function Home() {
+export default function BookRoomPage() {
   const { showToastMessage } = useToastMessage();
   const { reload, handleReload } = useReload();
 
@@ -27,7 +26,6 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
       <div className="pt-4 pb-4">
         <BookRoomModal
           selectedRoom={selectedRoom}
