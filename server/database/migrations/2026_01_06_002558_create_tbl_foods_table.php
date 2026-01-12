@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('price')->default(0);
             $table->unsignedBigInteger('food_category_id');
             $table->unsignedBigInteger('food_status_id');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('food_category_id')

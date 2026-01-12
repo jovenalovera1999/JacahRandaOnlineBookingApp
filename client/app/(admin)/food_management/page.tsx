@@ -25,7 +25,10 @@ export default function FoodManagementPage() {
         onClose={() => setIsAddFoodModalOpen(false)}
       />
 
-      <FoodsTable onFoodAdd={() => setIsAddFoodModalOpen(true)} />
+      <FoodsTable
+        refreshFoods={reload}
+        onAddFood={() => setIsAddFoodModalOpen(true)}
+      />
     </>
   );
 }

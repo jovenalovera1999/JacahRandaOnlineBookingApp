@@ -39,7 +39,7 @@ export function Modal({ title, isOpen, children, onClose }: ModalProps) {
         {/* Viewport container */}
         <div className="relative flex h-full w-full items-center justify-center p-4">
           {/* Modal */}
-          <div className="relative bg-white rounded-md shadow-md w-full max-w-2xl max-h-[90vh] flex flex-col z-50">
+          <div className="relative bg-white rounded-2xl shadow-md w-full max-w-2xl max-h-[90vh] flex flex-col z-50">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 p-6">
               <h3 className="text-2xl font-semibold">{title}</h3>

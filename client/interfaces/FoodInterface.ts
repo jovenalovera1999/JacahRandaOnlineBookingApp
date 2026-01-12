@@ -12,3 +12,12 @@ export interface FoodColumns {
   created_at: string;
   updated_at: string;
 }
+
+export interface FoodFieldsErrors {
+  food_image?: string[];
+  food_name?: string[];
+  description?: string[];
+  price?: string[];
+  category?: string[];
+  status?: string[];
+}

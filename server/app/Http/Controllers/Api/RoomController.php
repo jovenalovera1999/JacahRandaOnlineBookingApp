@@ -85,6 +85,7 @@ class RoomController extends Controller
             'room_image' => ['nullable', 'image', 'mimes:png,jpg,jpeg'],
             'room_no' => ['required', 'numeric'],
             'room_type' => ['required'],
+            'capacity' => ['required'],
             'description' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
             'room_status' => ['required']
@@ -104,6 +105,7 @@ class RoomController extends Controller
             'room_image' => $validatedData['room_image'],
             'room_no' => $validatedData['room_no'],
             'room_type_id' => $validatedData['room_type'],
+            'capacity' => $validatedData['capacity'],
             'description' => $validatedData['description'],
             'price' => $validatedData['price'],
             'room_status_id' => $validatedData['room_status']
@@ -123,6 +125,7 @@ class RoomController extends Controller
             'room_image' => ['nullable', 'image', 'mimes:png,jpg,jpeg'],
             'room_no' => ['required', 'numeric'],
             'room_type' => ['required'],
+            'capacity' => ['required'],
             'description' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
             'room_status' => ['required']
@@ -130,7 +133,7 @@ class RoomController extends Controller
 
         // Checks room image if exists, removed or uploaded a new one
         if ($request->has('room_image_removed') && $request->room_image_removed === '1') {
-            if ($room->room_image && Storage::disk('public')->exists('img/room/' . $room->rom_image)) {
+            if ($room->room_image && Storage::disk('public')->exists('img/room/' . $room->room_image)) {
                 Storage::disk('public')->delete('img/room/' . $room->room_image);
             }
 
@@ -152,6 +155,7 @@ class RoomController extends Controller
             'room_image' => $validatedData['room_image'] ?? $room->room_image,
             'room_no' => $validatedData['room_no'],
             'room_type_id' => $validatedData['room_type'],
+            'capacity' => $validatedData['capacity'],
             'description' => $validatedData['description'],
             'price' => $validatedData['price'],
             'room_status_id' => $validatedData['room_status']

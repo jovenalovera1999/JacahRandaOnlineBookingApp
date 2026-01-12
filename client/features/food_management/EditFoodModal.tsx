@@ -14,9 +14,9 @@ import { FoodStatusColumns } from "@/interfaces/FoodStatusInterface";
 import FoodService from "@/services/FoodService";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
-interface AddFoodModalProps {
+interface EditFoodModalProps {
   isOpen: boolean;
-  onRoomAdded: (
+  onRoomUpdated: (
     status: "success" | "failed" | "warning" | "others",
     message: string
   ) => void;
@@ -24,19 +24,19 @@ interface AddFoodModalProps {
   onClose: () => void;
 }
 
-export default function AddFoodModal({
+export default function EditFoodModal({
   isOpen,
-  onRoomAdded,
+  onRoomUpdated,
   onReloadFoods,
   onClose,
-}: AddFoodModalProps) {
+}: EditFoodModalProps) {
   const [foodCategories, setFoodCategories] = useState<FoodCategoryColumns[]>(
     []
   );
   const [foodStatuses, setFoodStatuses] = useState<FoodStatusColumns[]>([]);
 
-  const [isStoring, setIsStoring] = useState(false);
-  const [addFoodImage, setAddFoodImage] = useState<File | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [editFoodImage, setEditFoodImage] = useState<File | null>(null);
   const [foodName, setFoodName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -69,10 +69,10 @@ export default function AddFoodModal({
   const handleStoreFood = async (e: FormEvent) => {
     try {
       e.preventDefault();
-      setIsStoring(true);
+      setIsUpdating(true);
 
       const formData = new FormData();
-      formData.append("food_image", addFoodImage ?? "");
+      formData.append("food_image", editFoodImage ?? "");
       formData.append("food_name", foodName);
       formData.append("description", description);
       formData.append("price", price);
@@ -89,10 +89,10 @@ export default function AddFoodModal({
         return;
       }
 
-      onRoomAdded("success", data.message);
+      onRoomUpdated("success", data.message);
       onReloadFoods();
 
-      setAddFoodImage(null);
+      setEditFoodImage(null);
       setFoodName("");
       setDescription("");
       setPrice("");
@@ -110,7 +110,7 @@ export default function AddFoodModal({
 
       setErrors(error.response.data.errors);
     } finally {
-      setIsStoring(false);
+      setIsUpdating(false);
     }
   };
 
@@ -130,8 +130,8 @@ export default function AddFoodModal({
                     label="Food Image"
                     labelFile="PNG, JPG or JPEG"
                     name="food_image"
-                    value={addFoodImage}
-                    onChange={setAddFoodImage}
+                    value={editFoodImage}
+                    onChange={setEditFoodImage}
                     alt="Food Image"
                     errors={errors.food_image}
                   />
@@ -205,7 +205,7 @@ export default function AddFoodModal({
               </div>
               {/* Buttons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {!isStoring && (
+                {!isUpdating && (
                   <div className="col-span-1">
                     <Button
                       tag="button"
@@ -219,17 +219,17 @@ export default function AddFoodModal({
 
                 <div
                   className={`${
-                    isStoring ? "col-span-1 md:col-span-2" : "col-span-1"
+                    isUpdating ? "col-span-1 md:col-span-2" : "col-span-1"
                   }`}
                 >
                   <Button
                     tag="button"
                     type="submit"
-                    isLoading={isStoring}
+                    isLoading={isUpdating}
                     isLoadingChildren={
                       <>
                         <Spinner size="xs" />
-                        <span>Saving Food...</span>
+                        <span>Updating Food...</span>
                       </>
                     }
                   >

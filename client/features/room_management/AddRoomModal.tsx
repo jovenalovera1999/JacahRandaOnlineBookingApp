@@ -42,6 +42,7 @@ export default function AddRoomModal({
   const [roomType, setRoomType] = useState("");
   const [price, setPrice] = useState("");
   const [roomStatus, setRoomStatus] = useState("");
+  const [capacity, setCapacity] = useState("");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<RoomFieldsErrors>({});
 
@@ -81,6 +82,7 @@ export default function AddRoomModal({
       formData.append("room_image", addRoomImage ?? "");
       formData.append("room_no", roomNo);
       formData.append("room_type", roomType);
+      formData.append("capacity", capacity);
       formData.append("price", price);
       formData.append("room_status", roomStatus);
       formData.append("description", description);
@@ -98,6 +100,7 @@ export default function AddRoomModal({
       setAddRoomImage(null);
       setRoomNo("");
       setRoomType("");
+      setCapacity("");
       setPrice("");
       setRoomStatus("");
       setDescription("");
@@ -121,7 +124,7 @@ export default function AddRoomModal({
 
   useEffect(() => {
     if (isOpen) handleLoadRoomReferences();
-  }, [isOpen, reloadRoomReferences]);
+  }, [isOpen, reloadRoomReferences, handleLoadRoomReferences]);
 
   return (
     <>
@@ -157,7 +160,7 @@ export default function AddRoomModal({
                       autoFocus
                     />
                   </div>
-                  <div>
+                  <div className="mb-5">
                     <FloatingLabelSelectField
                       label="Room Type"
                       name="room_type"
@@ -177,6 +180,17 @@ export default function AddRoomModal({
                       ))}
                     </FloatingLabelSelectField>
                   </div>
+                  <div className="mb-1 md:mb-1.5">
+                    <FloatingLabelInputField
+                      label="Capacity"
+                      type="text"
+                      name="capacity"
+                      value={capacity}
+                      onChange={(e) => setCapacity(e.target.value)}
+                      errors={errors.capacity}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="col-span-2 md:col-span-1 w-full">
                   <div className="mb-5">
@@ -190,7 +204,7 @@ export default function AddRoomModal({
                       required
                     />
                   </div>
-                  <div className="">
+                  <div className="mb-1 md:mb-1.5">
                     <FloatingLabelSelectField
                       label="Room Status"
                       name="room_status"

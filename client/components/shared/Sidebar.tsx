@@ -4,7 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
-import { useAuth } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 interface SidebarProps {
   children: ReactNode;
@@ -65,7 +65,7 @@ export default function Sidebar({ children }: SidebarProps) {
   return (
     <>
       {/* Header */}
-      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-100 shadow-md">
+      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-100 shadow-lg">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
@@ -74,7 +74,7 @@ export default function Sidebar({ children }: SidebarProps) {
                 data-drawer-toggle="top-bar-sidebar"
                 aria-controls="top-bar-sidebar"
                 type="button"
-                className="sm:hidden text-heading bg-transparent box-border border border-transparent hover:bg-gray-100 focus:ring-0 font-medium leading-5 rounded-md text-sm p-2 focus:outline-none"
+                className="sm:hidden text-heading bg-transparent box-border border border-transparent hover:bg-gray-100 focus:ring-0 font-medium leading-5 rounded-lg text-sm p-2 focus:outline-none"
                 onClick={toggleSidebar}
               >
                 <span className="sr-only">Open sidebar</span>
@@ -111,7 +111,7 @@ export default function Sidebar({ children }: SidebarProps) {
               <button
                 type="button"
                 onClick={toggleUserSubMenu}
-                className="flex items-center text-sm bg-transparent rounded-md focus:ring-0 cursor-pointer"
+                className="flex items-center text-sm bg-transparent rounded-lg focus:ring-0 cursor-pointer"
                 aria-expanded={isUserSubMenuOpen}
               >
                 <span className="sr-only">Open user menu</span>
@@ -135,7 +135,7 @@ export default function Sidebar({ children }: SidebarProps) {
               </button>
 
               {isUserSubMenuOpen && (
-                <div className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-md z-50">
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg z-50">
                   <ul
                     className="p-2 text-sm text-gray-800 font-medium"
                     role="menu"
@@ -143,7 +143,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left p-2 rounded hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer"
+                        className="w-full text-left p-2 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors cursor-pointer"
                         role="menuitem"
                       >
                         {isLoading ? "Logging Out..." : "Logout"}
@@ -165,7 +165,7 @@ export default function Sidebar({ children }: SidebarProps) {
         } sm:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-white border-e border-gray-100 shadow-md">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-white border-e border-gray-100 shadow-lg">
           <a
             href="https://flowbite.com/"
             className="flex items-center ps-2.5 mb-5"
@@ -175,7 +175,7 @@ export default function Sidebar({ children }: SidebarProps) {
               Jacah-Randa
             </span>
           </a>
-          <ul className="space-y-2">
+          <ul className="mt-8 space-y-2">
             {sidebarItems.map(
               (item) => (
                 // !item.subMenu ? (
@@ -183,10 +183,10 @@ export default function Sidebar({ children }: SidebarProps) {
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    className={`inline-flex items-center w-full p-2 hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 rounded-md ${
+                    className={`inline-flex items-center w-full p-2 hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 rounded-lg ${
                       isActive(item.href)
                         ? "bg-blue-100 text-blue-600"
-                        : "text-gray-800 rounded-md"
+                        : "text-gray-800 rounded-lg"
                     }`}
                     role="menuitem"
                   >
@@ -200,7 +200,7 @@ export default function Sidebar({ children }: SidebarProps) {
               //     <button
               //       type="button"
               //       onClick={() => toggleSubMenu(item.label)}
-              //       className={`inline-flex items-center w-full p-2 rounded-md hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 ${
+              //       className={`inline-flex items-center w-full p-2 rounded-lg hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 ${
               //         isSubMenuActive(item.subMenu)
               //           ? "bg-blue-100 text-blue-600"
               //           : "text-gray-800"
@@ -241,7 +241,7 @@ export default function Sidebar({ children }: SidebarProps) {
               //         <li key={subItem.label}>
               //           <a
               //             href={subItem.href}
-              //             className={`block px-3 py-1.5 rounded-md text-sm transition hover:bg-blue-100 hover:text-blue-600 ${
+              //             className={`block px-3 py-1.5 rounded-lg text-sm transition hover:bg-blue-100 hover:text-blue-600 ${
               //               isActive(subItem.href)
               //                 ? "bg-blue-100 text-blue-600"
               //                 : "text-gray-800"

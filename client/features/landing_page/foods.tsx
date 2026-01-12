@@ -32,53 +32,55 @@ export default function Foods() {
   ];
 
   return (
-    <section className="w-full bg-white">
-      <div className="max-w-7xl mt-4 mx-auto px-4">
-        {/* Section Header */}
-        <div className="mb-12 max-w-2xl">
-          <span className="text-sm uppercase tracking-widest text-gray-500">
-            Dining Experience
-          </span>
-          <h2 className="mt-2 text-3xl lg:text-4xl font-bold text-gray-800">
-            Featured Foods
-          </h2>
-          <p className="mt-4 text-gray-600 leading-relaxed">
-            A curated selection of freshly prepared dishes served at Jacah Randa
-            Beach Cabanas—crafted to complement your seaside experience.
-          </p>
-        </div>
-
-        {/* Gallery */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Featured Image */}
-          <div className="relative col-span-2 row-span-2 aspect-[4/5] rounded-3xl overflow-hidden shadow-lg">
-            <Image
-              src={foods[0]}
-              alt="Featured food"
-              fill
-              priority
-              className="object-cover transition-transform duration-300 hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+    <>
+      <section className="w-full bg-white">
+        <div className="max-w-7xl mt-16 mx-auto px-4">
+          {/* Section Header */}
+          <div className="mb-12 max-w-2xl">
+            <span className="text-sm uppercase tracking-widest text-gray-500">
+              Dining Experience
+            </span>
+            <h2 className="mt-2 text-3xl lg:text-4xl font-bold text-gray-800">
+              Featured Foods
+            </h2>
+            <p className="mt-4 text-gray-600 leading-relaxed">
+              A curated selection of freshly prepared dishes served at Jacah
+              Randa Beach Cabanas—crafted to complement your seaside experience.
+            </p>
           </div>
 
-          {/* Supporting Images */}
-          {foods.slice(1).map((food, index) => (
-            <div
-              key={index}
-              className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow"
-            >
+          {/* Gallery */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Featured Image */}
+            <div className="relative col-span-2 row-span-2 aspect-[4/5] rounded-3xl overflow-hidden shadow-lg">
               <Image
-                src={food}
-                alt={`Food item ${index + 2}`}
+                src={foods[0]}
+                alt="Featured food"
                 fill
+                priority
                 className="object-cover transition-transform duration-300 hover:scale-105"
-                sizes="(max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
-          ))}
+
+            {/* Supporting Images */}
+            {foods.slice(1).map((food, index) => (
+              <div
+                key={index}
+                className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow"
+              >
+                <Image
+                  src={food}
+                  alt={`Food item ${index + 2}`}
+                  fill
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

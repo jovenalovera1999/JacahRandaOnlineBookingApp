@@ -24,6 +24,7 @@ class Room extends Model
         'room_image',
         'room_no',
         'room_type_id',
+        'capacity',
         'description',
         'price',
         'room_status_id'

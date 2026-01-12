@@ -21,6 +21,7 @@ class RoomFactory extends Factory
         return [
             'room_no' => fake()->numberBetween(101, 510),
             'room_type_id' => RoomType::inRandomOrder()->first()->room_type_id,
+            'capacity' => fake()->numberBetween(1, 12),
             'description' => fake()->text(30),
             'price' => fake()->randomElement([3500, 3000, 1500, 1000, 2000]),
             'room_status_id' => RoomStatus::inRandomOrder()->first()->room_status_id

@@ -6,6 +6,7 @@ export interface RoomColumns {
   room_image: string | null;
   room_no: string;
   room_type: RoomTypeColumns;
+  capacity: string;
   description: string | null;
   price: string;
   room_status: RoomStatusColumns;
@@ -17,6 +18,7 @@ export interface RoomFieldsErrors {
   room_image?: string[];
   room_no?: string[];
   room_type?: string[];
+  capacity?: string[];
   description?: string[];
   price?: string[];
   room_status?: string[];

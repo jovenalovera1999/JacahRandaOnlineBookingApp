@@ -43,6 +43,7 @@ export default function EditRoomModal({
   const [editRoomImage, setEditRoomImage] = useState<File | null>(null);
   const [roomNo, setRoomNo] = useState("");
   const [roomType, setRoomType] = useState("");
+  const [capacity, setCapacity] = useState("");
   const [price, setPrice] = useState("");
   const [roomStatus, setRoomStatus] = useState("");
   const [description, setDescription] = useState("");
@@ -94,6 +95,7 @@ export default function EditRoomModal({
 
       formData.append("room_no", roomNo);
       formData.append("room_type", roomType);
+      formData.append("capacity", capacity);
       formData.append("price", price);
       formData.append("room_status", roomStatus);
       formData.append("description", description);
@@ -137,6 +139,7 @@ export default function EditRoomModal({
       setExistingRoomImage(selectedRoom.room_image ?? null);
       setRoomNo(selectedRoom.room_no);
       setRoomType(selectedRoom.room_type.room_type_id.toString());
+      setCapacity(selectedRoom.capacity);
       setPrice(selectedRoom.price);
       setRoomStatus(selectedRoom.room_status.room_status_id.toString());
       setDescription(selectedRoom.description ?? "");
@@ -150,6 +153,7 @@ export default function EditRoomModal({
       setExistingRoomImage(null);
       setRoomNo("");
       setRoomType("");
+      setCapacity("");
       setPrice("");
       setRoomStatus("");
       setDescription("");
@@ -192,7 +196,7 @@ export default function EditRoomModal({
                       autoFocus
                     />
                   </div>
-                  <div className="">
+                  <div className="mb-5">
                     <FloatingLabelSelectField
                       label="Room Type"
                       name="room_type"
@@ -212,6 +216,17 @@ export default function EditRoomModal({
                       ))}
                     </FloatingLabelSelectField>
                   </div>
+                  <div className="mb-1 md:mb-1.5">
+                    <FloatingLabelInputField
+                      label="Capacity"
+                      type="text"
+                      name="capacity"
+                      value={capacity}
+                      onChange={(e) => setCapacity(e.target.value)}
+                      errors={errors.capacity}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="col-span-2 md:col-span-1 w-full">
                   <div className="mb-5">
@@ -225,7 +240,7 @@ export default function EditRoomModal({
                       required
                     />
                   </div>
-                  <div className="">
+                  <div className="mb-1 md:mb-1.5">
                     <FloatingLabelSelectField
                       label="Room Status"
                       name="room_status"

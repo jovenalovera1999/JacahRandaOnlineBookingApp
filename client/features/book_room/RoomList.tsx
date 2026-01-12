@@ -44,17 +44,21 @@ export default function RoomList({
   if (rooms.length > 0) {
     return (
       <>
-        <section className="mt-24 px-4 sm:px-6 lg:px-8">
+        <section className="mt-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Page Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-semibold text-gray-800">
-                Book a Room
-              </h1>
-              <p className="text-gray-500 mt-1">
-                Choose from our available rooms and enjoy your stay
+            {/* Section Header */}
+            <div className="mb-12 max-w-2xl">
+              <span className="text-sm uppercase tracking-widest text-gray-500">
+                Stay Experience
+              </span>
+              <h2 className="mt-2 text-3xl lg:text-4xl font-bold text-gray-800">
+                Featured Rooms
+              </h2>
+              <p className="mt-4 text-gray-600 leading-relaxed">
+                A thoughtfully curated selection of comfortable rooms at Jacah
+                Randa Beach Cabanas, designed to provide a relaxing stay and
+                enhance your seaside getaway.
               </p>
-              <div className="h-px bg-gray-200 mt-4" />
             </div>
 
             {/* Responsive Card Grid */}

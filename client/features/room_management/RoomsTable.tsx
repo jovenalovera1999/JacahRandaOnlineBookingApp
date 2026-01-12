@@ -15,6 +15,7 @@ import RoomService from "@/services/RoomService";
 import { useCallback, useEffect, useState } from "react";
 import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useNumberDecimalFormat } from "@/hooks/useNumberFormat";
 
 interface RoomsTableProps {
   onAddRoom: () => void;
@@ -62,6 +63,7 @@ export default function RoomsTable({
   const headers = [
     "Room No",
     "Room Type",
+    "Capacity",
     "Description",
     "Price",
     "Room Status",
@@ -122,12 +124,23 @@ export default function RoomsTable({
                   >
                     <TableCell>{room.room_no}</TableCell>
                     <TableCell>{room.room_type.room_type}</TableCell>
+                    <TableCell>{room.capacity}</TableCell>
                     <TableCell>{room.description}</TableCell>
-                    <TableCell>{room.price}</TableCell>
+                    <TableCell>{useNumberDecimalFormat(room.price)}</TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${room.room_status.room_status === 'Available' ? 'bg-green-100 text-green-700' : room.room_status.room_status === 'Unavailable' ? 'bg-red-100 text-red-700' : room.room_status.room_status === 'Occupied' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>  
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          room.room_status.room_status === "Available"
+                            ? "bg-green-100 text-green-700"
+                            : room.room_status.room_status === "Unavailable"
+                            ? "bg-red-100 text-red-700"
+                            : room.room_status.room_status === "Occupied"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
                         {room.room_status.room_status}
-                      </span>  
+                      </span>
                     </TableCell>
                     <TableCell className="relative overflow-visible">
                       <ActionButtonDropdown

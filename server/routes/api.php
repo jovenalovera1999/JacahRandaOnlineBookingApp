@@ -94,6 +94,8 @@ Route::middleware(['throttle:api'])->group(function () {
 
         Route::controller(FoodController::class)->prefix('/food')->group(function() {
             Route::get('/loadFoodReferences', 'loadFoodReferences');
+            Route::get('/loadFoods', 'loadFoods');
+            Route::post('/storeFood', 'storeFood');
         });
     });
 
