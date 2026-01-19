@@ -8,7 +8,7 @@ import ResortView2 from "@/public/img/ui/landing_page/ResortView2.jpg";
 export default function About() {
   return (
     <>
-      <section className="w-full bg-white">
+      <section id="about" className="w-full bg-white scroll-mt-24">
         <div className="max-w-7xl mx-auto mt-4 md:mt-16 px-4 py-4 grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Text Content */}
           <div className="flex flex-col mt-14">

@@ -96,6 +96,8 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::get('/loadFoodReferences', 'loadFoodReferences');
             Route::get('/loadFoods', 'loadFoods');
             Route::post('/storeFood', 'storeFood');
+            Route::put('/updateFood/{food}', 'updateFood');
+            Route::delete('/destroyFood/{food}', 'destroyFood');
         });
     });
 

@@ -9,7 +9,7 @@ import { useReload } from "@/hooks/useReload";
 
 export default function Navbar() {
   // Hooks
-  const { reload, handleReload } = useReload();
+  const { reload } = useReload();
 
   // Built-in hooks
   const pathname = usePathname();
@@ -31,10 +31,10 @@ export default function Navbar() {
     //     { label: "Rewards", href: "#" },
     //   ],
     // },
-    { label: "About", href: "/" },
-    { label: "Foods", href: "#" },
+    { label: "About", href: "#about" },
+    { label: "Foods", href: "#foods" },
     { label: "Activities", href: "#" },
-    { label: "Book a Room", href: "/book_room" },
+    { label: "Book a Room", href: "#room_list" },
   ];
 
   // Navbar control in small or mobile screen

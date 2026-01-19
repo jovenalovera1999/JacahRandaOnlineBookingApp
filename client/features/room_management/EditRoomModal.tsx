@@ -37,6 +37,7 @@ export default function EditRoomModal({
   const [roomStatuses, setRoomStatuses] = useState<RoomStatusColumns[]>([]);
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const [roomId, setRoomId] = useState(0);
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
     null
   );
@@ -100,10 +101,7 @@ export default function EditRoomModal({
       formData.append("room_status", roomStatus);
       formData.append("description", description);
 
-      const { status, data } = await RoomService.updateRoom(
-        selectedRoom?.room_id!,
-        formData
-      );
+      const { status, data } = await RoomService.updateRoom(roomId, formData);
 
       if (status !== 200) {
         console.error(
@@ -136,6 +134,7 @@ export default function EditRoomModal({
 
   useEffect(() => {
     if (selectedRoom && isOpen) {
+      setRoomId(selectedRoom.room_id);
       setExistingRoomImage(selectedRoom.room_image ?? null);
       setRoomNo(selectedRoom.room_no);
       setRoomType(selectedRoom.room_type.room_type_id.toString());
@@ -149,6 +148,7 @@ export default function EditRoomModal({
 
   useEffect(() => {
     if (!isOpen) {
+      setRoomId(0);
       setEditRoomImage(null);
       setExistingRoomImage(null);
       setRoomNo("");

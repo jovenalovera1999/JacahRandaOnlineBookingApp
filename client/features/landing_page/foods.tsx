@@ -33,7 +33,7 @@ export default function Foods() {
 
   return (
     <>
-      <section className="w-full bg-white">
+      <section id="foods" className="w-full bg-white scroll-mt-24">
         <div className="max-w-7xl mt-16 mx-auto px-4">
           {/* Section Header */}
           <div className="mb-12 max-w-2xl">

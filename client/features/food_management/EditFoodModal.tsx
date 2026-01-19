@@ -9,13 +9,14 @@ import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
 import UploadField from "@/components/ui/UploadField";
 import { FoodCategoryColumns } from "@/interfaces/FoodCategory";
-import { FoodFieldsErrors } from "@/interfaces/FoodInterface";
+import { FoodColumns, FoodFieldsErrors } from "@/interfaces/FoodInterface";
 import { FoodStatusColumns } from "@/interfaces/FoodStatusInterface";
 import FoodService from "@/services/FoodService";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
 interface EditFoodModalProps {
   isOpen: boolean;
+  selectedFood: FoodColumns | null;
   onRoomUpdated: (
     status: "success" | "failed" | "warning" | "others",
     message: string
@@ -26,6 +27,7 @@ interface EditFoodModalProps {
 
 export default function EditFoodModal({
   isOpen,
+  selectedFood,
   onRoomUpdated,
   onReloadFoods,
   onClose,
@@ -36,6 +38,10 @@ export default function EditFoodModal({
   const [foodStatuses, setFoodStatuses] = useState<FoodStatusColumns[]>([]);
 
   const [isUpdating, setIsUpdating] = useState(false);
+  const [foodId, setFoodId] = useState(0);
+  const [existingFoodImage, setExistingFoodImage] = useState<string | null>(
+    null
+  );
   const [editFoodImage, setEditFoodImage] = useState<File | null>(null);
   const [foodName, setFoodName] = useState("");
   const [description, setDescription] = useState("");
@@ -66,20 +72,27 @@ export default function EditFoodModal({
     }
   }, []);
 
-  const handleStoreFood = async (e: FormEvent) => {
+  const handleUpdateFood = async (e: FormEvent) => {
     try {
       e.preventDefault();
       setIsUpdating(true);
 
       const formData = new FormData();
-      formData.append("food_image", editFoodImage ?? "");
+      formData.append("_method", "PUT");
+
+      editFoodImage
+        ? formData.append("food_image", editFoodImage)
+        : !existingFoodImage && !editFoodImage
+        ? formData.append("food_image_removed", "1")
+        : formData.append("food_image", "");
+
       formData.append("food_name", foodName);
       formData.append("description", description);
       formData.append("price", price);
       formData.append("category", category);
       formData.append("status", foodStatus);
 
-      const { status, data } = await FoodService.storeFood(formData);
+      const { status, data } = await FoodService.updateFood(foodId, formData);
 
       if (status !== 200) {
         console.error(
@@ -92,12 +105,6 @@ export default function EditFoodModal({
       onRoomUpdated("success", data.message);
       onReloadFoods();
 
-      setEditFoodImage(null);
-      setFoodName("");
-      setDescription("");
-      setPrice("");
-      setCategory("");
-      setFoodStatus("");
       setErrors({});
     } catch (error: any) {
       if (error.response && error.response.status !== 422) {
@@ -118,12 +125,37 @@ export default function EditFoodModal({
     if (isOpen) handleLoadFoodReferences();
   }, [isOpen, handleLoadFoodReferences]);
 
+  useEffect(() => {
+    if (isOpen && selectedFood) {
+      setFoodId(selectedFood.food_id);
+      setExistingFoodImage(selectedFood.food_image ?? null);
+      setFoodName(selectedFood.food_name);
+      setDescription(selectedFood.description);
+      setPrice(selectedFood.price.toString());
+      setCategory(selectedFood.food_category.food_category_id.toString());
+      setFoodStatus(selectedFood.food_status.food_status_id.toString());
+    }
+  }, [isOpen, selectedFood]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFoodId(0);
+      setExistingFoodImage(null);
+      setEditFoodImage(null);
+      setFoodName("");
+      setDescription("");
+      setPrice("");
+      setCategory("");
+      setFoodStatus("");
+    }
+  }, [isOpen]);
+
   return (
     <>
-      <Modal title="Add Food" isOpen={isOpen} onClose={onClose}>
+      <Modal title="Edit Food" isOpen={isOpen} onClose={onClose}>
         {foodCategories.length > 0 && foodStatuses.length > 0 ? (
           <>
-            <Form onSubmit={handleStoreFood}>
+            <Form onSubmit={handleUpdateFood}>
               <div className="border-b border-gray-200 pb-4 mb-4">
                 <div className="mb-5 w-full">
                   <UploadField
@@ -132,6 +164,7 @@ export default function EditFoodModal({
                     name="food_image"
                     value={editFoodImage}
                     onChange={setEditFoodImage}
+                    existingFileUrl={existingFoodImage}
                     alt="Food Image"
                     errors={errors.food_image}
                   />

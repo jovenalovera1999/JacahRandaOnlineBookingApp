@@ -68,7 +68,7 @@ class RoomController extends Controller
         $rooms = $rooms->get();
 
         $rooms->transform(function ($room) {
-            $room->room_image = $room->room_image ? url("storage/img/room/{$room->room_image}") : null;
+            $room->room_image = $room->room_image ? url('storage/img/room/' . $room->room_image) : null;
             return $room;
         });
 

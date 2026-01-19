@@ -44,7 +44,10 @@ export default function RoomList({
   if (rooms.length > 0) {
     return (
       <>
-        <section className="mt-16 px-4 sm:px-6 lg:px-8">
+        <section
+          id="room_list"
+          className="scroll-mt-24 mt-16 px-4 sm:px-6 lg:px-8"
+        >
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="mb-12 max-w-2xl">

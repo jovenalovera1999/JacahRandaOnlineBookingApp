@@ -193,30 +193,43 @@ export default function BookedTable({
                       {useFullDateTimeFormat(booking.created_at)}
                     </TableCell>
                     <TableCell className="relative overflow-visible">
-                      {booking.booking_status.booking_status === "Pending" && (
-                        <ActionButtonDropdown
-                          id={booking.booking_id}
-                          openDropdownId={bookingsActionOpenDropdown}
-                          setOpenDropdownId={setBookingsActionOpenDropdown}
-                        >
-                          <Button
-                            tag="button"
-                            type="button"
-                            className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                            onClick={() => onApproveBooking(booking)}
-                          >
-                            Approve
-                          </Button>
-                          <Button
-                            tag="button"
-                            type="button"
-                            className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                            onClick={() => onCancelBooking(booking)}
-                          >
-                            Cancel
-                          </Button>
-                        </ActionButtonDropdown>
-                      )}
+                      <ActionButtonDropdown
+                        id={booking.booking_id}
+                        openDropdownId={bookingsActionOpenDropdown}
+                        setOpenDropdownId={setBookingsActionOpenDropdown}
+                      >
+                        {booking.booking_status.booking_status === "Pending" ? (
+                          <>
+                            <Button
+                              tag="button"
+                              type="button"
+                              className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                              onClick={() => onApproveBooking(booking)}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              tag="button"
+                              type="button"
+                              className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                              onClick={() => onCancelBooking(booking)}
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              tag="button"
+                              type="button"
+                              className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                              // onClick={() => onApproveBooking(booking)}
+                            >
+                              Completed
+                            </Button>
+                          </>
+                        )}
+                      </ActionButtonDropdown>
                     </TableCell>
                   </TableRow>
                 ))

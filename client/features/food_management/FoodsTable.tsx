@@ -18,16 +18,16 @@ import { useCallback, useEffect, useState } from "react";
 interface FoodsTableProps {
   refreshFoods: boolean;
   onAddFood: () => void;
-  // onEditFood: (selectedFood: FoodColumns | null) => void;
-  // onDeleteFood: (selectedFood: FoodColumns | null) => void;
+  onEditFood: (selectedFood: FoodColumns | null) => void;
+  onDeleteFood: (selectedFood: FoodColumns | null) => void;
 }
 
 export default function FoodsTable({
   refreshFoods,
   onAddFood,
-}: // onEditFood,
-// onDeleteFood,
-FoodsTableProps) {
+  onEditFood,
+  onDeleteFood,
+}: FoodsTableProps) {
   const [foods, setFoods] = useState<FoodColumns[]>([]);
 
   const [foodsActionOpenDropdown, setFoodsActionOpenDropdown] = useState<
@@ -130,7 +130,7 @@ FoodsTableProps) {
                         tag="button"
                         type="button"
                         className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                        // onClick={() => onEditFood(food)}
+                        onClick={() => onEditFood(food)}
                       >
                         Edit
                       </Button>
@@ -138,7 +138,7 @@ FoodsTableProps) {
                         tag="button"
                         type="button"
                         className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                        // onClick={() => onDeleteFood(food)}
+                        onClick={() => onDeleteFood(food)}
                       >
                         Delete
                       </Button>

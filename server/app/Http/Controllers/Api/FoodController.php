@@ -27,6 +27,11 @@ class FoodController extends Controller
             ->orderBy('price', 'desc')
             ->get();
 
+        $foods->transform(function($food) {
+            $food->food_image = $food->food_image ? url('storage/img/food/' . $food->food_image) : null;
+            return $food;
+        });
+
         return response()->json([
             'foods' => $foods
         ], 200);
@@ -105,6 +110,14 @@ class FoodController extends Controller
 
         return response()->json([
             'message' => 'Food Successfully Updated.'
+        ], 200);
+    }
+
+    public function destroyFood(Food $food) {
+        $food->delete();
+
+        return response()->json([
+            'message' => 'Food Successfully Deleted.'
         ], 200);
     }
 }

@@ -28,6 +28,7 @@ export default function DeleteRoomModal({
   onClose,
 }: DeleteRoomModalProps) {
   const [isDestroying, setIsDestroying] = useState(false);
+  const [roomId, setRoomId] = useState(0);
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
     null
   );
@@ -42,9 +43,7 @@ export default function DeleteRoomModal({
       e.preventDefault();
       setIsDestroying(true);
 
-      const { status, data } = await RoomService.destroyRoom(
-        selectedRoom?.room_id!
-      );
+      const { status, data } = await RoomService.destroyRoom(roomId);
 
       if (status !== 200) {
         console.error(
@@ -70,6 +69,7 @@ export default function DeleteRoomModal({
 
   useEffect(() => {
     if (selectedRoom && isOpen) {
+      setRoomId(selectedRoom.room_id);
       setExistingRoomImage(selectedRoom.room_image ?? null);
       setRoomNo(selectedRoom.room_no);
       setRoomType(selectedRoom.room_type.room_type);
@@ -81,6 +81,7 @@ export default function DeleteRoomModal({
 
   useEffect(() => {
     if (!isOpen) {
+      setRoomId(0);
       setExistingRoomImage(null);
       setRoomNo("");
       setRoomType("");
