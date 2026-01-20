@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 interface SidebarProps {
   children: ReactNode;
@@ -115,7 +116,7 @@ export default function Sidebar({ children }: SidebarProps) {
                 aria-expanded={isUserSubMenuOpen}
               >
                 <span className="sr-only">Open user menu</span>
-                {user?.name ?? "No Name"}
+                {user?.name}
                 <svg
                   className={`w-4 h-4 ms-1 transition-transform duration-300 ${
                     isUserSubMenuOpen ? "-rotate-180" : "rotate-0"
@@ -181,7 +182,7 @@ export default function Sidebar({ children }: SidebarProps) {
                 // !item.subMenu ? (
                 // Without submenu
                 <li key={item.label}>
-                  <a
+                  <Link
                     href={item.href}
                     className={`inline-flex items-center w-full p-2 hover:bg-blue-100 hover:text-blue-600 font-medium text-sm cursor-pointer transition-colors duration-200 rounded-lg ${
                       isActive(item.href)
@@ -191,7 +192,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     role="menuitem"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               )
               // ) : (

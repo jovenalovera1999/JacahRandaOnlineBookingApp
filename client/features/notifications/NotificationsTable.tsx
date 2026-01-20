@@ -84,7 +84,7 @@ export default function NotificationsTable({
 
   return (
     <>
-      <div className="overflow-hidden rounded-md border border-gray-200 bg-transparent">
+      <div className="overflow-hidden rounded-md border border-gray-200 bg-transparent mt-20">
         <div className="relative max-w-full max-h-[calc(100vh-10rem)] overflow-x-auto custom-scrollbar">
           <Table>
             <TableHead>

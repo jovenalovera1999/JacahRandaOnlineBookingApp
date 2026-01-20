@@ -6,11 +6,13 @@ import RoomService from "@/services/RoomService";
 import RoomCard from "./RoomCard";
 
 interface RoomListProps {
+  id: string;
   onBookRoom: (selectedRoom: RoomColumns | null) => void;
   reloadAvailableRooms: boolean;
 }
 
 export default function RoomList({
+  id,
   onBookRoom,
   reloadAvailableRooms,
 }: RoomListProps) {
@@ -45,7 +47,7 @@ export default function RoomList({
     return (
       <>
         <section
-          id="room_list"
+          id={id || "room_list"}
           className="scroll-mt-24 mt-16 px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto">

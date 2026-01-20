@@ -15,7 +15,11 @@ import Food11 from "@/public/img/ui/foods/Food11.jpg";
 import Food12 from "@/public/img/ui/foods/Food12.jpg";
 import Food13 from "@/public/img/ui/foods/Food13.jpg";
 
-export default function Foods() {
+interface FoodsProps {
+  id: string;
+}
+
+export default function Foods({ id }: FoodsProps) {
   const foods = [
     Food1,
     Food2,
@@ -33,7 +37,7 @@ export default function Foods() {
 
   return (
     <>
-      <section id="foods" className="w-full bg-white scroll-mt-24">
+      <section id={id || "foods"} className="w-full bg-white scroll-mt-24">
         <div className="max-w-7xl mt-16 mx-auto px-4">
           {/* Section Header */}
           <div className="mb-12 max-w-2xl">

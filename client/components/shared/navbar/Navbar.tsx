@@ -3,15 +3,17 @@
 import Image from "next/image";
 import CompanyLogo from "@/public/img/ui/CompanyLogo.png";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import AuthButton from "./components/AuthButton";
 import { useReload } from "@/hooks/useReload";
+import Link from "next/link";
 
 export default function Navbar() {
   // Hooks
   const { reload } = useReload();
 
   // Built-in hooks
+  const router = useRouter();
   const pathname = usePathname();
 
   // States
@@ -36,6 +38,23 @@ export default function Navbar() {
     { label: "Activities", href: "#" },
     { label: "Book a Room", href: "#room_list" },
   ];
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("#")) {
+      if (pathname !== "/") {
+        router.push(`/${href}`);
+        return;
+      }
+
+      const element = document.querySelector(href);
+
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      router.push(href);
+    }
+  };
 
   // Navbar control in small or mobile screen
   const toggleNavbar = () => {
@@ -135,8 +154,8 @@ export default function Navbar() {
               {navItems.map(
                 (item) => (
                   <li key={item.label} onClick={() => toggleActive(item.label)}>
-                    <a
-                      href={item.href}
+                    <button
+                      onClick={() => handleNavClick(item.href)}
                       className={`block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 ${
                         isItemSelected === item.label
                           ? "focus:text-blue-600"
@@ -144,7 +163,7 @@ export default function Navbar() {
                       } text-gray-500 hover:text-blue-600 cursor-pointer`}
                     >
                       {item.label}
-                    </a>
+                    </button>
                   </li>
                 )
                 // !item.dropdown ? (

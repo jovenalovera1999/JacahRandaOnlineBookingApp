@@ -5,10 +5,14 @@ import CottagesView1 from "@/public/img/ui/landing_page/CottagesView1.jpg";
 import ResortView1 from "@/public/img/ui/landing_page/ResortView1.jpg";
 import ResortView2 from "@/public/img/ui/landing_page/ResortView2.jpg";
 
-export default function About() {
+interface AboutProps {
+  id: string;
+}
+
+export default function About({ id }: AboutProps) {
   return (
     <>
-      <section id="about" className="w-full bg-white scroll-mt-24">
+      <section id={id || "about"} className="w-full bg-white scroll-mt-24">
         <div className="max-w-7xl mx-auto mt-4 md:mt-16 px-4 py-4 grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Text Content */}
           <div className="flex flex-col mt-14">

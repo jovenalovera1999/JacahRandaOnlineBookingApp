@@ -7,7 +7,8 @@ import Foods from "@/features/landing_page/foods";
 import { useReload } from "@/hooks/useReload";
 import { useToastMessage } from "@/hooks/useToastMessage";
 import { RoomColumns } from "@/interfaces/RoomInterface";
-import { useState } from "react";
+// import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function LandingPage() {
   const { showToastMessage } = useToastMessage();
@@ -26,10 +27,32 @@ export default function LandingPage() {
     setIsBookRoomModalOpen(false);
   };
 
+  // const searchParams = useSearchParams();
+  const hash = window.location.hash;
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [hash]);
+
+  // const scrollTo = searchParams.get("scroll");
+
+  // useEffect(() => {
+  //   if (scrollTo) {
+  //     const element = document.getElementById(scrollTo);
+  //     if (element) element.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, [scrollTo]);
+
   return (
     <>
-      <About />
-      <Foods />
+      <About id="about" />
+      <Foods id="foods" />
       <BookRoomModal
         selectedRoom={selectedRoom}
         isOpen={isBookRoomModalOpen}
@@ -37,7 +60,11 @@ export default function LandingPage() {
         onReloadAvailableRooms={handleReload}
         onClose={closeBookRoomModal}
       />
-      <RoomList onBookRoom={openBookRoomModal} reloadAvailableRooms={reload} />
+      <RoomList
+        id="room_list"
+        onBookRoom={openBookRoomModal}
+        reloadAvailableRooms={reload}
+      />
     </>
   );
 }

@@ -5,7 +5,6 @@ import { useToastMessage } from "@/hooks/useToastMessage";
 import { LoginFieldsErrors, UserColumns } from "@/interfaces/UserInterface";
 import api from "@/lib/axios";
 import { usePathname, useRouter } from "next/navigation";
-import { stringify } from "querystring";
 import {
   createContext,
   ReactNode,
@@ -27,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { showToastMessage } = useToastMessage();
 
   const [user, setUser] = useState<UserColumns | null>(null);
@@ -49,9 +49,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(data.user);
-
-      const storeUser = JSON.stringify(data.user);
-      sessionStorage.setItem("user", storeUser);
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         setUser(null);
@@ -86,9 +83,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(data.user);
-
-      const storeUser = JSON.stringify(data.user);
-      sessionStorage.setItem("user", storeUser);
 
       router.push("/dashboard");
     } catch (error: any) {
@@ -127,7 +121,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setUser(null);
-      sessionStorage.removeItem("user");
 
       showToastMessage("success", data.message);
       router.push("/login");
@@ -142,8 +135,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    if (pathname === "/login") return;
     handleLoadUser();
-  }, [handleLoadUser]);
+  }, [pathname, handleLoadUser]);
 
   return (
     <AuthContext.Provider

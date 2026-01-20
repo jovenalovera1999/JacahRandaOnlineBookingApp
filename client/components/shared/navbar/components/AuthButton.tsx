@@ -3,6 +3,7 @@
 import { useGoogleAuth } from "@/context/GoogleAuthContext";
 import { redirectToGoogleLogin } from "@/lib/auth";
 import NotificationService from "@/services/NotificationService";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 interface AuthButtonProps {
@@ -78,18 +79,18 @@ export default function AuthButton({
     <>
       {hasOccupiedRoom && (
         <li>
-          <a
+          <Link
             href="#"
             className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
           >
             <span>Order a Food</span>
-          </a>
+          </Link>
         </li>
       )}
 
       {userNavbarMenus.map((menu) => (
         <li key={menu.label}>
-          <a
+          <Link
             href={menu.href}
             className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
           >
@@ -109,7 +110,7 @@ export default function AuthButton({
                 {totalUnreadNotifications}
               </span>
             )}
-          </a>
+          </Link>
         </li>
       ))}
       <li>
