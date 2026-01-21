@@ -115,7 +115,7 @@ class BookingController extends Controller
     }
 
     // Canel booking by soft delete and updates room back to available status in admin or employee side
-    public function cancelBookingInAdminOrEmployeeSide(Request $request, Room $room, Booking $booking)
+    public function cancelBookingInAdminOrEmployeeSide(Request $request, Booking $booking)
     {
         // Data validation
         $validatedData = $request->validate([
@@ -167,5 +167,23 @@ class BookingController extends Controller
             ->json([
                 'message' => 'Booking Successfully Cancelled.'
             ], 200);
+    }
+
+    public function completeBooking(Booking $booking) {
+        $bookingStatus = BookingStatus::where('booking_status', 'Completed')
+            ->firstOrFail();
+
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id,
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'description' => 'The room you booked has been set to completed and client checked out.',
+        ], 200);
+
+        return response()->json([
+            'message' => 'Booking Successfully Completed or Checked Out.'
+        ], 200);
     }
 }

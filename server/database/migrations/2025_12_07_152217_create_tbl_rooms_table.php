@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('room_image', 255)->nullable();
             $table->integer('room_no');
             $table->unsignedBigInteger('room_type_id');
-            $table->integer('capacity');
+            $table->string('capacity');
             $table->string('description', 255)->nullable();
             $table->double('price');
             $table->unsignedBigInteger('room_status_id');
