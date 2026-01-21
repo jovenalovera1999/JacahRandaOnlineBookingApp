@@ -56,7 +56,7 @@ export default function Foods({ id }: FoodsProps) {
           {/* Gallery */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Featured Image */}
-            <div className="relative col-span-2 row-span-2 aspect-[4/5] rounded-3xl overflow-hidden shadow-lg">
+            <div className="relative col-span-2 row-span-2 aspect-4/5 rounded-3xl overflow-hidden shadow-lg">
               <Image
                 src={foods[0]}
                 alt="Featured food"
@@ -71,7 +71,7 @@ export default function Foods({ id }: FoodsProps) {
             {foods.slice(1).map((food, index) => (
               <div
                 key={index}
-                className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow"
+                className="relative aspect-3/4 rounded-2xl overflow-hidden shadow"
               >
                 <Image
                   src={food}

@@ -106,7 +106,7 @@ export default function Navbar() {
         className={`fixed w-full z-20 top-0 start-0 border-b border-gray-100 bg-white shadow-md`}
       >
         <div
-          className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+          className="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4"
           ref={navbarRef}
         >
           <a

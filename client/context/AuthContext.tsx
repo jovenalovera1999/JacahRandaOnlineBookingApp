@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { showToastMessage } = useToastMessage();
 
   const [user, setUser] = useState<UserColumns | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<LoginFieldsErrors>({});
 
   const handleLoadUser = useCallback(async () => {
@@ -135,7 +135,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (pathname === "/login") return;
+    if (pathname === "/login") {
+      setIsLoading(false);
+      return;
+    }
+
     handleLoadUser();
   }, [pathname, handleLoadUser]);
 

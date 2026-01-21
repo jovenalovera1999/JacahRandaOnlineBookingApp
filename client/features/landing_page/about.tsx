@@ -51,7 +51,7 @@ export default function About({ id }: AboutProps) {
           {/* Image Gallery */}
           <div className="grid grid-cols-2 gap-4">
             {/* Featured Image */}
-            <div className="relative col-span-2 aspect-[16/10] rounded-2xl overflow-hidden shadow-lg">
+            <div className="relative col-span-2 aspect-16/10 rounded-2xl overflow-hidden shadow-lg">
               <Image
                 src={ResortView1}
                 alt="Jacah Randa Beach Resort"
@@ -63,7 +63,7 @@ export default function About({ id }: AboutProps) {
             </div>
 
             {/* Portrait Images */}
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow">
+            <div className="relative aspect-3/4 rounded-2xl overflow-hidden shadow">
               <Image
                 src={BeachView1}
                 alt="Beach view"
@@ -73,7 +73,7 @@ export default function About({ id }: AboutProps) {
               />
             </div>
 
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow">
+            <div className="relative aspect-3/4 rounded-2xl overflow-hidden shadow">
               <Image
                 src={BeachView3}
                 alt="Beach cottages"
@@ -84,7 +84,7 @@ export default function About({ id }: AboutProps) {
             </div>
 
             {/* Bottom Images */}
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow">
+            <div className="relative aspect-4/3 rounded-2xl overflow-hidden shadow">
               <Image
                 src={CottagesView1}
                 alt="Cottages"
@@ -94,7 +94,7 @@ export default function About({ id }: AboutProps) {
               />
             </div>
 
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow">
+            <div className="relative aspect-3/4 rounded-2xl overflow-hidden shadow">
               <Image
                 src={ResortView2}
                 alt="Resort view"
