@@ -1,6 +1,6 @@
 "use client";
 
-import ProtectedRoute from "@/components/ProtectedRoute";
+import AuthGuard from "@/components/AuthGuard";
 import Sidebar from "@/components/shared/Sidebar";
 import { AuthProvider } from "@/context/AuthContext";
 import { ReactNode } from "react";
@@ -13,9 +13,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <>
       <AuthProvider>
-        <ProtectedRoute>
-          <Sidebar>{children}</Sidebar>
-        </ProtectedRoute>
+        <AuthGuard />
+        <Sidebar>{children}</Sidebar>
       </AuthProvider>
     </>
   );

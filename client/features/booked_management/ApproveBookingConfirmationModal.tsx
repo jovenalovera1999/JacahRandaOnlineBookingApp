@@ -4,7 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
 import { BookingColumns } from "@/interfaces/BookingInterface";
 import BookingService from "@/services/BookingService";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 interface ApproveBookingConfirmationModalProps {
   selectedBooking: BookingColumns | null;
@@ -25,6 +25,7 @@ export default function ApproveBookingConfirmationModal({
   onClose,
 }: ApproveBookingConfirmationModalProps) {
   const [isApproving, setIsApproving] = useState(false);
+  const [bookingId, setBookingId] = useState(0);
 
   // Cancel booking by soft delete
   const handleApproveBooking = async (e: FormEvent) => {
@@ -32,9 +33,7 @@ export default function ApproveBookingConfirmationModal({
       e.preventDefault();
       setIsApproving(true);
 
-      const { status, data } = await BookingService.approveBooking(
-        selectedBooking?.booking_id!
-      );
+      const { status, data } = await BookingService.approveBooking(bookingId);
 
       if (status !== 200) {
         console.error(
@@ -56,6 +55,18 @@ export default function ApproveBookingConfirmationModal({
       setIsApproving(false);
     }
   };
+
+  useEffect(() => {
+    if (isOpen && selectedBooking) {
+      setBookingId(selectedBooking.booking_id);
+    }
+  }, [isOpen, selectedBooking]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setBookingId(0);
+    }
+  }, [isOpen]);
 
   return (
     <>

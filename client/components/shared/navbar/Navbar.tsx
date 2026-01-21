@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import AuthButton from "./components/AuthButton";
 import { useReload } from "@/hooks/useReload";
-import Link from "next/link";
 
 export default function Navbar() {
   // Hooks

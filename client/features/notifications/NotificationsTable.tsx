@@ -79,8 +79,10 @@ export default function NotificationsTable({
   const headers = ["Details", "Description", "Action", "Date Notified"];
 
   useEffect(() => {
-    handleLoadnotifications();
-  }, [reloadNotifications, handleLoadnotifications]);
+    if (user) {
+      handleLoadnotifications();
+    }
+  }, [user, reloadNotifications, handleLoadnotifications]);
 
   return (
     <>

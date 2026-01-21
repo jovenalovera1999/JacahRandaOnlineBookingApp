@@ -16,6 +16,7 @@ import {
 
 interface AuthContextType {
   user: UserColumns | null;
+  initialized: boolean;
   isLoading: boolean;
   handleLogin: (username: string, password: string) => void;
   handleLogout: () => void;
@@ -30,7 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { showToastMessage } = useToastMessage();
 
   const [user, setUser] = useState<UserColumns | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<LoginFieldsErrors>({});
 
   const handleLoadUser = useCallback(async () => {
@@ -136,16 +138,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (pathname === "/login") {
-      setIsLoading(false);
+      setInitialized(true);
       return;
     }
 
-    handleLoadUser();
+    handleLoadUser().finally(() => setInitialized(true));
   }, [pathname, handleLoadUser]);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, handleLogin, handleLogout, errors }}
+      value={{
+        user,
+        initialized,
+        isLoading,
+        handleLogin,
+        handleLogout,
+        errors,
+      }}
     >
       {children}
     </AuthContext.Provider>

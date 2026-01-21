@@ -56,8 +56,10 @@ export default function AuthButton({
     user?.bookings?.[0]?.room.room_status.room_status === "Occupied";
 
   useEffect(() => {
-    handleGetTotalUnreadNotifications();
-  }, [reloadCountNotifications, handleGetTotalUnreadNotifications]);
+    if (user) {
+      handleGetTotalUnreadNotifications();
+    }
+  }, [user, reloadCountNotifications, handleGetTotalUnreadNotifications]);
 
   if (!user) {
     return (

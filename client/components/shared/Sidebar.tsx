@@ -24,7 +24,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const sidebarItems = [
     { label: "Dashboard", href: "/dashboard" },
     { label: "Room Management", href: "/room_management" },
-    { label: "Booked Management", href: "booked_management" },
+    { label: "Booked Management", href: "/booked_management" },
     { label: "Food Management", href: "/food_management" },
     { label: "User Management", href: "/user_management" },
     // {

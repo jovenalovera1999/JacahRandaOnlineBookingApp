@@ -52,6 +52,8 @@ export default function BookedManagementPage() {
     setIsCancelBookingConfirmationModalOpen(false);
   };
 
+  // Occupied booking
+
   return (
     <>
       <h1 className="text-3xl text-gray-800 font-semibold mb-4">

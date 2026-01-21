@@ -29,6 +29,12 @@ const BookingService = {
     const response = await api.post(`${apiPrefix}/approveBooking/${bookingId}`);
     return response;
   },
+  completeBooking: async (bookingId: string | number) => {
+    const response = await api.post(
+      `${apiPrefix}/completeBooking/${bookingId}`
+    );
+    return response;
+  },
   cancelBookingInAdminOrEmployeeSide: async (
     roomId: string | number,
     bookingId: string | number,
