@@ -6,11 +6,18 @@ import { createPortal } from "react-dom";
 interface ModalProps {
   title: string;
   isOpen: boolean;
+  isFullScreen?: boolean;
   children: ReactNode;
   onClose: () => void;
 }
 
-export function Modal({ title, isOpen, children, onClose }: ModalProps) {
+export function Modal({
+  title,
+  isOpen,
+  isFullScreen = false,
+  children,
+  onClose,
+}: ModalProps) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -39,7 +46,11 @@ export function Modal({ title, isOpen, children, onClose }: ModalProps) {
         {/* Viewport container */}
         <div className="relative flex h-full w-full items-center justify-center p-4">
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl shadow-md w-full max-w-2xl max-h-[90vh] flex flex-col z-50">
+          <div
+            className={`relative bg-white shadow-md flex flex-col z-50 rounded-2xl ${
+              isFullScreen ? "w-full h-full" : "w-full max-w-2xl max-h-[90vh]"
+            }`}
+          >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 p-6">
               <h3 className="text-2xl font-semibold">{title}</h3>

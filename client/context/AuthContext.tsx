@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (status !== 200) {
         console.error(
           "Unexpected status error during load user at AuthContext.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       console.error(
         "Unexpected server error during load user at AuthContext.tsx: ",
-        error
+        error,
       );
     } finally {
       setIsLoading(false);
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (status !== 200) {
         console.error(
           "Unexpected status error during login user at AuthContext.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else if (error.response && error.response.status != 422) {
         console.error(
           "Unexpected server error during login user at AuthContext.tsx: ",
-          error
+          error,
         );
         return;
       }
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (status !== 200) {
         console.error(
           "Unexpected status error during logout user at AuthContext.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -129,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(
         "Unexpected server error during logout user at AuthContext.tsx: ",
-        error
+        error,
       );
     } finally {
       setIsLoading(false);
@@ -143,6 +143,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     handleLoadUser().finally(() => setInitialized(true));
+    // console.log(user);
   }, [pathname, handleLoadUser]);
 
   return (

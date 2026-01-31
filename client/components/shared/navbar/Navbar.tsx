@@ -34,7 +34,7 @@ export default function Navbar() {
     // },
     { label: "About", href: "#about" },
     { label: "Foods", href: "#foods" },
-    { label: "Activities", href: "#" },
+    { label: "Activities", href: "#activities" },
     { label: "Book a Room", href: "#room_list" },
   ];
 

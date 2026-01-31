@@ -5,16 +5,20 @@ const apiPrefix = "/booking";
 const BookingService = {
   loadBookingsOfCurrentLoggedInUserClient: async () => {
     const response = await api.get(
-      `${apiPrefix}/loadBookingsOfCurrentLoggedInUserClient`
+      `${apiPrefix}/loadBookingsOfCurrentLoggedInUserClient`,
     );
     return response;
   },
-  loadBookings: async (filter: string) => {
+  loadBookings: async (userId: string | number, filter: string) => {
     const response = await api.get(
       filter
-        ? `${apiPrefix}/loadBookings?filter=${filter}`
-        : `${apiPrefix}/loadBookings`
+        ? `${apiPrefix}/loadBookings?user_id=${userId}&filter=${filter}`
+        : `${apiPrefix}/loadBookings?user_id=${userId}`,
     );
+    return response;
+  },
+  loadClients: async () => {
+    const response = await api.get(`${apiPrefix}/loadClients`);
     return response;
   },
   loadCancelledBookings: async () => {
@@ -29,29 +33,39 @@ const BookingService = {
     const response = await api.post(`${apiPrefix}/approveBooking/${bookingId}`);
     return response;
   },
+  checkInBooking: async (bookingId: string | number) => {
+    const response = await api.post(`${apiPrefix}/checkInBooking/${bookingId}`);
+    return response;
+  },
+  checkOutBooking: async (bookingId: string | number) => {
+    const response = await api.post(
+      `${apiPrefix}/checkOutBooking/${bookingId}`,
+    );
+    return response;
+  },
   completeBooking: async (bookingId: string | number) => {
     const response = await api.post(
-      `${apiPrefix}/completeBooking/${bookingId}`
+      `${apiPrefix}/completeBooking/${bookingId}`,
     );
     return response;
   },
   cancelBookingInAdminOrEmployeeSide: async (
     roomId: string | number,
     bookingId: string | number,
-    data: any
+    data: any,
   ) => {
     const response = await api.post(
       `${apiPrefix}/cancelBookingInAdminOrEmployeeSide/${roomId}/${bookingId}`,
-      data
+      data,
     );
     return response;
   },
   cancelBookingInClientSide: async (
     roomId: string | number,
-    bookingId: string | number
+    bookingId: string | number,
   ) => {
     const response = await api.delete(
-      `${apiPrefix}/cancelBookingInClientSide/${roomId}/${bookingId}`
+      `${apiPrefix}/cancelBookingInClientSide/${roomId}/${bookingId}`,
     );
     return response;
   },

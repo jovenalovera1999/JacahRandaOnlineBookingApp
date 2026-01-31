@@ -1,14 +1,16 @@
 import { Metadata } from "next";
-import UserManagementPage from "./page";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "User Management",
 };
 
-export default function UserManagementLayout() {
-  return (
-    <>
-      <UserManagementPage />
-    </>
-  );
+interface UserManagementLayoutProps {
+  children: ReactNode;
+}
+
+export default function UserManagementLayout({
+  children,
+}: UserManagementLayoutProps) {
+  return <>{children}</>;
 }

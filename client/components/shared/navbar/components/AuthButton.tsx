@@ -27,7 +27,7 @@ export default function AuthButton({
       if (status !== 200) {
         console.error(
           "Unexpected status error during get total count of notification at AuthButton.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -36,10 +36,12 @@ export default function AuthButton({
     } catch (error) {
       console.error(
         "Unexpected server error during get total count of notification at AuthButton.tsx: ",
-        error
+        error,
       );
     }
   }, []);
+
+  const hasOccupiedRoom = user?.has_occupied_rooms ?? false;
 
   const userNavbarMenus = [
     {
@@ -47,13 +49,19 @@ export default function AuthButton({
       href: "/my_bookings",
     },
     {
+      label: "Order Food",
+      href: "/order_food",
+      requiresOccupiedRoom: true,
+    },
+    {
       label: "Notifications",
       href: "/notifications",
     },
   ];
 
-  const hasOccupiedRoom =
-    user?.bookings?.[0]?.room.room_status.room_status === "Occupied";
+  const visibleMenus = userNavbarMenus.filter(
+    (menu) => !menu.requiresOccupiedRoom || hasOccupiedRoom,
+  );
 
   useEffect(() => {
     if (user) {
@@ -79,7 +87,7 @@ export default function AuthButton({
 
   return (
     <>
-      {hasOccupiedRoom && (
+      {/* {hasOccupiedRoom && (
         <li>
           <Link
             href="#"
@@ -88,7 +96,7 @@ export default function AuthButton({
             <span>Order a Food</span>
           </Link>
         </li>
-      )}
+      )} */}
 
       {userNavbarMenus.map((menu) => (
         <li key={menu.label}>

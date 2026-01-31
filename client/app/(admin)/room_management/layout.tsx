@@ -1,14 +1,16 @@
 import { Metadata } from "next";
-import RoomManagementPage from "./page";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Room Management",
 };
 
-export default function RoomManagementLayout() {
-  return (
-    <>
-      <RoomManagementPage />
-    </>
-  );
+interface RoomManagementLayoutProps {
+  children: ReactNode;
+}
+
+export default function RoomManagementLayout({
+  children,
+}: RoomManagementLayoutProps) {
+  return <>{children}</>;
 }

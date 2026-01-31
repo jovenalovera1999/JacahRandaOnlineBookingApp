@@ -1,14 +1,16 @@
 import { Metadata } from "next";
-import FoodManagementPage from "./page";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Food Management",
 };
 
-export default function FoodManagementLayout() {
-  return (
-    <>
-      <FoodManagementPage />
-    </>
-  );
+interface FoodManagementLayoutProps {
+  children: ReactNode;
+}
+
+export default function FoodManagementLayout({
+  children,
+}: FoodManagementLayoutProps) {
+  return <>{children}</>;
 }

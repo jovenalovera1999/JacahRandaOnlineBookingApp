@@ -18,19 +18,24 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { BookingColumns } from "@/interfaces/BookingInterface";
 import { BookingStatusColumns } from "@/interfaces/BookingStatusInterface";
-import { RoomStatusColumns } from "@/interfaces/RoomStatusInterface";
 import BookingService from "@/services/BookingService";
 import BookingStatusService from "@/services/BookingStatusService";
 import { useCallback, useEffect, useState } from "react";
 
 interface BookedTableProps {
+  userId: string;
   onApproveBooking: (selectedBooking: BookingColumns | null) => void;
+  onCheckInBooking: (selectedBooking: BookingColumns | null) => void;
+  onCheckOutBooking: (selectedBooking: BookingColumns | null) => void;
   onCancelBooking: (selectedBooking: BookingColumns | null) => void;
   reloadBookings: boolean;
 }
 
 export default function BookedTable({
+  userId,
   onApproveBooking,
+  onCheckInBooking,
+  onCheckOutBooking,
   onCancelBooking,
   reloadBookings,
 }: BookedTableProps) {
@@ -53,7 +58,7 @@ export default function BookedTable({
       if (status !== 200) {
         console.error(
           "Unexpected status error during load booking statuses at BookedTable.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -62,32 +67,38 @@ export default function BookedTable({
     } catch (error) {
       console.error(
         "Unexpected server error during load booking statuses at BookedTable.tsx: ",
-        error
+        error,
       );
     }
   }, []);
 
   // Loads all status bookings in descending order
-  const handleLoadBookings = useCallback(async (filterValue: string) => {
-    try {
-      const { status, data } = await BookingService.loadBookings(filterValue);
-
-      if (status !== 200) {
-        console.error(
-          "Unexpected status error occured during load pending bookings at BookedTable.tsx: ",
-          status
+  const handleLoadBookings = useCallback(
+    async (userIdValue: string, filterValue: string) => {
+      try {
+        const { status, data } = await BookingService.loadBookings(
+          userIdValue,
+          filterValue,
         );
-        return;
-      }
 
-      setBookings(data.bookings);
-    } catch (error) {
-      console.error(
-        "Unexpected server error occured during load pending bookings at BookedTable.tsx: ",
-        error
-      );
-    }
-  }, []);
+        if (status !== 200) {
+          console.error(
+            "Unexpected status error occured during load pending bookings at BookedTable.tsx: ",
+            status,
+          );
+          return;
+        }
+
+        setBookings(data.bookings);
+      } catch (error) {
+        console.error(
+          "Unexpected server error occured during load pending bookings at BookedTable.tsx: ",
+          error,
+        );
+      }
+    },
+    [],
+  );
 
   // Table headers
   const headers = [
@@ -95,7 +106,6 @@ export default function BookedTable({
     "Room No.",
     "Check-In Date",
     "Check-Out Date",
-    "Customer's Name",
     "Booked Status",
     "Date Booked",
     "Actions",
@@ -103,12 +113,13 @@ export default function BookedTable({
 
   useEffect(() => {
     if (!debouncedFilter) {
-      handleLoadBookings("");
+      handleLoadBookings(userId, "");
     }
 
     handleLoadBookingStatuses();
-    handleLoadBookings(debouncedFilter);
+    handleLoadBookings(userId, debouncedFilter) || "";
   }, [
+    userId,
     debouncedFilter,
     reloadBookings,
     handleLoadBookingStatuses,
@@ -117,7 +128,7 @@ export default function BookedTable({
 
   return (
     <>
-      <div className="overflow-hidden rounded-md border border-gray-200 bg-transparent">
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-transparent">
         <div className="relative max-w-full max-h-[calc(100vh-11rem)] overflow-x-auto custom-scrollbar">
           <Table
             filter={
@@ -174,16 +185,18 @@ export default function BookedTable({
                     <TableCell>
                       {useFullDateFormat(booking.check_out_date)}
                     </TableCell>
-                    <TableCell>{booking.user.name}</TableCell>
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           booking.booking_status.booking_status === "Approved"
                             ? "bg-green-100 text-green-700"
                             : booking.booking_status.booking_status ===
-                              "Cancelled"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-gray-100 text-gray-700"
+                                "Cancelled"
+                              ? "bg-red-100 text-red-700"
+                              : booking.booking_status.booking_status ===
+                                  "Checked In"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {booking.booking_status.booking_status}
@@ -217,15 +230,27 @@ export default function BookedTable({
                               Cancel
                             </Button>
                           </>
+                        ) : booking.booking_status.booking_status ===
+                          "Approved" ? (
+                          <>
+                            <Button
+                              tag="button"
+                              type="button"
+                              className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-24"
+                              onClick={() => onCheckInBooking(booking)}
+                            >
+                              Checked In
+                            </Button>
+                          </>
                         ) : (
                           <>
                             <Button
                               tag="button"
                               type="button"
-                              className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                              // onClick={() => onApproveBooking(booking)}
+                              className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-32"
+                              onClick={() => onCheckOutBooking(booking)}
                             >
-                              Completed
+                              Checked Out
                             </Button>
                           </>
                         )}

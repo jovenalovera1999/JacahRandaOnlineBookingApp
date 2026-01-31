@@ -39,12 +39,10 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       await getCsrfCookie();
       const { status, data } = await api.get("/auth/google/me");
 
-      console.log(data.user);
-
       if (status !== 200) {
         console.error(
           "Unexpected status error during load authenticated user at GoogleAuthContext.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -58,7 +56,7 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
 
       console.error(
         "Unexpected server error during load authenticated user at GoogleAuthContext.tsx: ",
-        error
+        error,
       );
     } finally {
       setLoading(false);
@@ -75,7 +73,7 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       if (status !== 200) {
         console.error(
           "Unexpected status error during logout at GoogleAuthContext.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -87,7 +85,7 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error(
         "Unexpected server error during logout at GoogleAuthContext.tsx: ",
-        error
+        error,
       );
     } finally {
       setLoading(false);

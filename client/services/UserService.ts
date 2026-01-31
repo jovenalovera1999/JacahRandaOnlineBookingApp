@@ -11,8 +11,12 @@ const UserService = {
     const response = await api.get(
       search
         ? `${apiPrefix}/loadUsers?search=${search}`
-        : `${apiPrefix}/loadUsers`
+        : `${apiPrefix}/loadUsers`,
     );
+    return response;
+  },
+  getUser: async (userId: string | number) => {
+    const response = await api.get(`${apiPrefix}/getUser/${userId}`);
     return response;
   },
   storeUser: async (data: any) => {

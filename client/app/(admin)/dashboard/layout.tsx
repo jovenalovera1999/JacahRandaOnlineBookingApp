@@ -1,14 +1,15 @@
 import { Metadata } from "next";
 import DashboardPage from "./page";
+import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default function DashboardLayout() {
-  return (
-    <>
-      <DashboardPage />
-    </>
-  );
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  return <>{children}</>;
 }

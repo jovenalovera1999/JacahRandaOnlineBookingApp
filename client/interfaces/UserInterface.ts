@@ -14,6 +14,7 @@ export interface UserColumns {
   last_login_at?: string;
   remember_token?: string;
   bookings?: BookingColumns;
+  has_occupied_rooms: boolean;
   created_at: string;
   updated_at: string;
 }
