@@ -8,6 +8,7 @@ use App\Models\BookingStatus;
 use App\Models\Notification;
 use App\Models\Room;
 use App\Models\RoomStatus;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -31,8 +32,10 @@ class BookingController extends Controller
     public function loadBookings(Request $request)
     {
         $filter = $request->input('filter');
+        $userId = $request->input('user_id');
 
         $bookings = Booking::with(['user', 'room.room_type', 'booking_status'])
+            ->where('user_id', $userId)
             ->orderBy('booking_id', 'desc');
 
         if(!empty($filter)) {
@@ -45,6 +48,20 @@ class BookingController extends Controller
 
         return response()->json([
             'bookings' => $bookings
+        ], 200);
+    }
+
+    // Load clients with bookings on booked management
+    public function loadClients() {
+        $clients = User::with(['role', 'bookings'])
+            ->whereHas('role', function($query) {
+                $query->where('role', 'Client');
+            })
+            ->whereHas('bookings')
+            ->get();
+
+        return response()->json([
+            'clients' => $clients
         ], 200);
     }
 
@@ -107,10 +124,64 @@ class BookingController extends Controller
         Notification::create([
             'booking_id' => $booking->booking_id,
             'description' => 'The room you booked has been approved.',
-        ], 200);
+        ]);
 
         return response()->json([
             'message' => 'Booking Successfully Approved.'
+        ], 200);
+    }
+
+    public function checkInBooking(Booking $booking) {
+        $bookingStatus = BookingStatus::where('booking_status', 'Checked In')
+            ->firstOrFail();
+
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'description' => 'The room you booked has been set to checked in.'
+        ]);
+
+        return response()->json([
+            'message' => 'Booking Successfully Checked In.'
+        ], 200);
+    }
+
+    public function checkOutBooking(Booking $booking) {
+        $bookingStatus = BookingStatus::where('booking_status', 'Checked Out')
+            ->firstOrFail();
+
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'description' => 'The room you checked in has been set to checked out.'
+        ]);
+
+        return response()->json([
+            'message' => 'Booking Successfully Checked Out.'
+        ], 200);
+    }
+
+    public function completeBooking(Booking $booking) {
+        $bookingStatus = BookingStatus::where('booking_status', 'Completed')
+            ->firstOrFail();
+
+        $booking->update([
+            'booking_status_id' => $bookingStatus->booking_status_id,
+        ]);
+
+        Notification::create([
+            'booking_id' => $booking->booking_id,
+            'description' => 'The room you booked has been set to completed and client checked out.',
+        ], 200);
+
+        return response()->json([
+            'message' => 'Booking Successfully Completed or Checked Out.'
         ], 200);
     }
 
@@ -167,23 +238,5 @@ class BookingController extends Controller
             ->json([
                 'message' => 'Booking Successfully Cancelled.'
             ], 200);
-    }
-
-    public function completeBooking(Booking $booking) {
-        $bookingStatus = BookingStatus::where('booking_status', 'Completed')
-            ->firstOrFail();
-
-        $booking->update([
-            'booking_status_id' => $bookingStatus->booking_status_id,
-        ]);
-
-        Notification::create([
-            'booking_id' => $booking->booking_id,
-            'description' => 'The room you booked has been set to completed and client checked out.',
-        ], 200);
-
-        return response()->json([
-            'message' => 'Booking Successfully Completed or Checked Out.'
-        ], 200);
     }
 }

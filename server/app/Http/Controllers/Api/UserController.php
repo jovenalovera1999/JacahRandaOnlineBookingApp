@@ -53,6 +53,12 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function getUser(User $user) {
+        return response()->json([
+            'user' => $user
+        ], 200);
+    }
+
     public function storeUser(Request $request) {
         $validatedData = $request->validate([
             'name' => ['required', 'max:55'],

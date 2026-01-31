@@ -65,9 +65,10 @@ class DatabaseSeeder extends Seeder
 
         BookingStatus::factory()->createMany([
             ['booking_status' => 'Approved'],
-            ['booking_status' => 'Pending'],
             ['booking_status' => 'Cancelled'],
-            ['booking_status' => 'Completed'],
+            ['booking_status' => 'Checked In'],
+            ['booking_status' => 'Checked Out'],
+            ['booking_status' => 'Pending'],
         ]);
 
         FoodCategory::factory()->createMany([

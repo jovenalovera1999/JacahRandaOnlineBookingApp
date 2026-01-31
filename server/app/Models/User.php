@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,11 +44,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    // Appends attributes
+    protected $appends = ['has_occupied_room'];
+
     // Get the attributes that should be cast.
     protected function casts(): array
     {
         return [
             'password' => 'hashed',
+            'has_occupied_room' => 'boolean'
         ];
     }
 
@@ -58,5 +64,20 @@ class User extends Authenticatable
 
     public function bookings(): HasMany {
         return $this->hasMany(Booking::class, 'user_id', 'user_id');
+    }
+
+    // Function to verify if the user has occupied room
+    protected function hasOccupiedRoom(): Attribute {
+        return Attribute::make(
+            get: fn () =>
+                $this->bookings()
+                    ->whereHas('room.room_status', fn ($q) =>
+                        $q->where('room_status', 'Occupied')
+                    )
+                    ->orWhereHas('booking_status', fn ($q) =>
+                        $q->where('booking_status', 'Checked In')
+                    )
+                    ->exists()
+        );
     }
 }

@@ -49,6 +49,7 @@ Route::middleware(['throttle:api'])->group(function () {
         Route::controller(UserController::class)->prefix('/user')->group(function() {
             Route::get('/loadUserReferences', 'loadUserReferences');
             Route::get('/loadUsers', 'loadUsers');
+            Route::get('/getUser/{user}', 'getUser');
             Route::post('/storeUser', 'storeUser');
             Route::put('/updateUser/{user}', 'updateUser');
             Route::delete('/destroyUser/{user}', 'destroyUser');
@@ -60,11 +61,15 @@ Route::middleware(['throttle:api'])->group(function () {
 
         Route::controller(BookingController::class)->prefix('/booking')->group(function () {
             Route::get('/loadBookings', 'loadBookings');
+            Route::get('/loadClients', 'loadClients');
             Route::get('/loadBookingsOfCurrentLoggedInUserClient', 'loadBookingsOfCurrentLoggedInUserClient');
             Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
             Route::get('/loadCancelledBookings', 'loadCancelledBookings');
             Route::post('/storeBooking', 'storeBooking');
             Route::post('/approveBooking/{booking}', 'approveBooking');
+            Route::post('/checkInBooking/{booking}', 'checkInBooking');
+            Route::post('/checkOutBooking/{booking}', 'checkOutBooking');
+            Route::post('/completeBooking/{booking}', 'completeBooking');
             Route::post('/cancelBookingInAdminOrEmployeeSide/{room}/{booking}', 'cancelBookingInAdminOrEmployeeSide');
             Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
             Route::delete('/cancelBookingInClientSide/{room}/{booking}', 'cancelBookingInClientSide');
