@@ -11,22 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_orders', function (Blueprint $table) {
-            $table->id('order_id');
-            $table->unsignedBigInteger('booking_id');
-            $table->unsignedBigInteger('order_status_id');
-            $table->text('additional_information', 500);
+        Schema::create('tbl_food_carts', function (Blueprint $table) {
+            $table->id('food_cart_id');
+            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('food_id');
+            $table->quantity('quantity');
+            $table->double('subtotal');
             $table->timestamps();
 
-            $table->foreign('booking_id')
-                ->references('booking_id')
-                ->on('tbl_bookings')
+            $table->foreign('order_id')
+                ->references('order_id')
+                ->on('tbl_orders')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreign('order_status_id')
-                ->references('order_status_id')
-                ->on('tbl_order_statuses')
+            $table->foreign('food_id')
+                ->references('food_id')
+                ->on('tbl_foods')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
         });
@@ -38,7 +39,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('tbl_orders');
+        Schema::dropIfExists('tbl_food_carts');
         Schema::enableForeignKeyConstraints();
     }
 };

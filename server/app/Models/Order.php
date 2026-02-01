@@ -16,19 +16,12 @@ class Order extends Model
     protected $primaryKey = 'order_id';
     protected $fillable = [
         'booking_id',
-        'food_id',
-        'quantity',
-        'additional_information',
-        'sub_total',
-        'order_status_id'
+        'order_status_id',
+        'additional_information'
     ];
 
     public function booking(): BelongsTo {
         return $this->belongsTo(Booking::class, 'booking_id', 'booking_id')->withTrashed();
-    }
-
-    public function food(): BelongsTo {
-        return $this->belongsTo(Food::class, 'food_id', 'food_id')->withTrashed();
     }
 
     public function order_status(): BelongsTo {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -29,5 +30,9 @@ class Food extends Model
 
     public function food_status(): BelongsTo {
         return $this->belongsTo(FoodStatus::class, 'food_status_id', 'food_status_id')->withTrashed();
+    }
+
+    public function food_carts(): HasMany {
+        return $this->hasMany(FoodCart::class, 'food_id', 'food_id');
     }
 }
