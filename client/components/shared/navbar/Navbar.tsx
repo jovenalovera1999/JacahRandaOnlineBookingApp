@@ -102,7 +102,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed w-full z-20 top-0 start-0 border-b border-gray-100 bg-white shadow-md`}
+        className={`fixed w-full z-50 top-0 start-0 border-b border-gray-100 bg-white shadow-md`}
       >
         <div
           className="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4"
@@ -164,7 +164,7 @@ export default function Navbar() {
                       {item.label}
                     </button>
                   </li>
-                )
+                ),
                 // !item.dropdown ? (
                 // ) : (
                 //   <li key={item.label}>

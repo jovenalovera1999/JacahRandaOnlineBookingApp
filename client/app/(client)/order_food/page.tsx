@@ -50,10 +50,23 @@ export default function OrderFoodPage() {
     setCartItems((prev) => prev.filter((item) => item.food_id !== food_id));
   };
 
+  const handleRemoveAllFromCart = () => {
+    setCartItems([]);
+  };
+
   return (
     <>
-      <FoodsGrid onAddToCart={handleAddToCart} />
-      <FoodCart items={cartItems} onRemoveItem={handleRemoveFromCart} />
+      <div className="relative flex">
+        <main className="flex-1 pr-0 lg:pr-[440px]">
+          <FoodsGrid onAddToCart={handleAddToCart} />
+        </main>
+
+        <FoodCart
+          items={cartItems}
+          onRemoveItem={handleRemoveFromCart}
+          onClearCart={handleRemoveAllFromCart}
+        />
+      </div>
     </>
   );
 }
