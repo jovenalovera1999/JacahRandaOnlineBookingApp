@@ -42,7 +42,7 @@ export default function MyBookingsTable({
       if (status !== 200) {
         console.error(
           "Unexpected status error during load pending bookings at MyBookingsTable,tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -51,7 +51,7 @@ export default function MyBookingsTable({
     } catch (error) {
       console.error(
         "Unexpected server error during load pending bookings at MyBookingsTable.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -65,7 +65,7 @@ export default function MyBookingsTable({
       <Table
         filter={
           <>
-            <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
+            <div className="space-y-4 md:space-y-0 md:flex items-center justify-between mt-16">
               <div className="md:w-32">
                 <Button tag="a" href="/">
                   Add Booking
@@ -115,8 +115,8 @@ export default function MyBookingsTable({
                       booking.booking_status.booking_status === "Approved"
                         ? "bg-green-100 text-green-700"
                         : booking.booking_status.booking_status === "Cancelled"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-gray-100 text-gray-700"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-700"
                     }`}
                   >
                     {booking.booking_status.booking_status}

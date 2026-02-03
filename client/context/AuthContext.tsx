@@ -143,7 +143,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     handleLoadUser().finally(() => setInitialized(true));
-    // console.log(user);
   }, [pathname, handleLoadUser]);
 
   return (

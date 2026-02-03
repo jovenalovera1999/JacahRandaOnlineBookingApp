@@ -41,8 +41,6 @@ export default function AuthButton({
     }
   }, []);
 
-  const hasOccupiedRoom = user?.has_occupied_rooms ?? false;
-
   const userNavbarMenus = [
     {
       label: "My Bookings",
@@ -51,7 +49,6 @@ export default function AuthButton({
     {
       label: "Order Food",
       href: "/order_food",
-      requiresOccupiedRoom: true,
     },
     {
       label: "Notifications",
@@ -59,14 +56,9 @@ export default function AuthButton({
     },
   ];
 
-  const visibleMenus = userNavbarMenus.filter(
-    (menu) => !menu.requiresOccupiedRoom || hasOccupiedRoom,
-  );
-
   useEffect(() => {
-    if (user) {
-      handleGetTotalUnreadNotifications();
-    }
+    if (!user) return;
+    handleGetTotalUnreadNotifications();
   }, [user, reloadCountNotifications, handleGetTotalUnreadNotifications]);
 
   if (!user) {
@@ -87,17 +79,6 @@ export default function AuthButton({
 
   return (
     <>
-      {/* {hasOccupiedRoom && (
-        <li>
-          <Link
-            href="#"
-            className="relative block py-2 px-3 rounded md:border-0 md:p-0 transition-colors font-medium duration-300 text-gray-500 hover:text-blue-600 cursor-pointer"
-          >
-            <span>Order a Food</span>
-          </Link>
-        </li>
-      )} */}
-
       {userNavbarMenus.map((menu) => (
         <li key={menu.label}>
           <Link
@@ -123,6 +104,7 @@ export default function AuthButton({
           </Link>
         </li>
       ))}
+
       <li>
         <div className="flex items-center gap-3">
           <span className="text-gray-800 font-medium">Hi, {user.name}!</span>

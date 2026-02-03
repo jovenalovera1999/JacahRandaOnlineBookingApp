@@ -26,6 +26,7 @@ export default function Sidebar({ children }: SidebarProps) {
     { label: "Room Management", href: "/room_management" },
     { label: "Booked Management", href: "/booked_management" },
     { label: "Food Management", href: "/food_management" },
+    { label: "Order Management", href: "/order_management" },
     { label: "User Management", href: "/user_management" },
     // {
     //   label: "Report Management",
@@ -194,7 +195,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     {item.label}
                   </Link>
                 </li>
-              )
+              ),
               // ) : (
               //   // With submenu
               //   <li key={item.label}>

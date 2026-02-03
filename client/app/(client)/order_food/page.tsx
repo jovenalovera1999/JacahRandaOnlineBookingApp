@@ -2,8 +2,9 @@
 
 import FoodCart from "@/features/order_food/FoodCart";
 import FoodsGrid from "@/features/order_food/FoodsGrid";
+import { useToastMessage } from "@/hooks/useToastMessage";
 import { FoodColumns } from "@/interfaces/FoodInterface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface FoodCartItem {
   food_id: number;
@@ -13,6 +14,7 @@ export interface FoodCartItem {
 }
 
 export default function OrderFoodPage() {
+  const { showToastMessage } = useToastMessage();
   const [cartItems, setCartItems] = useState<FoodCartItem[]>([]);
 
   const handleAddToCart = (food: FoodColumns, quantity: number) => {
@@ -65,6 +67,7 @@ export default function OrderFoodPage() {
           items={cartItems}
           onRemoveItem={handleRemoveFromCart}
           onClearCart={handleRemoveAllFromCart}
+          onOrderPlaced={(status, message) => showToastMessage(status, message)}
         />
       </div>
     </>

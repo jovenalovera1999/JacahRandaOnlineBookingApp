@@ -2,7 +2,6 @@
 
 import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 import Button from "@/components/ui/Button";
-import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
 import {
   Table,
   TableBody,
@@ -10,35 +9,22 @@ import {
   TableHead,
   TableRow,
 } from "@/components/ui/Table";
-import { useNumberDecimalFormat } from "@/hooks/useNumberFormat";
-import { FoodColumns } from "@/interfaces/FoodInterface";
-import FoodService from "@/services/FoodService";
+import { OrderColumns } from "@/interfaces/OrderInterface";
+import OrderService from "@/services/OrderSerivce";
 import { useCallback, useEffect, useState } from "react";
 
-interface FoodsTableProps {
-  refreshFoods: boolean;
-  onAddFood: () => void;
-  onEditFood: (selectedFood: FoodColumns | null) => void;
-  onDeleteFood: (selectedFood: FoodColumns | null) => void;
-}
-
-export default function FoodsTable({
-  refreshFoods,
-  onAddFood,
-  onEditFood,
-  onDeleteFood,
-}: FoodsTableProps) {
-  const [foods, setFoods] = useState<FoodColumns[]>([]);
+export default function OrdersTable() {
+  const [orders, setOrders] = useState<OrderColumns[]>([]);
 
   const [foodsActionOpenDropdown, setFoodsActionOpenDropdown] = useState<
     string | number | null
   >(null);
 
-  const headers = ["No", "Food", "Description", "Price", "Status", "Action"];
+  const headers = ["No", "Customer's Name", "Room No.", "Action"];
 
-  const handleLoadFoods = useCallback(async () => {
+  const handleLoadOrders = useCallback(async () => {
     try {
-      const { status, data } = await FoodService.loadFoods();
+      const { status, data } = await OrderService.loadOrders();
 
       if (status !== 200) {
         console.error(
@@ -48,7 +34,7 @@ export default function FoodsTable({
         return;
       }
 
-      setFoods(data.foods);
+      setOrders(data.foods);
     } catch (error) {
       console.error(
         "Unexpected server error during load foods at FoodsTable.tsx: ",
@@ -58,35 +44,14 @@ export default function FoodsTable({
   }, []);
 
   useEffect(() => {
-    handleLoadFoods();
-  }, [refreshFoods, handleLoadFoods]);
+    handleLoadOrders();
+  }, [handleLoadOrders]);
 
   return (
     <>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-transparent">
         <div className="relative max-w-full max-h-[calc(100vh-11rem)] overflow-x-auto custom-scrollbar">
-          <Table
-            filter={
-              <>
-                <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
-                  <div className="md:w-32">
-                    <Button tag="button" type="button" onClick={onAddFood}>
-                      Add Food
-                    </Button>
-                  </div>
-                  <div className="md:w-72">
-                    <FloatingLabelSelectField
-                      label="Filter"
-                      name="filter"
-                      autoFocus
-                    >
-                      <option value="">All Foods Status</option>
-                    </FloatingLabelSelectField>
-                  </div>
-                </div>
-              </>
-            }
-          >
+          <Table>
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
@@ -101,28 +66,14 @@ export default function FoodsTable({
               </TableRow>
             </TableHead>
             <TableBody>
-              {foods.map((food, index) => (
+              {orders.map((order, index) => (
                 <TableRow className="hover:bg-gray-100" key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{food.food_name}</TableCell>
-                  <TableCell>{food.description}</TableCell>
-                  <TableCell>
-                    {useNumberDecimalFormat(food.price.toString())}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        food.food_status.food_status === "Available"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {food.food_status.food_status}
-                    </span>
-                  </TableCell>
+                  <TableCell>{order.booking.user.name}</TableCell>
+                  <TableCell>{order.booking.room.room_no}</TableCell>
                   <TableCell className="relative overflow-visible">
                     <ActionButtonDropdown
-                      id={food.food_id}
+                      id={order.order_id}
                       openDropdownId={foodsActionOpenDropdown}
                       setOpenDropdownId={setFoodsActionOpenDropdown}
                     >
@@ -130,7 +81,7 @@ export default function FoodsTable({
                         tag="button"
                         type="button"
                         className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                        onClick={() => onEditFood(food)}
+                        // onClick={() => onEditFood(food)}
                       >
                         Edit
                       </Button>
@@ -138,7 +89,7 @@ export default function FoodsTable({
                         tag="button"
                         type="button"
                         className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                        onClick={() => onDeleteFood(food)}
+                        // onClick={() => onDeleteFood(food)}
                       >
                         Delete
                       </Button>

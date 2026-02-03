@@ -3,12 +3,15 @@ import { FormEvent, ReactNode } from "react";
 interface FormProps {
   onSubmit?: (e: FormEvent) => void;
   children: ReactNode;
+  className?: string;
 }
 
-export default function Form({ onSubmit, children }: FormProps) {
+export default function Form({ onSubmit, children, className }: FormProps) {
   return (
     <>
-      <form onSubmit={onSubmit}>{children}</form>
+      <form onSubmit={onSubmit} className={className}>
+        {children}
+      </form>
     </>
   );
 }

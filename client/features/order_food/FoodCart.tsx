@@ -1,21 +1,77 @@
 import { FoodCartItem } from "@/app/(client)/order_food/page";
 import Button from "@/components/ui/Button";
-import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
-import { useMemo, useState } from "react";
+import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaField";
+import Form from "@/components/ui/Form";
+import Spinner from "@/components/ui/Spinner";
+import { OrderFieldsErrors } from "@/interfaces/OrderInterface";
+import OrderService from "@/services/OrderSerivce";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 
 interface FoodCartProps {
   items: FoodCartItem[];
   onRemoveItem: (food_id: number) => void;
   onClearCart?: () => void;
+  onOrderPlaced: (
+    status: "success" | "warning" | "failed" | "others",
+    message: string,
+  ) => void;
 }
 
 export default function FoodCart({
   items,
   onRemoveItem,
   onClearCart,
+  onOrderPlaced,
 }: FoodCartProps) {
+  const [isStoring, setIsStoring] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [discount, setDiscount] = useState(0);
+  const [additionalInformation, setAdditionalInformation] = useState("");
+  const [errors, setErrors] = useState<OrderFieldsErrors>({});
+
+  const handleStoreOrder = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+      setIsStoring(true);
+
+      const payload = {
+        additional_information: additionalInformation,
+        items: items.map((item) => ({
+          food_id: item.food_id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
+      const { status, data } = await OrderService.storeOrder(payload);
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during store order at FoodCart.tsx: ",
+          status,
+        );
+        return;
+      }
+
+      onOrderPlaced("success", data.message);
+
+      onClearCart;
+      setAdditionalInformation("");
+      setErrors({});
+    } catch (error: any) {
+      if (error.response && error.response.status !== 422) {
+        console.error(
+          "Unexpected error during store order at FoodCart.tsx: ",
+          error,
+        );
+        return;
+      }
+
+      setErrors(error.response.data.errors);
+    } finally {
+      setIsStoring(false);
+    }
+  };
 
   const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -29,58 +85,64 @@ export default function FoodCart({
      SHARED CART CONTENT
   =============================== */
   const CartContent = (
-    <>
-      {/* Header */}
-      <div className="p-4 border-b flex items-center justify-between">
+    <Form onSubmit={handleStoreOrder} className="flex flex-col h-full">
+      {/* ================= HEADER ================= */}
+      <div className="px-5 py-4 border-b bg-white flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800">Food Cart</h3>
+
         {onClearCart && (
           <button
+            type="button"
             onClick={onClearCart}
-            className="text-sm text-red-500 hover:underline"
+            className="text-sm font-medium text-red-500 hover:text-red-600 hover:underline"
           >
             Clear
           </button>
         )}
       </div>
 
-      {/* Items */}
-      <div className="flex-1 overflow-auto p-4">
+      {/* ================= ITEMS ================= */}
+      <div className="flex-1 overflow-auto px-5 py-4 bg-gray-50">
         {items.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center mt-10">
-            Your cart is empty
-          </p>
+          <div className="text-center mt-16 space-y-2">
+            <p className="text-sm font-medium text-gray-600">
+              Your cart is empty
+            </p>
+            <p className="text-xs text-gray-400">Add foods to place an order</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
             <table className="min-w-[360px] w-full text-sm">
-              <thead className="text-gray-500 border-b">
+              <thead className="bg-gray-100 text-gray-600">
                 <tr>
-                  <th className="py-2 text-left">Food</th>
-                  <th className="py-2 text-center">Qty</th>
-                  <th className="py-2 text-right">Subtotal</th>
-                  <th />
+                  <th className="px-4 py-3 text-left font-medium">Food</th>
+                  <th className="px-4 py-3 text-center font-medium">Qty</th>
+                  <th className="px-4 py-3 text-right font-medium">Subtotal</th>
+                  <th className="px-4 py-3" />
                 </tr>
               </thead>
 
               <tbody>
                 {items.map((item) => (
-                  <tr key={item.food_id} className="border-b">
-                    <td className="py-3">
+                  <tr key={item.food_id} className="border-t last:border-b">
+                    <td className="px-4 py-3">
                       <p className="font-medium text-gray-800">{item.name}</p>
                       <p className="text-xs text-gray-500">
                         ₱{item.price.toFixed(2)}
                       </p>
                     </td>
 
-                    <td className="text-center">{item.quantity}</td>
+                    <td className="px-4 py-3 text-center">{item.quantity}</td>
 
-                    <td className="text-right font-medium">
+                    <td className="px-4 py-3 text-right font-medium">
                       ₱{(item.price * item.quantity).toFixed(2)}
                     </td>
 
-                    <td className="pl-2">
+                    <td className="px-2 py-3 text-right">
                       <button
+                        type="button"
                         onClick={() => onRemoveItem(item.food_id)}
-                        className="text-red-500 text-xs px-2 py-1 rounded hover:bg-red-50"
+                        className="text-xs font-medium text-red-500 hover:text-red-600 hover:underline"
                       >
                         Remove
                       </button>
@@ -93,15 +155,22 @@ export default function FoodCart({
         )}
       </div>
 
-      {/* Summary */}
-      <div className="border-t p-4 space-y-4 bg-white sticky bottom-0">
+      {/* Items Error */}
+      {/* {errors.items && errors.items.length > 0 && (
+        <div className="mt-4 rounded-md bg-red-50 px-4 py-2">
+          <p className="text-xs font-medium text-red-600">{errors.items[0]}</p>
+        </div>
+      )} */}
+
+      {/* ================= SUMMARY ================= */}
+      <div className="border-t bg-white px-5 py-4 space-y-4 sticky bottom-0">
         {/* Discount */}
         <div className="flex items-center justify-between">
           <label className="text-sm font-medium text-gray-600">Discount</label>
           <select
             value={discount}
             onChange={(e) => setDiscount(Number(e.target.value))}
-            className="border rounded-md text-sm px-2 py-1"
+            className="border rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500"
           >
             <option value={0}>None</option>
             <option value={10}>VIP</option>
@@ -112,7 +181,7 @@ export default function FoodCart({
         {/* Totals */}
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span>Subtotal</span>
+            <span className="text-gray-600">Subtotal</span>
             <span>₱{subtotal.toFixed(2)}</span>
           </div>
 
@@ -121,24 +190,44 @@ export default function FoodCart({
             <span>- ₱{discountAmount.toFixed(2)}</span>
           </div>
 
-          <div className="flex justify-between font-semibold text-lg">
+          <div className="flex justify-between text-lg font-semibold">
             <span>Total</span>
             <span>₱{total.toFixed(2)}</span>
           </div>
         </div>
 
+        {/* Additional Information */}
+        <div className="space-y-1">
+          <FloatingLabelTextareaField
+            label="Additional Information"
+            name="additional_information"
+            value={additionalInformation}
+            onChange={(e) => setAdditionalInformation(e.target.value)}
+            rows={3}
+            errors={errors.additional_information}
+          />
+          <p className="text-xs text-gray-400 text-right">
+            {additionalInformation.length}/500
+          </p>
+        </div>
+
         {/* Receipt Preview */}
-        <div className="border rounded-md p-3 text-xs bg-gray-50">
+        <div className="rounded-md border bg-gray-50 p-3 text-xs">
           <p className="font-semibold mb-2">Receipt Preview</p>
-          {items.map((item) => (
-            <div key={item.food_id} className="flex justify-between">
-              <span>
-                {item.quantity}× {item.name}
-              </span>
-              <span>₱{(item.price * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
+
+          <div className="space-y-1">
+            {items.map((item) => (
+              <div key={item.food_id} className="flex justify-between">
+                <span>
+                  {item.quantity} × {item.name}
+                </span>
+                <span>₱{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+
           <hr className="my-2" />
+
           <div className="flex justify-between font-semibold">
             <span>Total</span>
             <span>₱{total.toFixed(2)}</span>
@@ -146,24 +235,24 @@ export default function FoodCart({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="w-full">
           <Button
             tag="button"
-            type="button"
-            className="flex-1 bg-gray-700 hover:bg-gray-800 text-white"
-          >
-            Print
-          </Button>
-          <Button
-            tag="button"
-            type="button"
-            className="flex-1 bg-blue-600 text-white"
+            type="submit"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            isLoading={isStoring}
+            isLoadingChildren={
+              <>
+                <Spinner size="xs" />
+                <span>Placing Order...</span>
+              </>
+            }
           >
             Place Order
           </Button>
         </div>
       </div>
-    </>
+    </Form>
   );
 
   /* ===============================
