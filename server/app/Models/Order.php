@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,6 +20,10 @@ class Order extends Model
         'order_status_id',
         'additional_information'
     ];
+
+    public function food_carts(): HasMany {
+        return $this->hasMany(FoodCart::class, 'order_id', 'order_id');
+    }
 
     public function booking(): BelongsTo {
         return $this->belongsTo(Booking::class, 'booking_id', 'booking_id')->withTrashed();

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('booking_id');
             $table->unsignedBigInteger('order_status_id');
             $table->text('additional_information', 500);
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('booking_id')

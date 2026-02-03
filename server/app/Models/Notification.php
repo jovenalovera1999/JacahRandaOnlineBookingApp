@@ -22,7 +22,6 @@ class Notification extends Model
     protected $fillable = [
         'booking_id',
         'order_id',
-        'order_id',
         'description',
         'is_seen',
     ];

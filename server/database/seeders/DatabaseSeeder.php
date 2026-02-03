@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\BookingStatus;
+use App\Models\Food;
 use App\Models\FoodCategory;
 use App\Models\FoodStatus;
 use App\Models\OrderStatus;

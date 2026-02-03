@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id('food_cart_id');
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('food_id');
-            $table->quantity('quantity');
+            $table->integer('quantity');
+            $table->double('price');
             $table->double('subtotal');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('order_id')

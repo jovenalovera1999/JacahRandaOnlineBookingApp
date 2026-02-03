@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\RoomStatusController;
 use App\Http\Controllers\Api\UserController;
@@ -103,6 +104,11 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::post('/storeFood', 'storeFood');
             Route::put('/updateFood/{food}', 'updateFood');
             Route::delete('/destroyFood/{food}', 'destroyFood');
+        });
+
+        Route::controller(OrderController::class)->prefix('/order')->group(function() {
+            Route::get('/loadOrders', 'loadOrders');
+            Route::post('/storeOrder', 'storeOrder');
         });
     });
 

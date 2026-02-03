@@ -31,21 +31,29 @@ class NotificationController extends Controller
         $user = $request->user();
 
         $notifications = Notification::with([
-            'booking.room',
-            'booking.booking_status',
+            // Booking relations
             'booking.room.room_type',
             'booking.room.room_status',
-        ])
-            ->whereHas('booking', function ($query) use ($user) {
-                $query->where('user_id', $user->user_id);
-            })
-            ->orderBy('notification_id', 'asc')
-            ->get();
+            'booking.booking_status',
 
-        return response()
-            ->json([
-                'notifications' => $notifications,
-            ], 200);
+            // Order relations
+            'order.order_status',
+            'order.booking.room.room_type',
+        ])
+        ->where(function ($query) use ($user) {
+            $query->whereHas('booking', function ($q) use ($user) {
+                $q->where('user_id', $user->user_id);
+            })
+            ->orWhereHas('order.booking', function ($q) use ($user) {
+                $q->where('user_id', $user->user_id);
+            });
+        })
+        ->orderByDesc('notification_id')
+        ->get();
+
+        return response()->json([
+            'notifications' => $notifications
+        ], 200);
     }
 
     public function updateNotificationToSeen(Notification $notification)
@@ -54,7 +62,6 @@ class NotificationController extends Controller
             'is_seen' => now(),
         ]);
 
-        return response()
-            ->json([], 200);
+        return response()->json([], 200);
     }
 }
