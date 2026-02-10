@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tbl_bookings', function (Blueprint $table) {
             $table->id('booking_id');
+            $table->string('downpayment_image', 255);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('room_id');
             $table->date('check_in_date');

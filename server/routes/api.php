@@ -65,8 +65,7 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::get('/loadBookings', 'loadBookings');
             Route::get('/loadClients', 'loadClients');
             Route::get('/loadBookingsOfCurrentLoggedInUserClient', 'loadBookingsOfCurrentLoggedInUserClient');
-            Route::get('/countUnreadNotificationsAndLoadCancelledBookings', 'countUnreadNotificationsAndLoadCancelledBookings');
-            Route::get('/loadCancelledBookings', 'loadCancelledBookings');
+            Route::get('/loadBookedDates', 'loadBookedDates');
             Route::post('/storeBooking', 'storeBooking');
             Route::post('/approveBooking/{booking}', 'approveBooking');
             Route::post('/checkInBooking/{booking}', 'checkInBooking');

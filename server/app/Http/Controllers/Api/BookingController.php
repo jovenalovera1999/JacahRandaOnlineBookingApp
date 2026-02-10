@@ -46,6 +46,11 @@ class BookingController extends Controller
 
         $bookings = $bookings->get();
 
+        $bookings->transform(function ($booking) {
+            $booking->downpayment_image = $booking->downpayment_image ? url("storage/img/downpayment/{$booking->downpayment_image}") : null;
+            return $booking;
+        });
+
         return response()->json([
             'bookings' => $bookings
         ], 200);
@@ -65,10 +70,21 @@ class BookingController extends Controller
         ], 200);
     }
 
+    // Load booked dates
+    public function loadBookedDates() {
+        $bookedDates = Booking::select('check_in_date', 'check_out_date')
+            ->get();
+
+        return response()->json([
+            'bookedDates' => $bookedDates
+        ], 200);
+    }
+
     // Stores booking in client side
     public function storeBooking(Request $request)
     {
         $validatedData = $request->validate([
+            'downpayment_image' => ['required', 'image', 'mimes:png,jpg,jpeg'],
             'room_id' => ['exists:tbl_rooms,room_id'],
             'check_in_date' => ['required', 'date'],
             'check_out_date' => ['required', 'date', 'after:check_in_date'],
@@ -97,7 +113,17 @@ class BookingController extends Controller
         $bookingStatus = BookingStatus::where('booking_status', 'Pending')
             ->firstOrFail();
 
+        // Upload downpayment image
+        if($request->hasFile('downpayment_image')) {
+            $file = $request->file('downpayment_image');
+            $extension = $file->getClientOriginalExtension();
+            $fileNameToStore = uniqid() . '.' . $extension;
+            $file->storeAs('img/downpayment', $fileNameToStore, 'public');
+            $validatedData['downpayment_image'] = $fileNameToStore;
+        }
+
         Booking::create([
+            'downpayment_image' => $validatedData['downpayment_image'],
             'user_id' => $user->user_id,
             'room_id' => $validatedData['room_id'],
             'check_in_date' => $validatedData['check_in_date'],

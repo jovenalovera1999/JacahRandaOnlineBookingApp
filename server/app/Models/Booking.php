@@ -22,6 +22,7 @@ class Booking extends Model
 
     // Columns that can be modified or attributes that are mass assignable
     protected $fillable = [
+        'downpayment_image',
         'user_id',
         'room_id',
         'check_in_date',
