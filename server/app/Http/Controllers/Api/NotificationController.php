@@ -13,17 +13,23 @@ class NotificationController extends Controller
     {
         $user = $request->user();
 
-        $totalUnreadNotifications = Notification::with(['booking.user'])
-            ->whereHas('booking.user', function ($query) use ($user) {
-                $query->where('user_id', $user->user_id);
+        $totalUnreadNotifications = Notification::whereNull('is_seen')
+            ->where(function ($query) use ($user) {
+                // Booking-based notifications
+                $query->whereHas('booking', function ($q) use ($user) {
+                    $q->where('user_id', $user->user_id);
+                })
+
+                // OR order-based notifications
+                ->orWhereHas('order.booking', function ($q) use ($user) {
+                    $q->where('user_id', $user->user_id);
+                });
             })
-            ->where('is_seen', null)
             ->count();
 
-        return response()
-            ->json([
-                'totalUnreadNotifications' => $totalUnreadNotifications,
-            ], 200);
+        return response()->json([
+            'totalUnreadNotifications' => $totalUnreadNotifications,
+        ], 200);
     }
 
     public function loadNotifications(Request $request)

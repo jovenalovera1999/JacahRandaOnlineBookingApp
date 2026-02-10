@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BookingStatusController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FoodCartController;
 use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NotificationController;
@@ -108,7 +109,15 @@ Route::middleware(['throttle:api'])->group(function () {
 
         Route::controller(OrderController::class)->prefix('/order')->group(function() {
             Route::get('/loadOrders', 'loadOrders');
+            Route::get('/getOrder/{order}', 'getOrder');
             Route::post('/storeOrder', 'storeOrder');
+            Route::post('/updateOrderToPreparing/{order}', 'updateOrderToPreparing');
+            Route::post('/updateOrderToServing/{order}', 'updateOrderToServing');
+            Route::post('/updateOrderToServed/{order}', 'updateOrderToServed');
+        });
+
+        Route::controller(FoodCartController::class)->prefix('/food_cart')->group(function() {
+            Route::get('/loadFoodCarts', 'loadFoodCarts');
         });
     });
 

@@ -88,6 +88,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         OrderStatus::factory()->createMany([
+            ['order_status' => 'Pending'],
             ['order_status' => 'Preparing'],
             ['order_status' => 'Serving'],
             ['order_status' => 'Served']

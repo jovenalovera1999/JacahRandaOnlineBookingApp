@@ -14,11 +14,21 @@ class OrderController extends Controller
     public function loadOrders() {
         // $user = $request->user();
 
-        $orders = Order::with(['food_carts', 'booking.user'])
+        $orders = Order::with(['food_carts', 'booking.room', 'booking.user', 'order_status'])
             ->get();
 
         return response()->json([
             'orders' => $orders
+        ], 200);
+    }
+
+    public function getOrder(Order $order) {
+        $order = Order::with(['food_carts', 'booking.room', 'booking.user', 'order_status'])
+            ->where('order_id', $order->order_id)
+            ->firstOrFail();
+
+        return response()->json([
+            'order' => $order
         ], 200);
     }
 
@@ -40,7 +50,7 @@ class OrderController extends Controller
             ->latest()
             ->first();
 
-        $orderStatus = OrderStatus::where('order_status', 'Preparing')
+        $orderStatus = OrderStatus::where('order_status', 'Pending')
             ->firstOrFail();
 
         $order = Order::create([
@@ -66,6 +76,60 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Your order has been successfully placed.'
+        ], 200);
+    }
+
+    public function updateOrderToPreparing(Order $order) {
+        $orderStatus = OrderStatus::where('order_status', 'Preparing')
+            ->firstOrFail();
+
+        $order->update([
+            'order_status_id' => $orderStatus->order_status_id
+        ]);
+
+        Notification::create([
+            'order_id' => $order->order_id,
+            'description' => 'Your order is being preparing.'
+        ]);
+
+        return response()->json([
+            'message' => 'Order successfully set to preparing.'
+        ], 200);
+    }
+
+    public function updateOrderToServing(Order $order) {
+        $orderStatus = OrderStatus::where('order_status', 'Serving')
+            ->firstOrFail();
+
+        $order->update([
+            'order_status_id' => $orderStatus->order_status_id
+        ]);
+
+        Notification::create([
+            'order_id' => $order->order_id,
+            'description' => 'Your order is now serving.'
+        ]);
+
+        return response()->json([
+            'message' => 'Order successfully set to serving.'
+        ], 200);
+    }
+
+    public function updateOrderToServed(Order $order) {
+        $orderStatus = OrderStatus::where('order_status', 'Served')
+            ->firstOrFail();
+
+        $order->update([
+            'order_status_id' => $orderStatus->order_status_id
+        ]);
+
+        Notification::create([
+            'order_id' => $order->order_id,
+            'description' => 'Your order has beed served.'
+        ]);
+
+        return response()->json([
+            'message' => 'Order successfully set to served.'
         ], 200);
     }
 }
