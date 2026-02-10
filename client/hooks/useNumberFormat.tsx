@@ -1,6 +1,6 @@
-export function useNumberDecimalFormat(number: string) {
+export function useNumberDecimalFormat(number: string | Number) {
   return new Intl.NumberFormat("en-PH", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(parseFloat(number));
+  }).format(Number(number));
 }

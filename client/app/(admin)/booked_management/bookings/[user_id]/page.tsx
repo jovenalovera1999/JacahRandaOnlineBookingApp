@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import Spinner from "@/components/ui/Spinner";
 import ApproveBookingConfirmationModal from "@/features/booked_management/ApproveBookingConfirmationModal";
 import BookedTable from "@/features/booked_management/BookedTable";
 import CancelBookingConfirmationModal from "@/features/booked_management/CancelBookingConfirmationModal";
@@ -97,6 +98,16 @@ export default function BookingsPage() {
     setSelectedBooking(null);
     setIsCancelBookingConfirmationModalOpen(false);
   };
+
+  if (!userId) {
+    return (
+      <>
+        <div className="flex justify-center items-center">
+          <Spinner size="lg" />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

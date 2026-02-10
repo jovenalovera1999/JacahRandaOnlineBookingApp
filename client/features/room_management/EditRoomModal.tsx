@@ -18,7 +18,7 @@ interface EditRoomModalProps {
   reloadRoomReferences: boolean;
   onRoomUpdated: (
     status: "success" | "failed" | "warning" | "others",
-    message: string
+    message: string,
   ) => void;
   onReloadRooms: () => void;
   onClose: () => void;
@@ -39,7 +39,7 @@ export default function EditRoomModal({
   const [isUpdating, setIsUpdating] = useState(false);
   const [roomId, setRoomId] = useState(0);
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
-    null
+    null,
   );
   const [editRoomImage, setEditRoomImage] = useState<File | null>(null);
   const [roomNo, setRoomNo] = useState("");
@@ -64,7 +64,7 @@ export default function EditRoomModal({
       if (status !== 200) {
         console.error(
           "Unexpected status error during load room references at AddRoomModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -74,7 +74,7 @@ export default function EditRoomModal({
     } catch (error) {
       console.error(
         "Unexpected server error during load room references at AddRoomModal.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -91,8 +91,8 @@ export default function EditRoomModal({
       editRoomImage
         ? formData.append("room_image", editRoomImage)
         : !existingRoomImage && !editRoomImage
-        ? formData.append("room_image_removed", "1")
-        : formData.append("room_image", "");
+          ? formData.append("room_image_removed", "1")
+          : formData.append("room_image", "");
 
       formData.append("room_no", roomNo);
       formData.append("room_type", roomType);
@@ -106,7 +106,7 @@ export default function EditRoomModal({
       if (status !== 200) {
         console.error(
           "Unexpected status error during update room at EditRoomModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -117,7 +117,7 @@ export default function EditRoomModal({
       if (error.response && error.response.status !== 422) {
         console.error(
           "Unexpected server error during update room at EditRoomModal.tsx: ",
-          error
+          error,
         );
         return;
       }
@@ -129,7 +129,8 @@ export default function EditRoomModal({
   };
 
   useEffect(() => {
-    if (isOpen) handleLoadRoomReferences();
+    if (!isOpen) return;
+    handleLoadRoomReferences();
   }, [isOpen, reloadRoomReferences]);
 
   useEffect(() => {

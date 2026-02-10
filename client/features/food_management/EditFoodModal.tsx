@@ -19,7 +19,7 @@ interface EditFoodModalProps {
   selectedFood: FoodColumns | null;
   onRoomUpdated: (
     status: "success" | "failed" | "warning" | "others",
-    message: string
+    message: string,
   ) => void;
   onReloadFoods: () => void;
   onClose: () => void;
@@ -33,14 +33,14 @@ export default function EditFoodModal({
   onClose,
 }: EditFoodModalProps) {
   const [foodCategories, setFoodCategories] = useState<FoodCategoryColumns[]>(
-    []
+    [],
   );
   const [foodStatuses, setFoodStatuses] = useState<FoodStatusColumns[]>([]);
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const [existingFoodImage, setExistingFoodImage] = useState<string | null>(
-    null
+    null,
   );
   const [editFoodImage, setEditFoodImage] = useState<File | null>(null);
   const [foodName, setFoodName] = useState("");
@@ -57,7 +57,7 @@ export default function EditFoodModal({
       if (status != 200) {
         console.error(
           "Unexpected status error during load food references at AddFoodModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -67,7 +67,7 @@ export default function EditFoodModal({
     } catch (error) {
       console.error(
         "Unexpected server error during load food references at AddFoodModal.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -83,8 +83,8 @@ export default function EditFoodModal({
       editFoodImage
         ? formData.append("food_image", editFoodImage)
         : !existingFoodImage && !editFoodImage
-        ? formData.append("food_image_removed", "1")
-        : formData.append("food_image", "");
+          ? formData.append("food_image_removed", "1")
+          : formData.append("food_image", "");
 
       formData.append("food_name", foodName);
       formData.append("description", description);
@@ -97,7 +97,7 @@ export default function EditFoodModal({
       if (status !== 200) {
         console.error(
           "Unexpected status error during store food at AddFoodModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -110,7 +110,7 @@ export default function EditFoodModal({
       if (error.response && error.response.status !== 422) {
         console.error(
           "Unexpected server error during store food at AddFoodModal.tsx: ",
-          error
+          error,
         );
         return;
       }

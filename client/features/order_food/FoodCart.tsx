@@ -4,7 +4,7 @@ import FloatingLabelTextareaField from "@/components/ui/FloatingLabelTextareaFie
 import Form from "@/components/ui/Form";
 import Spinner from "@/components/ui/Spinner";
 import { OrderFieldsErrors } from "@/interfaces/OrderInterface";
-import OrderService from "@/services/OrderSerivce";
+import OrderService from "@/services/OrderService";
 import { FormEvent, useCallback, useMemo, useState } from "react";
 
 interface FoodCartProps {
@@ -55,7 +55,7 @@ export default function FoodCart({
 
       onOrderPlaced("success", data.message);
 
-      onClearCart;
+      onClearCart && onClearCart();
       setAdditionalInformation("");
       setErrors({});
     } catch (error: any) {
@@ -103,7 +103,7 @@ export default function FoodCart({
 
       {/* ================= ITEMS ================= */}
       <div className="flex-1 overflow-auto px-5 py-4 bg-gray-50">
-        {items.length === 0 ? (
+        {items.length <= 0 ? (
           <div className="text-center mt-16 space-y-2">
             <p className="text-sm font-medium text-gray-600">
               Your cart is empty
