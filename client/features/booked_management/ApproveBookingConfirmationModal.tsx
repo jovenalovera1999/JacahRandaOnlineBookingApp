@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import Form from "@/components/ui/Form";
 import { Modal } from "@/components/ui/Modal";
 import Spinner from "@/components/ui/Spinner";
+import UploadField from "@/components/ui/UploadField";
 import { BookingColumns } from "@/interfaces/BookingInterface";
 import BookingService from "@/services/BookingService";
 import { FormEvent, useEffect, useState } from "react";
@@ -11,7 +12,7 @@ interface ApproveBookingConfirmationModalProps {
   isOpen: boolean;
   onBookingApproved: (
     status: "success" | "failed" | "warning" | "others",
-    message: string
+    message: string,
   ) => void;
   onReloadBookings: () => void;
   onClose: () => void;
@@ -26,6 +27,9 @@ export default function ApproveBookingConfirmationModal({
 }: ApproveBookingConfirmationModalProps) {
   const [isApproving, setIsApproving] = useState(false);
   const [bookingId, setBookingId] = useState(0);
+  const [existingDownpaymentImage, setExistingDownpaymentImage] = useState<
+    string | null
+  >(null);
 
   // Cancel booking by soft delete
   const handleApproveBooking = async (e: FormEvent) => {
@@ -38,7 +42,7 @@ export default function ApproveBookingConfirmationModal({
       if (status !== 200) {
         console.error(
           "Unexpected status error during approve booking at ApproveBookingConfirmationModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -49,7 +53,7 @@ export default function ApproveBookingConfirmationModal({
     } catch (error) {
       console.error(
         "Unexpected server error during approve booking at ApproveBookingConfirmationModal.tsx: ",
-        error
+        error,
       );
     } finally {
       setIsApproving(false);
@@ -59,12 +63,14 @@ export default function ApproveBookingConfirmationModal({
   useEffect(() => {
     if (isOpen && selectedBooking) {
       setBookingId(selectedBooking.booking_id);
+      setExistingDownpaymentImage(selectedBooking.downpayment_image);
     }
   }, [isOpen, selectedBooking]);
 
   useEffect(() => {
     if (!isOpen) {
       setBookingId(0);
+      setExistingDownpaymentImage(null);
     }
   }, [isOpen]);
 
@@ -72,6 +78,16 @@ export default function ApproveBookingConfirmationModal({
     <>
       <Modal title="Confirmation" isOpen={isOpen} onClose={onClose}>
         <Form onSubmit={handleApproveBooking}>
+          <div className="w-full mb-5">
+            <UploadField
+              label="Downpayment Proof"
+              labelFile="PNG, JPG or JPEG"
+              name="room_image"
+              alt="Room Image"
+              existingFileUrl={existingDownpaymentImage}
+              readOnly
+            />
+          </div>
           <span className="text-gray-800 text-sm font-medium">
             Are you sure do you want to approve this booking?
           </span>

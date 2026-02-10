@@ -12,7 +12,7 @@ import { BookingFieldsErrors } from "@/interfaces/BookingInterface";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import BookingService from "@/services/BookingService";
 import { format } from "date-fns";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 interface BookRoomModalProps {
@@ -37,6 +37,7 @@ export default function BookRoomModal({
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
     null,
   );
+  const [roomId, setRoomId] = useState(0);
   const [roomNo, setRoomNo] = useState("");
   const [roomType, setRoomType] = useState("");
   const [price, setPrice] = useState("");
@@ -44,25 +45,34 @@ export default function BookRoomModal({
   const [description, setDescription] = useState("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [additionalInformation, setAdditionalInformation] = useState("");
+  const [addDownpaymentImage, setAddDownpaymentImage] = useState<File | null>(
+    null,
+  );
   const [errors, setErrors] = useState<BookingFieldsErrors>({});
+
+  const handleRemoveDownpaymentImage = () => {
+    setAddDownpaymentImage(null);
+  };
 
   const handleStoreBooking = async (e: FormEvent) => {
     try {
       e.preventDefault();
       setIsBooking(true);
 
-      const payload = {
-        room_id: selectedRoom?.room_id,
-        check_in_date: dateRange?.from
-          ? format(dateRange.from, "yyyy-MM-dd")
-          : null,
-        check_out_date: dateRange?.to
-          ? format(dateRange.to, "yyyy-MM-dd")
-          : null,
-        additional_information: additionalInformation,
-      };
+      const formData = new FormData();
+      formData.append("downpayment_image", addDownpaymentImage ?? "");
+      formData.append("room_id", roomId.toString());
+      formData.append(
+        "check_in_date",
+        dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "",
+      );
+      formData.append(
+        "check_out_date",
+        dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "",
+      );
+      formData.append("additional_information", additionalInformation);
 
-      const { status, data } = await BookingService.storeBooking(payload);
+      const { status, data } = await BookingService.storeBooking(formData);
 
       if (status !== 200) {
         console.error(
@@ -96,6 +106,7 @@ export default function BookRoomModal({
 
   useEffect(() => {
     if (selectedRoom && isOpen) {
+      setRoomId(selectedRoom.room_id);
       setExistingRoomImage(selectedRoom.room_image ?? null);
       setRoomNo(selectedRoom.room_no);
       setRoomType(selectedRoom.room_type.room_type);
@@ -107,6 +118,7 @@ export default function BookRoomModal({
 
   useEffect(() => {
     if (!isOpen) {
+      setRoomId(0);
       setExistingRoomImage(null);
       setRoomNo("");
       setRoomType("");
@@ -202,6 +214,18 @@ export default function BookRoomModal({
                 value={additionalInformation}
                 onChange={(e) => setAdditionalInformation(e.target.value)}
                 errors={errors.additional_information}
+              />
+            </div>
+            <div className="col-span-2 w-full">
+              <UploadField
+                label="Downpayment Image"
+                labelFile="PNG, JPG or JPEG"
+                name="downpayment_image"
+                alt="Downpayment Image"
+                value={addDownpaymentImage}
+                onChange={setAddDownpaymentImage}
+                onRemoveFile={handleRemoveDownpaymentImage}
+                errors={errors.downpayment_image}
               />
             </div>
           </div>

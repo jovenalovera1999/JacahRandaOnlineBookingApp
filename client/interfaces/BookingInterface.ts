@@ -4,6 +4,7 @@ import { UserColumns } from "./UserInterface";
 
 export interface BookingColumns {
   booking_id: number;
+  downpayment_image: string;
   user: UserColumns;
   room: RoomColumns;
   check_in_date: string;
@@ -15,6 +16,7 @@ export interface BookingColumns {
 }
 
 export interface BookingFieldsErrors {
+  downpayment_image?: string[];
   check_in_date?: string[];
   check_out_date?: string[];
   additional_information?: string[];

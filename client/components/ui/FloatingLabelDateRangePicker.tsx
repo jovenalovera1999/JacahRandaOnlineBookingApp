@@ -139,6 +139,10 @@ export default function FloatingLabelDateRangePicker({
                 onChange?.(range);
               }}
               disabled={[{ before: new Date() }, ...bookedRanges]} // Disable past dates
+              modifiers={{ booked: bookedRanges }}
+              modifiersClassNames={{
+                booked: "bg-red-200 text-red-800 cursor-not-allowed",
+              }}
               numberOfMonths={1}
             />
           </div>
