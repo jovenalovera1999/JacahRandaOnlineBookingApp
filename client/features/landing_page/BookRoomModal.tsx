@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Button from "@/components/ui/Button";
 import FloatingLabelDateRangePicker from "@/components/ui/FloatingLabelDateRangePicker";
@@ -12,7 +12,7 @@ import { BookingFieldsErrors } from "@/interfaces/BookingInterface";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import BookingService from "@/services/BookingService";
 import { format } from "date-fns";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 interface BookRoomModalProps {
@@ -20,7 +20,7 @@ interface BookRoomModalProps {
   isOpen: boolean;
   onBookingAdded: (
     status: "success" | "failed" | "warning" | "others",
-    message: string
+    message: string,
   ) => void;
   onReloadAvailableRooms: () => void;
   onClose: () => void;
@@ -35,7 +35,7 @@ export default function BookRoomModal({
 }: BookRoomModalProps) {
   const [isBooking, setIsBooking] = useState(false);
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
-    null
+    null,
   );
   const [roomNo, setRoomNo] = useState("");
   const [roomType, setRoomType] = useState("");
@@ -53,15 +53,22 @@ export default function BookRoomModal({
 
       const payload = {
         room_id: selectedRoom?.room_id,
-        check_in_date: dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : null,
-        check_out_date: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : null,
+        check_in_date: dateRange?.from
+          ? format(dateRange.from, "yyyy-MM-dd")
+          : null,
+        check_out_date: dateRange?.to
+          ? format(dateRange.to, "yyyy-MM-dd")
+          : null,
         additional_information: additionalInformation,
       };
 
       const { status, data } = await BookingService.storeBooking(payload);
 
       if (status !== 200) {
-        console.error("Unexpected status error during store booking at BookRoomModal.tsx: ", status);
+        console.error(
+          "Unexpected status error during store booking at BookRoomModal.tsx: ",
+          status,
+        );
         return;
       }
 
@@ -70,11 +77,14 @@ export default function BookRoomModal({
 
       onClose();
     } catch (error: any) {
-      if(error.response && error.response.status === 422) {
-        onBookingAdded('failed', error.response.data.message);
+      if (error.response && error.response.status === 422) {
+        onBookingAdded("failed", error.response.data.message);
         return;
-      }else if (error.response && error.response.status !== 422) {
-        console.error("Unexpected server error during store booking at BookRoomModal.tsx: ", error);
+      } else if (error.response && error.response.status !== 422) {
+        console.error(
+          "Unexpected server error during store booking at BookRoomModal.tsx: ",
+          error,
+        );
         return;
       }
 

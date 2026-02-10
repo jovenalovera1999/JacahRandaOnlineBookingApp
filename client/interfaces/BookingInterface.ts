@@ -10,8 +10,8 @@ export interface BookingColumns {
   check_out_date: string;
   additional_information?: string;
   booking_status: BookingStatusColumns;
-  created_at: string
-  updated_at: string
+  created_at: string;
+  updated_at: string;
 }
 
 export interface BookingFieldsErrors {

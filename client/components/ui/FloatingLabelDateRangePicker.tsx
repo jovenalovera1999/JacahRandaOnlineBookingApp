@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import BookingService from "@/services/BookingService";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DayPicker, DateRange } from "react-day-picker";
 import "react-day-picker/style.css";
 
@@ -22,7 +23,35 @@ export default function FloatingLabelDateRangePicker({
   errors,
 }: FloatingLabelDateRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [bookedRanges, setBookedRanges] = useState<DateRange[]>([]);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleLoadBookedDates = useCallback(async () => {
+    try {
+      const { status, data } = await BookingService.loadBookedDates();
+
+      if (status !== 200) {
+        console.error(
+          "Unexpected status error during load booked dates at BookRoomModal.tsx: ",
+          status,
+        );
+        return;
+      }
+
+      const ranges: DateRange[] = data.bookedDates.map((item: any) => ({
+        from: new Date(item.check_in_date),
+        to: new Date(item.check_out_date),
+      }));
+
+      setBookedRanges(ranges);
+    } catch (error: any) {
+      console.error(
+        "Unexpected server error during load booked dates at BookRoomModal.tsx: ",
+        error,
+      );
+    }
+  }, []);
 
   // Format displayed value
   const formattedValue =
@@ -36,6 +65,28 @@ export default function FloatingLabelDateRangePicker({
       setIsOpen(false);
     }
   };
+
+  // Prevent selecting a range that overlaps booking
+  const isOverlapping = (range?: DateRange) => {
+    if (!range?.from || !range.to) {
+      return false;
+    }
+
+    const from = range.from;
+    const to = range.to;
+
+    return bookedRanges.some((booked) => {
+      if (!booked.from || !booked.to) {
+        return false;
+      }
+
+      return from <= booked.to && to >= booked.from;
+    });
+  };
+
+  useEffect(() => {
+    handleLoadBookedDates();
+  }, [handleLoadBookedDates]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -81,8 +132,13 @@ export default function FloatingLabelDateRangePicker({
             <DayPicker
               mode="range"
               selected={value}
-              onSelect={onChange}
-              disabled={{ before: new Date() }} // Disable past dates
+              onSelect={(range) => {
+                if (isOverlapping(range)) {
+                  return;
+                }
+                onChange?.(range);
+              }}
+              disabled={[{ before: new Date() }, ...bookedRanges]} // Disable past dates
               numberOfMonths={1}
             />
           </div>
