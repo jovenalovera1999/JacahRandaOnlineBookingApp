@@ -21,13 +21,13 @@ export default function Contact() {
             <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
               <Phone className="mx-auto mb-4 text-blue-600" size={32} />
               <h3 className="font-semibold text-lg mb-2">Phone</h3>
-              <p className="text-gray-600">+63 9XX XXX XXXX</p>
+              <p className="text-gray-600">+63 962 588 9198</p>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
               <Mail className="mx-auto mb-4 text-blue-600" size={32} />
               <h3 className="font-semibold text-lg mb-2">Email</h3>
-              <p className="text-gray-600">info@jacahranda.com</p>
+              <p className="text-gray-600">jcranda@gmail.com</p>
             </div>
           </div>
         </div>
