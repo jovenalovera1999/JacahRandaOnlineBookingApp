@@ -15,7 +15,7 @@ interface CancelBookingConfirmationModalProps {
   isOpen: boolean;
   onBookingCancelled: (
     status: "success" | "failed" | "warning" | "others",
-    message: string
+    message: string,
   ) => void;
   onReloadBookings: () => void;
   onClose: () => void;
@@ -46,13 +46,13 @@ export default function CancelBookingConfirmationModal({
         await BookingService.cancelBookingInAdminOrEmployeeSide(
           selectedBooking?.room.room_id!,
           selectedBooking?.booking_id!,
-          payload
+          payload,
         );
 
       if (status !== 200) {
         console.error(
           "Unexpected status error during cancel booking at CancelBookingConfirmationModal.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -64,7 +64,7 @@ export default function CancelBookingConfirmationModal({
       if (error.response && error.response.status !== 422) {
         console.error(
           "Unexpected server error during cancel booking at CancelBookingConfirmationModal.tsx: ",
-          error
+          error,
         );
         return;
       }

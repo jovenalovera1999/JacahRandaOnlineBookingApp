@@ -52,6 +52,7 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::get('/loadUserReferences', 'loadUserReferences');
             Route::get('/loadUsers', 'loadUsers');
             Route::get('/getUser/{user}', 'getUser');
+
             Route::post('/storeUser', 'storeUser');
             Route::put('/updateUser/{user}', 'updateUser');
             Route::delete('/destroyUser/{user}', 'destroyUser');
@@ -66,12 +67,14 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::get('/loadClients', 'loadClients');
             Route::get('/loadBookingsOfCurrentLoggedInUserClient', 'loadBookingsOfCurrentLoggedInUserClient');
             Route::get('/loadBookedDates', 'loadBookedDates');
+
             Route::post('/storeBooking', 'storeBooking');
             Route::post('/approveBooking/{booking}', 'approveBooking');
             Route::post('/checkInBooking/{booking}', 'checkInBooking');
             Route::post('/checkOutBooking/{booking}', 'checkOutBooking');
             Route::post('/completeBooking/{booking}', 'completeBooking');
             Route::post('/cancelBookingInAdminOrEmployeeSide/{room}/{booking}', 'cancelBookingInAdminOrEmployeeSide');
+
             Route::delete('/cancelBooking/{room}/{booking}', 'cancelBooking');
             Route::delete('/cancelBookingInClientSide/{room}/{booking}', 'cancelBookingInClientSide');
         });
@@ -85,6 +88,7 @@ Route::middleware(['throttle:api'])->group(function () {
         Route::controller(RoomController::class)->prefix('/room')->group(function () {
             Route::get('/loadRoomReferences', 'loadRoomReferences');
             Route::get('/loadRooms', 'loadRooms');
+
             Route::post('/storeRoom', 'storeRoom');
             Route::put('/updateRoom/{room}', 'updateRoom');
             Route::delete('/destroyRoom/{room}', 'destroyRoom');
@@ -101,6 +105,7 @@ Route::middleware(['throttle:api'])->group(function () {
         Route::controller(FoodController::class)->prefix('/food')->group(function() {
             Route::get('/loadFoodReferences', 'loadFoodReferences');
             Route::get('/loadFoods', 'loadFoods');
+
             Route::post('/storeFood', 'storeFood');
             Route::put('/updateFood/{food}', 'updateFood');
             Route::delete('/destroyFood/{food}', 'destroyFood');
@@ -109,6 +114,7 @@ Route::middleware(['throttle:api'])->group(function () {
         Route::controller(OrderController::class)->prefix('/order')->group(function() {
             Route::get('/loadOrders', 'loadOrders');
             Route::get('/getOrder/{order}', 'getOrder');
+
             Route::post('/storeOrder', 'storeOrder');
             Route::post('/updateOrderToPreparing/{order}', 'updateOrderToPreparing');
             Route::post('/updateOrderToServing/{order}', 'updateOrderToServing');
