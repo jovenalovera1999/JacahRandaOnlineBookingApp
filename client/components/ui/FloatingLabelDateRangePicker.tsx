@@ -7,6 +7,7 @@ import "react-day-picker/style.css";
 
 interface FloatingLabelDateRangePickerProps {
   label: string;
+  roomId: string | number;
   value?: DateRange;
   onChange?: (range: DateRange | undefined) => void;
   required?: boolean;
@@ -16,6 +17,7 @@ interface FloatingLabelDateRangePickerProps {
 
 export default function FloatingLabelDateRangePicker({
   label,
+  roomId,
   value,
   onChange,
   required,
@@ -28,8 +30,10 @@ export default function FloatingLabelDateRangePicker({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleLoadBookedDates = useCallback(async () => {
+    if (!roomId) return;
+
     try {
-      const { status, data } = await BookingService.loadBookedDates();
+      const { status, data } = await BookingService.loadBookedDates(roomId);
 
       if (status !== 200) {
         console.error(
@@ -51,7 +55,7 @@ export default function FloatingLabelDateRangePicker({
         error,
       );
     }
-  }, []);
+  }, [roomId]);
 
   // Format displayed value
   const formattedValue =

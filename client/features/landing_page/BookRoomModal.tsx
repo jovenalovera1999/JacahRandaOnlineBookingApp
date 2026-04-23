@@ -127,6 +127,7 @@ export default function BookRoomModal({
       setDescription("");
       setDateRange(undefined);
       setAdditionalInformation("");
+      setAddDownpaymentImage(null);
     }
   }, [isOpen]);
 
@@ -145,6 +146,7 @@ export default function BookRoomModal({
               readOnly
             />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4">
             {/* Room no, room type, price and room status fields */}
             <div className="col-span-2 md:col-span-1 w-full">
@@ -167,6 +169,7 @@ export default function BookRoomModal({
                 />
               </div>
             </div>
+
             <div className="col-span-2 md:col-span-1 w-full">
               <div className="mb-5">
                 <FloatingLabelInputField
@@ -187,6 +190,7 @@ export default function BookRoomModal({
                 />
               </div>
             </div>
+
             {/* Description field */}
             <div className="col-span-2 w-full">
               <FloatingLabelTextareaField
@@ -197,16 +201,19 @@ export default function BookRoomModal({
               />
             </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4">
             <div className="col-span-2 w-full">
               <FloatingLabelDateRangePicker
                 label="Stay Duration"
+                roomId={roomId}
                 value={dateRange}
                 onChange={setDateRange}
                 required
                 errors={errors.check_in_date || errors.check_out_date}
               />
             </div>
+
             <div className="col-span-2 w-full">
               <FloatingLabelTextareaField
                 label="Additional Information"
@@ -216,6 +223,7 @@ export default function BookRoomModal({
                 errors={errors.additional_information}
               />
             </div>
+
             <div className="col-span-2 w-full">
               <UploadField
                 label="Downpayment Image"
@@ -229,6 +237,7 @@ export default function BookRoomModal({
               />
             </div>
           </div>
+
           {/* Buttons */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {!isBooking && (
@@ -242,7 +251,6 @@ export default function BookRoomModal({
                 </Button>
               </div>
             )}
-
             <div
               className={`${
                 isBooking ? "col-span-1 md:col-span-2" : "col-span-1"

@@ -70,13 +70,20 @@ class BookingController extends Controller
         ], 200);
     }
 
-    // Load booked dates
-    public function loadBookedDates() {
-        $bookedDates = Booking::select('check_in_date', 'check_out_date')
-            ->get();
+    // Load booked rooms with selected dates
+
+    public function loadBookedDates(Request $request) {
+        $roomId = $request->input('room_id');
+
+        $bookedDates = Booking::with('booking_status')
+            ->where('room_id', $roomId)
+            ->whereHas('booking_status', function ($query) {
+                $query->where('booking_status', ['Pending', 'Approved']);
+            })
+            ->get(['check_in_date', 'check_out_date']);
 
         return response()->json([
-            'bookedDates' => $bookedDates
+            'bookedDates' => $bookedDates,
         ], 200);
     }
 

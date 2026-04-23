@@ -25,9 +25,10 @@ const BookingService = {
     const response = await api.get(`${apiPrefix}/loadCancelledBookings`);
     return response;
   },
-  loadBookedDates: async () => {
-    const response = await api.get(`${apiPrefix}/loadBookedDates`);
-    return response;
+  loadBookedDates: async (roomId: string | number) => {
+    return await api.get(`${apiPrefix}/loadBookedDates`, {
+      params: { room_id: roomId },
+    });
   },
   storeBooking: async (data: any) => {
     const response = await api.post(`${apiPrefix}/storeBooking`, data);
