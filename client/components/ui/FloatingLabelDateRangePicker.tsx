@@ -8,6 +8,7 @@ import "react-day-picker/style.css";
 interface FloatingLabelDateRangePickerProps {
   label: string;
   roomId: string | number;
+  bookedRanges?: DateRange[];
   value?: DateRange;
   onChange?: (range: DateRange | undefined) => void;
   required?: boolean;
@@ -18,6 +19,7 @@ interface FloatingLabelDateRangePickerProps {
 export default function FloatingLabelDateRangePicker({
   label,
   roomId,
+  bookedRanges,
   value,
   onChange,
   required,
@@ -25,37 +27,37 @@ export default function FloatingLabelDateRangePicker({
   errors,
 }: FloatingLabelDateRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [bookedRanges, setBookedRanges] = useState<DateRange[]>([]);
+  // const [bookedRanges, setBookedRanges] = useState<DateRange[]>([]);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleLoadBookedDates = useCallback(async () => {
-    if (!roomId) return;
+  // const handleLoadBookedDates = useCallback(async () => {
+  //   if (!roomId) return;
 
-    try {
-      const { status, data } = await BookingService.loadBookedDates(roomId);
+  //   try {
+  //     const { status, data } = await BookingService.loadBookedDates(roomId);
 
-      if (status !== 200) {
-        console.error(
-          "Unexpected status error during load booked dates at BookRoomModal.tsx: ",
-          status,
-        );
-        return;
-      }
+  //     if (status !== 200) {
+  //       console.error(
+  //         "Unexpected status error during load booked dates at BookRoomModal.tsx: ",
+  //         status,
+  //       );
+  //       return;
+  //     }
 
-      const ranges: DateRange[] = data.bookedDates.map((item: any) => ({
-        from: new Date(item.check_in_date),
-        to: new Date(item.check_out_date),
-      }));
+  //     const ranges: DateRange[] = data.bookedDates.map((item: any) => ({
+  //       from: new Date(item.check_in_date),
+  //       to: new Date(item.check_out_date),
+  //     }));
 
-      setBookedRanges(ranges);
-    } catch (error: any) {
-      console.error(
-        "Unexpected server error during load booked dates at BookRoomModal.tsx: ",
-        error,
-      );
-    }
-  }, [roomId]);
+  //     setBookedRanges(ranges);
+  //   } catch (error: any) {
+  //     console.error(
+  //       "Unexpected server error during load booked dates at BookRoomModal.tsx: ",
+  //       error,
+  //     );
+  //   }
+  // }, [roomId]);
 
   // Format displayed value
   const formattedValue =
@@ -79,7 +81,7 @@ export default function FloatingLabelDateRangePicker({
     const from = range.from;
     const to = range.to;
 
-    return bookedRanges.some((booked) => {
+    return bookedRanges?.some((booked) => {
       if (!booked.from || !booked.to) {
         return false;
       }
@@ -88,9 +90,12 @@ export default function FloatingLabelDateRangePicker({
     });
   };
 
-  useEffect(() => {
-    handleLoadBookedDates();
-  }, [handleLoadBookedDates]);
+  const ranges = bookedRanges ?? [];
+
+  // useEffect(() => {
+  //   if (!roomId) return;
+  //   handleLoadBookedDates();
+  // }, [handleLoadBookedDates]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -142,8 +147,8 @@ export default function FloatingLabelDateRangePicker({
                 }
                 onChange?.(range);
               }}
-              disabled={[{ before: new Date() }, ...bookedRanges]} // Disable past dates
-              modifiers={{ booked: bookedRanges }}
+              disabled={[{ before: new Date() }, ...ranges]} // Disable past dates
+              modifiers={{ booked: ranges }}
               modifiersClassNames={{
                 booked: "bg-red-200 text-red-800 cursor-not-allowed",
               }}

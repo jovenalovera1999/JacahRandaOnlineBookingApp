@@ -14,6 +14,8 @@ import BookingService from "@/services/BookingService";
 import { format } from "date-fns";
 import { FormEvent, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
+import RoomAvailabilityCalendar from "./RoomAvailabilityCalendar";
+import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
 
 interface BookRoomModalProps {
   selectedRoom: RoomColumns | null;
@@ -34,6 +36,7 @@ export default function BookRoomModal({
   onClose,
 }: BookRoomModalProps) {
   const [isBooking, setIsBooking] = useState(false);
+  const [bookedRanges, setBookedRanges] = useState<DateRange[]>([]);
   const [existingRoomImage, setExistingRoomImage] = useState<string | null>(
     null,
   );
@@ -45,6 +48,7 @@ export default function BookRoomModal({
   const [description, setDescription] = useState("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [additionalInformation, setAdditionalInformation] = useState("");
+  const [discount, setDiscount] = useState("");
   const [addDownpaymentImage, setAddDownpaymentImage] = useState<File | null>(
     null,
   );
@@ -70,6 +74,7 @@ export default function BookRoomModal({
         "check_out_date",
         dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "",
       );
+      formData.append("discount", discount);
       formData.append("additional_information", additionalInformation);
 
       const { status, data } = await BookingService.storeBooking(formData);
@@ -104,6 +109,29 @@ export default function BookRoomModal({
     }
   };
 
+  const loadBookedDates = async () => {
+    if (!roomId) return;
+
+    try {
+      const { status, data } = await BookingService.loadBookedDates(roomId);
+
+      if (status !== 200) return;
+
+      const ranges: DateRange[] = data.bookedDates.map((item: any) => ({
+        from: new Date(item.check_in_date),
+        to: new Date(item.check_out_date),
+      }));
+
+      setBookedRanges(ranges);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) loadBookedDates();
+  }, [roomId, isOpen]);
+
   useEffect(() => {
     if (selectedRoom && isOpen) {
       setRoomId(selectedRoom.room_id);
@@ -131,20 +159,35 @@ export default function BookRoomModal({
     }
   }, [isOpen]);
 
+  const numericPrice = Number(price || 0);
+  const numericDiscount = Number(discount || 0);
+
+  const discountedPrice =
+    numericDiscount > 0
+      ? numericPrice - (numericPrice * numericDiscount) / 100
+      : numericPrice;
+
+  const savings = numericPrice - discountedPrice;
+
   return (
     <>
       <Modal title="Book a Room" isOpen={isOpen} onClose={onClose}>
         {/* Image */}
         <Form onSubmit={handleStoreBooking}>
-          <div className="mb-5 w-full">
-            <UploadField
-              label="Room Image"
-              labelFile="PNG, JPG or JPEG"
-              name="room_image"
-              alt="Room Image"
-              existingFileUrl={existingRoomImage}
-              readOnly
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="col-span-1">
+              <UploadField
+                label="Room Image"
+                labelFile="PNG, JPG or JPEG"
+                name="room_image"
+                alt="Room Image"
+                existingFileUrl={existingRoomImage}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <RoomAvailabilityCalendar bookedRanges={bookedRanges} />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4">
@@ -207,6 +250,7 @@ export default function BookRoomModal({
               <FloatingLabelDateRangePicker
                 label="Stay Duration"
                 roomId={roomId}
+                bookedRanges={bookedRanges}
                 value={dateRange}
                 onChange={setDateRange}
                 required
@@ -214,7 +258,7 @@ export default function BookRoomModal({
               />
             </div>
 
-            <div className="col-span-2 w-full">
+            <div className="col-span-2  w-full">
               <FloatingLabelTextareaField
                 label="Additional Information"
                 name="additional_information"
@@ -222,6 +266,48 @@ export default function BookRoomModal({
                 onChange={(e) => setAdditionalInformation(e.target.value)}
                 errors={errors.additional_information}
               />
+            </div>
+
+            <div className="col-span-2 w-full">
+              <div className="mb-2">
+                <FloatingLabelSelectField
+                  label="Discount"
+                  name="discount"
+                  value={discount}
+                  onChange={(e) => setDiscount(e.target.value)}
+                  errors={errors.discount}
+                >
+                  <option value={0}>None</option>
+                  <option value={10}>VIP</option>
+                  <option value={20}>PWD / Senior Citizen</option>
+                </FloatingLabelSelectField>
+              </div>
+              {numericDiscount > 0 && (
+                <div className="col-span-2">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p className="text-sm text-gray-600 mb-1">
+                      Discounted Price
+                    </p>
+
+                    <div className="flex items-center gap-3">
+                      {/* Original Price */}
+                      <span className="text-gray-400 line-through text-lg">
+                        ₱{numericPrice.toLocaleString()}
+                      </span>
+
+                      {/* Discounted Price */}
+                      <span className="text-2xl font-bold text-green-600">
+                        ₱{discountedPrice.toLocaleString()}
+                      </span>
+                    </div>
+
+                    {/* Savings */}
+                    <p className="text-xs text-green-700 mt-1">
+                      You saved ₱{savings.toLocaleString()} ({numericDiscount}%)
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="col-span-2 w-full">

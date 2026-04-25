@@ -27,6 +27,7 @@ class Booking extends Model
         'room_id',
         'check_in_date',
         'check_out_date',
+        'discount',
         'additional_information',
         'booking_status_id',
     ];

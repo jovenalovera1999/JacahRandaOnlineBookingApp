@@ -17,6 +17,7 @@ export interface BookingColumns {
 
 export interface BookingFieldsErrors {
   downpayment_image?: string[];
+  discount?: string[];
   check_in_date?: string[];
   check_out_date?: string[];
   additional_information?: string[];

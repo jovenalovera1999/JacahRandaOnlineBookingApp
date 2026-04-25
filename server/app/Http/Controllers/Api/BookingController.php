@@ -88,6 +88,7 @@ class BookingController extends Controller
     }
 
     // Stores booking in client side
+
     public function storeBooking(Request $request)
     {
         $validatedData = $request->validate([
@@ -95,6 +96,7 @@ class BookingController extends Controller
             'room_id' => ['exists:tbl_rooms,room_id'],
             'check_in_date' => ['required', 'date'],
             'check_out_date' => ['required', 'date', 'after:check_in_date'],
+            'discount' => ['nullable'],
             'additional_information' => ['nullable', 'max:255'],
         ]);
 
@@ -135,6 +137,7 @@ class BookingController extends Controller
             'room_id' => $validatedData['room_id'],
             'check_in_date' => $validatedData['check_in_date'],
             'check_out_date' => $validatedData['check_out_date'],
+            'discount' => $validatedData['discount'],
             'additional_information' => $validatedData['additional_information'],
             'booking_status_id' => $bookingStatus->booking_status_id,
         ]);
