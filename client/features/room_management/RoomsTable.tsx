@@ -46,7 +46,7 @@ export default function RoomsTable({
       if (status !== 200) {
         console.error(
           "Unexpected status error during load rooms at RoomsTable.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -55,7 +55,7 @@ export default function RoomsTable({
     } catch (error) {
       console.error(
         "Unexpected server error during load rooms at RoomsTable.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -133,38 +133,32 @@ export default function RoomsTable({
                           room.room_status.room_status === "Available"
                             ? "bg-green-100 text-green-700"
                             : room.room_status.room_status === "Unavailable"
-                            ? "bg-red-100 text-red-700"
-                            : room.room_status.room_status === "Occupied"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-gray-100 text-gray-700"
+                              ? "bg-red-100 text-red-700"
+                              : room.room_status.room_status === "Occupied"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {room.room_status.room_status}
                       </span>
                     </TableCell>
-                    <TableCell className="relative overflow-visible">
-                      <ActionButtonDropdown
-                        id={room.room_id}
-                        openDropdownId={roomsActionOpenDropdown}
-                        setOpenDropdownId={setRoomsActionOpenDropdown}
+                    <TableCell className="flex gap-2">
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                        onClick={() => onEditRoom(room)}
                       >
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                          onClick={() => onEditRoom(room)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                          onClick={() => onDeleteRoom(room)}
-                        >
-                          Delete
-                        </Button>
-                      </ActionButtonDropdown>
+                        Edit
+                      </Button>
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                        onClick={() => onDeleteRoom(room)}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))

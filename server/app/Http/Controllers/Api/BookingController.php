@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    // Load bookings in my bookings
+    // Load bookings in my
+
     public function loadBookingsOfCurrentLoggedInUserClient(Request $request)
     {
         $user = $request->user();
@@ -29,6 +30,7 @@ class BookingController extends Controller
     }
 
     // Load bookings in booked management
+
     public function loadBookings(Request $request)
     {
         $filter = $request->input('filter');
@@ -57,6 +59,7 @@ class BookingController extends Controller
     }
 
     // Load clients with bookings on booked management
+
     public function loadClients() {
         $clients = User::with(['role', 'bookings'])
             ->whereHas('role', function($query) {

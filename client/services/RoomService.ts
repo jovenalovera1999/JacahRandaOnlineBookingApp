@@ -2,30 +2,24 @@ import api from "@/lib/axios";
 
 const RoomService = {
   loadAvailableRooms: async () => {
-    const response = await api.get("/room/loadAvailableRooms");
-    return response;
+    return await api.get("/room/loadAvailableRooms");
   },
   loadRoomReferences: async () => {
-    const response = await api.get(`/room/loadRoomReferences`);
-    return response;
+    return await api.get(`/room/loadRoomReferences`);
   },
   loadRooms: async (search: string) => {
-    const response = await api.get(
-      `${search ? `/room/loadRooms?search=${search}` : "/room/loadRooms"}`
+    return await api.get(
+      `${search ? `/room/loadRooms?search=${search}` : "/room/loadRooms"}`,
     );
-    return response;
   },
   storeRoom: async (data: any) => {
-    const response = await api.post("/room/storeRoom", data);
-    return response;
+    return await api.post("/room/storeRoom", data);
   },
   updateRoom: async (roomId: string | number, data: any) => {
-    const response = await api.post(`/room/updateRoom/${roomId}`, data);
-    return response;
+    return await api.post(`/room/updateRoom/${roomId}`, data);
   },
   destroyRoom: async (roomId: string | number) => {
-    const response = await api.delete(`/room/destroyRoom/${roomId}`);
-    return response;
+    return await api.delete(`/room/destroyRoom/${roomId}`);
   },
 };
 

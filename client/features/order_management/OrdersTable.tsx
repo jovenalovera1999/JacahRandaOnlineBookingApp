@@ -113,21 +113,15 @@ export default function OrdersTable({
                         {order.order_status.order_status}
                       </span>
                     </TableCell>
-                    <TableCell className="relative overflow-visible">
-                      <ActionButtonDropdown
-                        id={order.order_id}
-                        openDropdownId={foodsActionOpenDropdown}
-                        setOpenDropdownId={setFoodsActionOpenDropdown}
+                    <TableCell>
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-28"
+                        onClick={() => onViewOrder(order)}
                       >
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-28"
-                          onClick={() => onViewOrder(order)}
-                        >
-                          View Order
-                        </Button>
-                      </ActionButtonDropdown>
+                        View Order
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))

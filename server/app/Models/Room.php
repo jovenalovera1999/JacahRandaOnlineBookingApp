@@ -31,6 +31,7 @@ class Room extends Model
     ];
 
     // Relationship with other tables
+
     public function room_type(): BelongsTo
     {
         return $this->belongsTo(RoomType::class, 'room_type_id', 'room_type_id')->withTrashed();
@@ -39,5 +40,9 @@ class Room extends Model
     public function room_status(): BelongsTo
     {
         return $this->belongsTo(RoomStatus::class, 'room_status_id', 'room_status_id')->withTrashed();
+    }
+
+    public function bookings() {
+        return $this->hasMany(Booking::class, 'room_id', 'room_id');
     }
 }

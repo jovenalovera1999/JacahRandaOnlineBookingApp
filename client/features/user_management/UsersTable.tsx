@@ -49,7 +49,7 @@ export default function UsersTable({
       if (status !== 200) {
         console.error(
           "Unexpected status error during load users at UsersTable.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -58,7 +58,7 @@ export default function UsersTable({
     } catch (error) {
       console.error(
         "Unexpected server error during load users at UsersTable.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -137,29 +137,23 @@ export default function UsersTable({
                       {useFullDateTimeFormat(user.last_login_at ?? "")}
                     </TableCell>
                     <TableCell>{useFullDateFormat(user.created_at)}</TableCell>
-                    <TableCell className="relative overflow-visible">
-                      <ActionButtonDropdown
-                        id={user.user_id}
-                        openDropdownId={usersActionOpenDropdown}
-                        setOpenDropdownId={setUsersActionOpenDropdown}
+                    <TableCell className="flex gap-2">
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                        onClick={() => onEditUser(user)}
                       >
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                          onClick={() => onEditUser(user)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                          onClick={() => onDeleteUser(user)}
-                        >
-                          Delete
-                        </Button>
-                      </ActionButtonDropdown>
+                        Edit
+                      </Button>
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                        onClick={() => onDeleteUser(user)}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))

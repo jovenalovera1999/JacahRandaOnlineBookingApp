@@ -1,6 +1,5 @@
 "use client";
 
-import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
 import Button from "@/components/ui/Button";
 import FloatingLabelSelectField from "@/components/ui/FloatingLabelSelectField";
 import {
@@ -29,10 +28,6 @@ export default function FoodsTable({
   onDeleteFood,
 }: FoodsTableProps) {
   const [foods, setFoods] = useState<FoodColumns[]>([]);
-
-  const [foodsActionOpenDropdown, setFoodsActionOpenDropdown] = useState<
-    string | number | null
-  >(null);
 
   const headers = ["No", "Food", "Description", "Price", "Status", "Action"];
 
@@ -120,29 +115,23 @@ export default function FoodsTable({
                       {food.food_status.food_status}
                     </span>
                   </TableCell>
-                  <TableCell className="relative overflow-visible">
-                    <ActionButtonDropdown
-                      id={food.food_id}
-                      openDropdownId={foodsActionOpenDropdown}
-                      setOpenDropdownId={setFoodsActionOpenDropdown}
+                  <TableCell className="flex gap-2">
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onEditFood(food)}
                     >
-                      <Button
-                        tag="button"
-                        type="button"
-                        className="bg-transparent text-gray-800 hover:bg-green-200 hover:text-green-600 text-xs font-medium transition-colors duration-200 w-20"
-                        onClick={() => onEditFood(food)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        tag="button"
-                        type="button"
-                        className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
-                        onClick={() => onDeleteFood(food)}
-                      >
-                        Delete
-                      </Button>
-                    </ActionButtonDropdown>
+                      Edit
+                    </Button>
+                    <Button
+                      tag="button"
+                      type="button"
+                      className="bg-transparent text-gray-800 hover:bg-red-200 hover:text-red-600 text-xs font-medium transition-colors duration-200 w-20"
+                      onClick={() => onDeleteFood(food)}
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

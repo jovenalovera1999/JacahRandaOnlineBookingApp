@@ -3,11 +3,8 @@ import api from "@/lib/axios";
 const apiPrefix = "/dashboard";
 
 const DashboardService = {
-  countPendingApprovedCancelledCompleted: async () => {
-    const response = await api.get(
-      `${apiPrefix}/countPendingApprovedCancelledCompleted`
-    );
-    return response;
+  loadDashboard: async () => {
+    return await api.get(`${apiPrefix}/loadDashboard`);
   },
 };
 

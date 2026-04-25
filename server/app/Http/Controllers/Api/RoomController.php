@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
-    // Load avaiable rooms for client to book
+    // Load avaiable rooms
+
     public function loadAvailableRooms()
     {
         $rooms = Room::with(['room_type', 'room_status'])
@@ -31,7 +32,8 @@ class RoomController extends Controller
         ], 200);
     }
 
-    // Load room references such as room type and room status in add and edit modal room from tbl_room_types and tbl_room_statuses
+    // Load room references
+
     public function loadRoomReferences()
     {
         $roomTypes = RoomType::all();
@@ -43,7 +45,8 @@ class RoomController extends Controller
         ], 200);
     }
 
-    // Load rooms from tbl_rooms
+    // Load rooms with or without search
+
     public function loadRooms(Request $request)
     {
         $search = $request->input('search');
@@ -77,7 +80,8 @@ class RoomController extends Controller
         ], 200);
     }
 
-    // Store to tbl_rooms in database
+    // Save room to database
+
     public function storeRoom(Request $request)
     {
         // Validate data
@@ -91,7 +95,8 @@ class RoomController extends Controller
             'room_status' => ['required']
         ]);
 
-        // Uploading image
+        // Image save
+
         if ($request->hasFile('room_image')) {
             $file = $request->file('room_image');
             $extension = $file->getClientOriginalExtension();
@@ -100,7 +105,6 @@ class RoomController extends Controller
             $validatedData['room_image'] = $fileNameToStore;
         }
 
-        // Insert room to tbl_rooms in database
         Room::create([
             'room_image' => $validatedData['room_image'],
             'room_no' => $validatedData['room_no'],
@@ -111,16 +115,15 @@ class RoomController extends Controller
             'room_status_id' => $validatedData['room_status']
         ]);
 
-        // Return message to client
         return response()->json([
             'message' => 'Room Successfully Created.'
         ], 200);
     }
 
-    // Update the selected room at tbl_rooms in database
+    // Update the selected room
+
     public function updateRoom(Request $request, Room $room)
     {
-        // Validate data
         $validatedData = $request->validate([
             'room_image' => ['nullable', 'image', 'mimes:png,jpg,jpeg'],
             'room_no' => ['required', 'numeric'],
@@ -132,6 +135,7 @@ class RoomController extends Controller
         ]);
 
         // Checks room image if exists, removed or uploaded a new one
+
         if ($request->has('room_image_removed') && $request->room_image_removed === '1') {
             if ($room->room_image && Storage::disk('public')->exists('img/room/' . $room->room_image)) {
                 Storage::disk('public')->delete('img/room/' . $room->room_image);
@@ -150,7 +154,6 @@ class RoomController extends Controller
             $validatedData['room_image'] = $fileNameToStore;
         }
 
-        // Update room in tbl_rooms in database
         $room->update([
             'room_image' => $validatedData['room_image'] ?? $room->room_image,
             'room_no' => $validatedData['room_no'],
@@ -161,11 +164,12 @@ class RoomController extends Controller
             'room_status_id' => $validatedData['room_status']
         ]);
 
-        // Return message to client
         return response()->json([
             'message' => 'Room Successfully Updated.'
         ], 200);
     }
+
+    // Delete room from database
 
     public function destroyRoom(Room $room)
     {

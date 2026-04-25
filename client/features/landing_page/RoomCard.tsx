@@ -33,6 +33,17 @@ export default function RoomCard({ onBookRoom, room }: RoomCardProps) {
     }
   }, [room]);
 
+  useEffect(() => {
+    if (!room) {
+      setImageFileUrl(null);
+      setRoomNo("");
+      setRoomType("");
+      setCapacity("");
+      setDescription("");
+      setPrice("");
+    }
+  }, [room]);
+
   return (
     <>
       <div className="w-full max-w-sm bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden">

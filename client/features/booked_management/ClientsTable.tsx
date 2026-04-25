@@ -1,4 +1,5 @@
-import ActionButtonDropdown from "@/components/ui/ActionButtonDropdown";
+"use client";
+
 import Button from "@/components/ui/Button";
 import Spinner from "@/components/ui/Spinner";
 import {
@@ -19,9 +20,6 @@ export default function ClientsTable() {
 
   // States
   const [clients, setClients] = useState<UserColumns[]>([]);
-  const [clientsActionOpenDropdown, setClientsActionOpenDropdown] = useState<
-    string | number | null
-  >(null);
 
   const handleLoadClients = useCallback(async () => {
     try {
@@ -30,7 +28,7 @@ export default function ClientsTable() {
       if (status !== 200) {
         console.error(
           "Unexpected status error during load clients at BookedTable.tsx: ",
-          status
+          status,
         );
         return;
       }
@@ -39,7 +37,7 @@ export default function ClientsTable() {
     } catch (error) {
       console.error(
         "Unexpected server error during load clients at BookedTable.tsx: ",
-        error
+        error,
       );
     }
   }, []);
@@ -72,27 +70,24 @@ export default function ClientsTable() {
                     className="text-gray-800 hover:bg-gray-100 transition-colors duration-200"
                   >
                     <TableCell>{index + 1}</TableCell>
+
                     <TableCell>{client.name}</TableCell>
+
                     <TableCell>{client.email}</TableCell>
-                    <TableCell className="relative overflow-visible">
-                      <ActionButtonDropdown
-                        id={client.user_id}
-                        openDropdownId={clientsActionOpenDropdown}
-                        setOpenDropdownId={setClientsActionOpenDropdown}
+
+                    <TableCell>
+                      <Button
+                        tag="button"
+                        type="button"
+                        className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-32"
+                        onClick={() =>
+                          router.push(
+                            `/booked_management/bookings/${client.user_id}`,
+                          )
+                        }
                       >
-                        <Button
-                          tag="button"
-                          type="button"
-                          className="bg-transparent text-gray-800 hover:bg-blue-200 hover:text-blue-600 text-xs font-medium transition-colors duration-200 w-32"
-                          onClick={() =>
-                            router.push(
-                              `/booked_management/bookings/${client.user_id}`
-                            )
-                          }
-                        >
-                          View Bookings
-                        </Button>
-                      </ActionButtonDropdown>
+                        View Bookings
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))

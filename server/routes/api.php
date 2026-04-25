@@ -59,7 +59,7 @@ Route::middleware(['throttle:api'])->group(function () {
         });
 
         Route::controller(DashboardController::class)->prefix('/dashboard')->group(function() {
-            Route::get('/countPendingApprovedCancelledCompleted', 'countPendingApprovedCancelledCompleted');
+            Route::get('/loadDashboard', 'loadDashboard');
         });
 
         Route::controller(BookingController::class)->prefix('/booking')->group(function () {
