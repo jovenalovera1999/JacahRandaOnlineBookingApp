@@ -1,6 +1,7 @@
 "use client";
 
 import BookingSummaryCard from "@/features/dashboard/BookingSummaryCard";
+import RoomStatusSummaryCard from "@/features/dashboard/RoomStatusSummaryCard";
 import TopRoomsBookedList from "@/features/dashboard/TopRoomsBookedList";
 import { RoomColumns } from "@/interfaces/RoomInterface";
 import DashboardService from "@/services/DashboardService";
@@ -12,6 +13,10 @@ export default function DashboardPage() {
   const [totalApproved, setTotalApproved] = useState(0);
   const [totalCancelled, setTotalCancelled] = useState(0);
   const [totalCompleted, setTotalCompleted] = useState(0);
+  const [totalAvailable, setTotalAvailable] = useState(0);
+  const [totalUnavailable, setTotalUnavailable] = useState(0);
+  const [totalOccupied, setTotalOccupied] = useState(0);
+  const [totalMaintenance, setTotalMaintenance] = useState(0);
   const [roomsData, setRoomsData] = useState<RoomColumns[]>([]);
 
   const handleLoadDashboard = useCallback(async () => {
@@ -45,6 +50,23 @@ export default function DashboardPage() {
         }
       });
 
+      data.countByRoomStatuses.map((item: any) => {
+        switch (item.room_status) {
+          case "Available":
+            setTotalAvailable(item.rooms_count);
+            break;
+          case "Unavailable":
+            setTotalUnavailable(item.rooms_count);
+            break;
+          case "Occupied":
+            setTotalOccupied(item.rooms_count);
+            break;
+          case "Maintenance":
+            setTotalMaintenance(item.rooms_count);
+            break;
+        }
+      });
+
       setRoomsData(data.rooms);
     } catch (error) {
       console.error(
@@ -71,6 +93,16 @@ export default function DashboardPage() {
           totalApproved={totalApproved}
           totalCancelled={totalCancelled}
           totalCompleted={totalCompleted}
+        />
+      </div>
+
+      <div className="mb-4">
+        <RoomStatusSummaryCard
+          isLoading={isLoading}
+          totalAvailable={totalAvailable}
+          totalUnavailable={totalUnavailable}
+          totalOccupied={totalOccupied}
+          totalMaintenance={totalMaintenance}
         />
       </div>
 

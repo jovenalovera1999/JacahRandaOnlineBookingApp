@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BookingStatus;
 use App\Models\Room;
+use App\Models\RoomStatus;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function loadDashboard() {
         $countByBookingStatuses = BookingStatus::withCount('bookings')
+            ->get();
+
+        $countByRoomStatuses = RoomStatus::withCount('rooms')
             ->get();
 
         $rooms = Room::with(['room_type', 'room_status'])
@@ -30,6 +34,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'countByBookingStatuses' => $countByBookingStatuses,
+            'countByRoomStatuses' => $countByRoomStatuses,
             'rooms' => $rooms,
         ], 200);
     }

@@ -1,45 +1,43 @@
-"use client";
-
 import Spinner from "@/components/ui/Spinner";
 
-interface BookingSummaryCardProps {
+interface RoomStatusSummaryProps {
   isLoading: boolean;
-  totalPending: number;
-  totalApproved: number;
-  totalCancelled: number;
-  totalCompleted: number;
+  totalAvailable: number;
+  totalUnavailable: number;
+  totalOccupied: number;
+  totalMaintenance: number;
 }
 
-export default function BookingSummaryCard({
+export default function RoomStatusSummaryCard({
   isLoading,
-  totalPending,
-  totalApproved,
-  totalCancelled,
-  totalCompleted,
-}: BookingSummaryCardProps) {
+  totalAvailable,
+  totalUnavailable,
+  totalOccupied,
+  totalMaintenance,
+}: RoomStatusSummaryProps) {
   const cards = [
-    { title: "Pending", value: totalPending },
-    { title: "Approved", value: totalApproved },
-    { title: "Cancelled", value: totalCancelled },
-    { title: "Completed", value: totalCompleted },
+    { title: "Available", value: totalAvailable },
+    { title: "Unavailable", value: totalUnavailable },
+    { title: "Occupied", value: totalOccupied },
+    { title: "Maintenance", value: totalMaintenance },
   ];
 
   const getColor = (title: string) => {
     const t = title.toLowerCase();
 
-    if (t.includes("approved")) return "text-green-600 bg-green-50";
+    if (t.includes("available")) return "text-green-600 bg-green-50";
 
-    if (t.includes("cancelled")) return "text-red-600 bg-red-50";
+    if (t.includes("unavailable")) return "text-red-600 bg-red-50";
 
-    if (t.includes("completed")) return "text-yellow-600 bg-yellow-50";
+    if (t.includes("occupied")) return "text-yellow-600 bg-yellow-50";
 
     return "text-gray-600 bg-gray-100";
   };
 
   return (
     <>
-      <h1 className="text-xl font-semibold text-gray-900 mb-4">
-        Booking Summary
+      <h1 className="text-xl text-gray-800 font-semibold mb-2">
+        Room Status Summary
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {cards.map((card) => {
